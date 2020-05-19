@@ -20,6 +20,7 @@ func main() {
 		}
 	}()
 	http.HandleFunc("/", appserve)
+	http.HandleFunc("/favicon.ico", http.NotFound)
 	e := http.ListenAndServe(":3000", nil)
 	if e != nil {
 		panic(e)
@@ -27,7 +28,20 @@ func main() {
 }
 
 func appserve(w http.ResponseWriter, r *http.Request) {
-	if e := appsite.ExecuteTemplate(w, "index.html", nil); e != nil {
+	path := r.URL.Path[1:]
+	if path == "" {
+		path = "index"
+	}
+	if e := appsite.ExecuteTemplate(w, "_pre.html", nil); e != nil {
+		fmt.Printf("PRE Error: %s", e.Error())
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+	}
+	if e := appsite.ExecuteTemplate(w, path+".html", nil); e != nil {
+		fmt.Printf("PAGE Error: %s", e.Error())
+		http.Error(w, e.Error(), http.StatusInternalServerError)
+	}
+	if e := appsite.ExecuteTemplate(w, "_post.html", nil); e != nil {
+		fmt.Printf("POST Error: %s", e.Error())
 		http.Error(w, e.Error(), http.StatusInternalServerError)
 	}
 }
