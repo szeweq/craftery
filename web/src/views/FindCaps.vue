@@ -1,6 +1,9 @@
 <template>
 <v-container>
-    <h1>Find mod capabilities</h1>
+    <v-row class="justify-space-between pa-3">
+        <h1>Find mod capabilities</h1>
+        <v-btn :disabled="step > 2" @click="reset()">Start again</v-btn>
+    </v-row>
     <v-stepper v-model="step">
         <v-stepper-header>
             <v-stepper-step :complete="step > 1" step="1">Select mods</v-stepper-step>
@@ -15,7 +18,8 @@
                 <v-btn :disabled="!anyModSelected" @click="gotoStep2()">Continue</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
-                Scanning... {{scanText}}
+                <h2>Scanning</h2>
+                <p v-text="scanText" />
             </v-stepper-content>
             <v-stepper-content step="3">
                 <v-list>
@@ -49,6 +53,9 @@ export default {
         }
     },
     methods: {
+        reset() {
+            if (this.step == 3) this.step = 1
+        },
         async gotoStep2() {
             if (!this.anyModSelected) return
             this.step = 2
