@@ -20,7 +20,9 @@ export default {
   name: 'Home',
   data: () => ({
     tasks: [
-      {name: "Find all mod capabilities", to: "/findcaps"}
+      {name: "Find all mod capabilities", to: "/findmod/caps"},
+      {name: "Find all mod registries", to: "/findmod/registries"},
+      {name: "Find modpack registries", to: "/findpack/registries"}
     ]
   })
 }

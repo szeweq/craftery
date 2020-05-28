@@ -18,7 +18,20 @@ type (
 		DownloadURL string `json:"downloadUrl"`
 	}
 	AddonSection struct {
-		PackageType int
+		PackageType int `json:"packageType"`
+	}
+	ModpackManifest struct {
+		Minecraft struct {
+			Version string `json:"version"`
+		} `json:"minecraft"`
+		Name    string        `json:"name"`
+		Version string        `json:"version"`
+		Files   []ModpackFile `json:"files"`
+	}
+	ModpackFile struct {
+		ProjectID int  `json:"projectID"`
+		FileID    int  `json:"fileID"`
+		Required  bool `json:"required"`
 	}
 )
 

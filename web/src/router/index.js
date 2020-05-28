@@ -11,14 +11,22 @@ const routes = [
     component: Home
   },
   {
-    path: '/findcaps',
-    name: 'FindCaps',
-    component: () => import(/* webpackChunkName: "findcaps" */ '../views/FindCaps.vue')
+    path: '/findmod/caps',
+    name: 'ModCaps',
+    component: () => import(/* webpackChunkName: "findmod" */ '../views/ModCaps.vue')
+  },
+  {
+    path: '/findmod/registries',
+    name: 'ModRegistries',
+    component: () => import(/* webpackChunkName: "findmod" */ '../views/ModRegistries.vue')
+  },
+  {
+    path: '/findpack/registries',
+    name: 'PackRegistries',
+    component: () => import(/* webpackChunkName: "findpack" */ '../views/PackRegistries.vue')
   }
 ]
 
-const router = new VueRouter({
-  routes
-})
+const router = new VueRouter({routes})
 
 export default router

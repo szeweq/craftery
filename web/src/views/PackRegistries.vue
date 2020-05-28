@@ -1,12 +1,12 @@
 <template>
 <v-container>
     <v-row class="justify-space-between pa-3">
-        <h1>Find mod capabilities</h1>
-        <v-btn :disabled="step > 2" @click="reset()">Start again</v-btn>
+        <h1>Find modpack registries</h1>
+        <v-btn :disabled="step < 3" @click="reset()">Start again</v-btn>
     </v-row>
     <v-stepper v-model="step">
         <v-stepper-header>
-            <v-stepper-step :complete="step > 1" step="1">Select mods</v-stepper-step>
+            <v-stepper-step :complete="step > 1" step="1">Select modpack</v-stepper-step>
             <v-divider></v-divider>
             <v-stepper-step :complete="step > 2" step="2">Scanning</v-stepper-step>
             <v-divider></v-divider>
@@ -14,8 +14,8 @@
         </v-stepper-header>
         <v-stepper-items>
             <v-stepper-content step="1">
-                <ModSelector v-model="mods" />
-                <v-btn :disabled="!anyModSelected" @click="gotoStep2()">Continue</v-btn>
+                <PackSelector v-model="pack" />
+                <v-btn :disabled="!pack" @click="gotoStep2()">Continue</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
                 <h2>Scanning</h2>
@@ -37,37 +37,37 @@
 </v-container>
 </template>
 <script>
-import ModSelector from '../components/ModSelector'
+import api from '../api'
+import PackSelector from '../components/PackSelector'
 
 export default {
-    components: {ModSelector},
+    components: {PackSelector},
     data: () => ({
         scanText: "",
         step: 1,
-        mods: [],
+        pack: null,
         results: []
     }),
     computed: {
-        anyModSelected() {
-            return this.mods.find(x => x.selected) != undefined
-        }
+        packSelected() {return this.pack != null || this.pack != undefined}
     },
     methods: {
         reset() {
             if (this.step == 3) this.step = 1
         },
         async gotoStep2() {
-            if (!this.anyModSelected) return
+            if (!this.packSelected) return
             this.step = 2
             let results = []
-            const selm = this.mods.filter(x => x.selected)
-            console.log(selm)
-            for (let i = 0; i < selm.length; i++) {
-                const cm = selm[i]
-                const lf = cm.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
-                this.scanText = lf.downloadUrl
+            const pack = this.pack
+            const lf = pack.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
+            this.scanText = `Getting manifest from ${lf.downloadUrl}...`
+            let man = await api("scanpack/manifest", {method: "POST", body: lf.downloadUrl})
+            for (let cm of man.files) {
                 try {
-                    let d = await fetch("//localhost:3000/api/scanmod", {method: "POST", body: lf.downloadUrl}).then(r => r.json())
+                    let uri = await api("addonuri/" + cm.projectID + "/" + cm.fileID)
+                    this.scanText = `Scanning mod ${uri}...`
+                    let d = await api("scanmod/regs", {method: "POST", body: uri})
                     for (let x of d) {
                         const [path, field, type] = x
                         results.push({mod: cm.name, path, field, type})
