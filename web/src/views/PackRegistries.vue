@@ -70,7 +70,7 @@ export default {
                     let d = await api("scanmod/regs", {method: "POST", body: uri})
                     for (let x of d) {
                         const [path, field, type] = x
-                        results.push({mod: cm.name, path, field, type})
+                        results.push({mod: uri, path, field, type})
                     }
                 } catch (e) {
                     console.log(e)
