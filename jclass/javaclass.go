@@ -9,11 +9,13 @@ import (
 const printErrBytes = false
 
 type (
+	// JavaClassScanner reads Java class file to extract its data (fields, methods, etc.). This is very inefficient.
 	JavaClassScanner struct {
 		r      io.ReadSeeker
 		idx    map[uint16]Ref
 		Fields []FieldInfo
 	}
+	// Ref is a reference of class data (constant string, class ID, methods, etc.)
 	Ref interface {
 		Deref(*JavaClassScanner, int) string
 	}
@@ -33,6 +35,7 @@ type (
 		Desc   string
 		Attrs  map[string]string
 	}
+	bufread [4]byte
 )
 
 var errNotJavaClass = errors.New("Not a Java class")
@@ -44,40 +47,41 @@ func (jc *JavaClassScanner) Reset(rs io.ReadSeeker) {
 	*jc = JavaClassScanner{r: rs, idx: make(map[uint16]Ref)}
 }
 func (jc *JavaClassScanner) Scan() error {
+	var br bufread
 	rs := jc.r
-	if magic, _ := readU32(rs); magic != 0xCAFEBABE {
+	if magic, _ := br.readU32(rs); magic != 0xCAFEBABE {
 		return errNotJavaClass
 	}
 	rs.Seek(8, io.SeekStart)
-	cpc, _ := readU16(rs)
+	cpc, _ := br.readU16(rs)
 	var tbx [1]byte
 	for i := uint16(1); i < cpc; i++ {
 		rs.Read(tbx[:])
 		tb := tbx[0]
 		switch tb {
 		case 1:
-			sl, _ := readU16(rs)
+			sl, _ := br.readU16(rs)
 			bb := make([]byte, sl)
 			io.ReadFull(rs, bb)
 			jc.idx[i] = stringConst(bb)
 		case 7:
-			cl, _ := readU16(rs)
+			cl, _ := br.readU16(rs)
 			jc.idx[i] = classRef(cl)
 		case 8:
-			cl, _ := readU16(rs)
+			cl, _ := br.readU16(rs)
 			jc.idx[i] = stringRef(cl)
 		case 9:
-			rc, _ := readU16(rs)
-			rn, _ := readU16(rs)
+			rc, _ := br.readU16(rs)
+			rn, _ := br.readU16(rs)
 			jc.idx[i] = fieldRef{rc: rc, rn: rn}
 		case 10:
-			rc, _ := readU16(rs)
-			rn, _ := readU16(rs)
+			rc, _ := br.readU16(rs)
+			rn, _ := br.readU16(rs)
 			jc.idx[i] = methodRef{rc: rc, rn: rn}
 		case 15:
 			rs.Seek(3, io.SeekCurrent)
 		case 16:
-			cl, _ := readU16(rs)
+			cl, _ := br.readU16(rs)
 			jc.idx[i] = methodTypeRef(cl)
 		default:
 			if tb == 3 || tb == 4 || (tb >= 10 && tb <= 12) || tb == 17 || tb == 18 {
@@ -96,10 +100,10 @@ func (jc *JavaClassScanner) Scan() error {
 	//fmt.Printf("[%s] SUPER %s\n", name, jc.TryDeref(sci, 1))
 
 	// Interfaces
-	vs, _ := readU16(rs)
+	vs, _ := br.readU16(rs)
 	ni := 0
 	for i := uint16(0); i < vs; i++ {
-		if im, _ := readU16(rs); im == 0 {
+		if im, _ := br.readU16(rs); im == 0 {
 			ni++
 		}
 	}
@@ -108,13 +112,13 @@ func (jc *JavaClassScanner) Scan() error {
 	}
 
 	// Fields
-	vs, _ = readU16(rs)
+	vs, _ = br.readU16(rs)
 	for i := uint16(0); i < vs; i++ {
 		var vh0, vh1, vh2, vh3 uint16
-		vh0, _ = readU16(rs)
-		vh1, _ = readU16(rs)
-		vh2, _ = readU16(rs)
-		vh3, _ = readU16(rs)
+		vh0, _ = br.readU16(rs)
+		vh1, _ = br.readU16(rs)
+		vh2, _ = br.readU16(rs)
+		vh3, _ = br.readU16(rs)
 		as := make(map[string]string, vh3)
 		for j := uint16(0); j < vh3; j++ {
 			s1, s2 := jc.readAttrInfo()
@@ -125,13 +129,14 @@ func (jc *JavaClassScanner) Scan() error {
 	return nil
 }
 func (jc *JavaClassScanner) readAttrInfo() (s1 string, s2 string) {
+	var br bufread
 	rs := jc.r
-	ani, _ := readU16(rs)
+	ani, _ := br.readU16(rs)
 	s1 = jc.DerefString(ani, 1)
-	al, _ := readU32(rs)
+	al, _ := br.readU32(rs)
 	switch s1 {
 	case "Signature":
-		si, _ := readU16(rs)
+		si, _ := br.readU16(rs)
 		s2 = jc.DerefString(si, 1)
 	default:
 		if al > 8 {
@@ -145,15 +150,13 @@ func (jc *JavaClassScanner) readAttrInfo() (s1 string, s2 string) {
 	}
 	return
 }
-func readU16(r io.Reader) (uint16, error) {
-	var b [2]byte
-	if _, e := r.Read(b[:]); e != nil {
+func (b bufread) readU16(r io.Reader) (uint16, error) {
+	if _, e := r.Read(b[:2]); e != nil {
 		return 0, e
 	}
 	return uint16(b[1]) | uint16(b[0])<<8, nil
 }
-func readU32(r io.Reader) (uint32, error) {
-	var b [4]byte
+func (b bufread) readU32(r io.Reader) (uint32, error) {
 	if _, e := r.Read(b[:]); e != nil {
 		return 0, e
 	}
