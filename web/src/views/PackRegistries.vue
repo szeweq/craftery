@@ -18,8 +18,7 @@
                 <v-btn :disabled="!pack" @click="gotoStep2()">Continue</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
-                <h2>Scanning</h2>
-                <p v-text="scanText" />
+                <Scanner ref="sc" />
             </v-stepper-content>
             <v-stepper-content step="3">
                 <v-list>
@@ -38,47 +37,49 @@
 </template>
 <script>
 import api from '../api'
+import Scanner from '../components/Scanner'
 import PackSelector from '../components/PackSelector'
 
 export default {
-    components: {PackSelector},
+    components: {PackSelector, Scanner},
     data: () => ({
-        scanText: "",
         step: 1,
         pack: null,
         results: []
     }),
-    computed: {
-        packSelected() {return this.pack != null || this.pack != undefined}
-    },
     methods: {
         reset() {
             if (this.step == 3) this.step = 1
         },
-        async gotoStep2() {
-            if (!this.packSelected) return
-            this.step = 2
+        async scan($sc) {
             let results = []
-            const pack = this.pack
-            const lf = pack.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
-            this.scanText = `Getting manifest from ${lf.downloadUrl}...`
+            const lf = this.pack.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
+            $sc.text = `Getting manifest from ${lf.downloadUrl}...`
             let man = await api("scanpack/manifest", {method: "POST", body: lf.downloadUrl})
+            $sc.total = man.files.length
             for (let cm of man.files) {
                 try {
                     let uri = await api("addonuri/" + cm.projectID + "/" + cm.fileID)
-                    this.scanText = `Scanning mod ${uri}...`
+                    $sc.text = `Scanning mod ${uri}...`
                     let d = await api("scanmod/regs", {method: "POST", body: uri})
                     for (let x of d) {
                         const [path, field, type] = x
                         results.push({mod: uri, path, field, type})
                     }
+                    $sc.count++
                 } catch (e) {
                     console.log(e)
                     break
                 }
             }
             this.results = results
-            this.step = 3
+        },
+        async gotoStep2() {
+            if (this.pack) {
+                this.step = 2
+                await this.$refs.sc.startScan(this.scan)
+                this.step = 3
+            }
         }
     }
 }

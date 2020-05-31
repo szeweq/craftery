@@ -27,6 +27,7 @@ func main() {
 	corscfg.AllowOrigins = []string{"http://localhost:8080"}
 	r.Use(cors.New(corscfg))
 	//r.Static("/", "/web/dist")
+	r.GET("/ws", rpcconn)
 	r.GET("/api/findmods/:name", func(g *gin.Context) {
 		as, e := curseforge.DefaultAPI.FindAddons(g.Param("name"), 6)
 		if e != nil {
