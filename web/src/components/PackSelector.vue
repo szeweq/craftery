@@ -1,12 +1,12 @@
 <template>
     <div>
         <v-text-field
-            v-model="packSearch"
-            label="Find mods..."
-            :disabled="search"
-            :loading="search"
+            v-model="text"
+            label="Find modpacks..."
+            :disabled="lock"
+            :loading="lock"
             append-icon="mdi-magnify"
-            @click:append="startSearch">
+            @click:append="search">
         </v-text-field>
         <v-list v-if="val.length">
             <v-list-item-group v-model="sel">
@@ -23,35 +23,32 @@
 <script>
 export default {
     name: 'PackSelector',
-    props: {
-        value: Object
-    },
+    props: {value: Object},
     data: () => ({
         val: [],
         sel: -1,
-        packSearch: "",
-        search: false,
+        text: "",
+        lock: false,
     }),
     watch: {
         sel() {
-            const item = this.sel === undefined || this.sel < 0 ? null : this.val[this.sel]
-            this.$emit('input', item)
+            this.$emit('input', this.sel === undefined || this.sel < 0 ? null : this.val[this.sel])
         }
     },
     methods: {
-        async startSearch() {
-            if (this.search) return
-            this.search = true
+        async search() {
+            if (this.lock) return
+            this.lock = true
             this.sel = -1
             this.val = []
             try {
-                let d = await fetch("//localhost:3000/api/findpacks/" + this.packSearch).then(r => r.json())
+                let d = await this.$ws.call("findAddons", {name: this.text, category: 4471})
                 this.val = d
                 this.$emit('input', this.sel !== undefined ? null : this.val[this.sel])
             } catch (e) {
                 console.log(e)
             }
-            this.search = false
+            this.lock = false
         }
     }
 }

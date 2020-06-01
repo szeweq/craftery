@@ -18,31 +18,23 @@
                 <v-btn :disabled="!anyModSelected" @click="gotoStep2()">Continue</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
-                <h2>Scanning</h2>
-                <p v-text="scanText" />
+                <Scanner ref="sc" />
             </v-stepper-content>
             <v-stepper-content step="3">
-                <v-list>
-                    <v-list-item v-for="(r, i) in results" :key="i">
-                        <v-list-item-content>
-                            <v-list-item-title v-text="`${r.field} (with type ${r.type})`" />
-                            <v-list-item-subtitle v-text="`On ${r.path}`" />
-                            <v-list-item-subtitle v-text="`From ${r.mod}`" />
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <FieldList :values="results" />
             </v-stepper-content>
         </v-stepper-items>
     </v-stepper>
 </v-container>
 </template>
 <script>
+import Scanner from '../components/Scanner'
 import ModSelector from '../components/ModSelector'
+import FieldList from '../components/FieldList'
 
 export default {
-    components: {ModSelector},
+    components: {ModSelector, Scanner, FieldList},
     data: () => ({
-        scanText: "",
         step: 1,
         mods: [],
         results: []
@@ -56,29 +48,33 @@ export default {
         reset() {
             if (this.step == 3) this.step = 1
         },
-        async gotoStep2() {
-            if (!this.anyModSelected) return
-            this.step = 2
+        async scan($sc) {
             let results = []
             const selm = this.mods.filter(x => x.selected)
-            console.log(selm)
-            for (let i = 0; i < selm.length; i++) {
-                const cm = selm[i]
+            $sc.total = selm.length
+            for (let cm of selm) {
                 const lf = cm.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
-                this.scanText = lf.downloadUrl
+                $sc.text = lf.downloadUrl
                 try {
-                    let d = await fetch("//localhost:3000/api/scanmod/caps", {method: "POST", body: lf.downloadUrl}).then(r => r.json())
+                    let d = await this.$ws.call("scanFields", {uri: lf.downloadUrl, access: 0x8, substr: "/Capability;"})
                     for (let x of d) {
                         const [path, field, type] = x
                         results.push({mod: cm.name, path, field, type})
                     }
+                    $sc.count++
                 } catch (e) {
                     console.log(e)
                     break
                 }
             }
             this.results = results
-            this.step = 3
+        },
+        async gotoStep2() {
+            if (this.anyModSelected) {
+                this.step = 2
+                await this.$refs.sc.startScan(this.scan)
+                this.step = 3
+            }
         }
     }
 }

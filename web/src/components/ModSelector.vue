@@ -43,7 +43,7 @@ export default {
             this.search = true
             this.mods = []
             try {
-                let d = await fetch("//localhost:3000/api/findmods/" + this.modSearch).then(r => r.json())
+                let d = await this.$ws.call("findAddons", {name: this.modSearch, category: 6})
                 this.val = d
                 this.$emit('input', this.val)
             } catch (e) {

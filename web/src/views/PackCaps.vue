@@ -18,32 +18,23 @@
                 <v-btn :disabled="!pack" @click="gotoStep2()">Continue</v-btn>
             </v-stepper-content>
             <v-stepper-content step="2">
-                <h2>Scanning</h2>
-                <p v-text="scanText" />
+                <Scanner ref="sc" />
             </v-stepper-content>
             <v-stepper-content step="3">
-                <v-list>
-                    <v-list-item v-for="(r, i) in results" :key="i">
-                        <v-list-item-content>
-                            <v-list-item-title v-text="`${r.field} (with type ${r.type})`" />
-                            <v-list-item-subtitle v-text="`On ${r.path}`" />
-                            <v-list-item-subtitle v-text="`From ${r.mod}`" />
-                        </v-list-item-content>
-                    </v-list-item>
-                </v-list>
+                <FieldList :values="results" />
             </v-stepper-content>
         </v-stepper-items>
     </v-stepper>
 </v-container>
 </template>
 <script>
-import api from '../api'
+import Scanner from '../components/Scanner'
 import PackSelector from '../components/PackSelector'
+import FieldList from '../components/FieldList'
 
 export default {
-    components: {PackSelector},
+    components: {PackSelector, Scanner, FieldList},
     data: () => ({
-        scanText: "",
         step: 1,
         pack: null,
         results: []
@@ -55,30 +46,35 @@ export default {
         reset() {
             if (this.step == 3) this.step = 1
         },
-        async gotoStep2() {
-            if (!this.packSelected) return
-            this.step = 2
+        async scan($sc) {
             let results = []
-            const pack = this.pack
-            const lf = pack.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
-            this.scanText = `Getting manifest from ${lf.downloadUrl}...`
-            let man = await api("scanpack/manifest", {method: "POST", body: lf.downloadUrl})
+            const lf = this.pack.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
+            $sc.text = `Getting manifest from ${lf.downloadUrl}...`
+            let man = await this.$ws.call("zipManifest", lf.downloadUrl)
+            $sc.total = man.files.length
             for (let cm of man.files) {
                 try {
-                    let uri = await api("addonuri/" + cm.projectID + "/" + cm.fileID)
-                    this.scanText = `Scanning mod ${uri}...`
-                    let d = await api("scanmod/caps", {method: "POST", body: uri})
+                    let uri = await this.$ws.call("fileURI", {addon: cm.projectID, file: cm.fileID})
+                    $sc.text = `Scanning mod ${uri}...`
+                    let d = await this.$ws.call("scanFields", {uri, access: 0x8, substr: "/Capability;"})
                     for (let x of d) {
                         const [path, field, type] = x
                         results.push({mod: uri, path, field, type})
                     }
+                    $sc.count++
                 } catch (e) {
                     console.log(e)
                     break
                 }
             }
             this.results = results
-            this.step = 3
+        },
+        async gotoStep2() {
+            if (this.pack) {
+                this.step = 2
+                await this.$refs.sc.startScan(this.scan)
+                this.step = 3
+            }
         }
     }
 }
