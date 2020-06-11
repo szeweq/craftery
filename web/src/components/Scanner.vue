@@ -1,7 +1,7 @@
 <template>
     <div>
         <h2>Scanning...</h2>
-        <v-progress-linear :value="100 * count / total" :indeterminate="total == 0" />
+        <v-progress-linear :value="100 * count / total" :indeterminate="total === 0" />
         <small v-if="total > 0">{{count}} of {{total}}</small>
         <p v-text="text" />
     </div>

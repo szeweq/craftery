@@ -38,7 +38,7 @@ type (
 	bufread [4]byte
 )
 
-var errNotJavaClass = errors.New("Not a Java class")
+var errNotJavaClass = errors.New("not a Java class")
 
 func NewJavaClassScanner(rs io.ReadSeeker) *JavaClassScanner {
 	return &JavaClassScanner{r: rs, idx: make(map[uint16]Ref)}
@@ -48,11 +48,14 @@ func (jc *JavaClassScanner) Reset(rs io.ReadSeeker) {
 }
 func (jc *JavaClassScanner) Scan() error {
 	var br bufread
+	var e error
 	rs := jc.r
 	if magic, _ := br.readU32(rs); magic != 0xCAFEBABE {
 		return errNotJavaClass
 	}
-	rs.Seek(8, io.SeekStart)
+	if _, e = rs.Seek(8, io.SeekStart); e != nil {
+		return e
+	}
 	cpc, _ := br.readU16(rs)
 	var tbx [1]byte
 	for i := uint16(1); i < cpc; i++ {

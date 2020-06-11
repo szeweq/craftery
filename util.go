@@ -3,6 +3,7 @@ package main
 import (
 	"archive/zip"
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -28,6 +29,19 @@ func downloadFile(uri string) (rc io.ReadCloser, e error) {
 		e = fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
 	}
 	return nil, e
+}
+func downloadJSON(uri string, a interface{}) error {
+	fmt.Printf("Downloading JSON from %q\n", uri)
+	rc, e := downloadFile(uri)
+	if e != nil {
+		return e
+	}
+	e = json.NewDecoder(rc).Decode(a)
+	_ = rc.Close()
+	if e != nil {
+		return e
+	}
+	return nil
 }
 
 func newZipReader(r io.Reader) (*zip.Reader, error) {
@@ -75,8 +89,8 @@ func scanFileFields(wg *sync.WaitGroup, fc <-chan *zip.File, rc chan<- [3]string
 			continue
 		}
 		b.Reset()
-		b.ReadFrom(fr)
-		fr.Close()
+		_, _ = b.ReadFrom(fr)
+		_ = fr.Close()
 		br.Reset(b.Bytes())
 		jc.Reset(&br)
 		if e = jc.Scan(); e != nil {

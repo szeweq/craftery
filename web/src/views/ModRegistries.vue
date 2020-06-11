@@ -41,12 +41,12 @@ export default {
     }),
     computed: {
         anyModSelected() {
-            return this.mods.find(x => x.selected) != undefined
+            return this.mods.find(x => x.selected) !== undefined
         }
     },
     methods: {
         reset() {
-            if (this.step == 3) this.step = 1
+            if (this.step === 3) this.step = 1
         },
         async scan($sc) {
             let results = []

@@ -39,12 +39,9 @@ export default {
         pack: null,
         results: []
     }),
-    computed: {
-        packSelected() {return this.pack != null || this.pack != undefined}
-    },
     methods: {
         reset() {
-            if (this.step == 3) this.step = 1
+            if (this.step === 3) this.step = 1
         },
         async scan($sc) {
             let results = []

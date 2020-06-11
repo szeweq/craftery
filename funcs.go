@@ -47,7 +47,7 @@ func rpcZipManifest(rw *rpcWriter, param *json.RawMessage) error {
 	if e == nil {
 		zr, e := newZipReader(rc)
 		if e == nil {
-			rc.Close()
+			e = rc.Close()
 			for _, zf := range zr.File {
 				if strings.Index(zf.Name, "manifest.json") >= 0 {
 					xr, e := zf.Open()
@@ -79,7 +79,7 @@ func rpcScanFields(rw *rpcWriter, param *json.RawMessage) error {
 	if e == nil {
 		zr, e := newZipReader(rc)
 		if e == nil {
-			rc.Close()
+			e = rc.Close()
 			aa := scanForFields(zr, d.Access, d.Substr)
 			return rw.Reply(aa)
 		}

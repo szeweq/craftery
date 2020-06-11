@@ -41,7 +41,7 @@ export default {
     }),
     methods: {
         reset() {
-            if (this.step == 3) this.step = 1
+            if (this.step === 3) this.step = 1
         },
         async scan($sc) {
             let results = []

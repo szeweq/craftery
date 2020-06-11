@@ -35,6 +35,7 @@ func initrpc() {
 	addHandler("fileURI", rpcFileURI)
 	addHandler("zipManifest", rpcZipManifest)
 	addHandler("scanFields", rpcScanFields)
+	addHandler("mcVersion", mc.rpcMCVersion)
 }
 
 func rpcconn(w http.ResponseWriter, r *http.Request) {
@@ -56,12 +57,12 @@ func (h *mctHandler) Handle(ctx context.Context, conn *jsonrpc2.Conn, r *jsonrpc
 			je.Code = jsonrpc2.CodeInternalError
 			je.Message = "Internal error"
 			je.SetError(e)
-			conn.ReplyWithError(ctx, r.ID, &je)
+			_ = conn.ReplyWithError(ctx, r.ID, &je)
 		}
 	} else {
 		je := jsonrpc2.Error{Code: jsonrpc2.CodeInvalidRequest, Message: "Invalid request"}
 		je.SetError(r.Method)
-		conn.ReplyWithError(ctx, r.ID, &je)
+		_ = conn.ReplyWithError(ctx, r.ID, &je)
 	}
 }
 

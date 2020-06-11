@@ -22,6 +22,7 @@ func main() {
 		AllowedOrigins: []string{"http://localhost:8080"},
 	})
 	http.HandleFunc("/ws", rpcconn)
+	http.HandleFunc("/mc/", mc.getAsset)
 	if e := http.ListenAndServe(":3000", c.Handler(http.DefaultServeMux)); e != nil {
 		panic(e)
 	}

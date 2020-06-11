@@ -8,8 +8,8 @@
             append-icon="mdi-magnify"
             @click:append="startSearch">
         </v-text-field>
-        <v-list v-if="value.length">
-            <v-list-item v-for="(m, i) in value" :key="i">
+        <v-list v-if="val.length">
+            <v-list-item v-for="(m, i) in val" :key="i">
                 <v-list-item-action>
                     <v-checkbox
                         v-model="m.selected"
@@ -36,7 +36,6 @@ export default {
         modSearch: "",
         search: false,
     }),
-    computed: {},
     methods: {
         async startSearch() {
             if (this.search) return
