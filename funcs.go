@@ -43,23 +43,19 @@ func rpcZipManifest(rw *rpcWriter, param *json.RawMessage) error {
 	if e = json.Unmarshal(*param, &d); e != nil {
 		return e
 	}
-	rc, e := downloadFile(d)
+	zr, e := downloadZip(d)
 	if e == nil {
-		zr, e := newZipReader(rc)
-		if e == nil {
-			e = rc.Close()
-			for _, zf := range zr.File {
-				if strings.Index(zf.Name, "manifest.json") >= 0 {
-					xr, e := zf.Open()
-					if e != nil {
-						return e
-					}
-					var man curseforge.ModpackManifest
-					if e = json.NewDecoder(xr).Decode(&man); e != nil {
-						return e
-					}
-					return rw.Reply(man)
+		for _, zf := range zr.File {
+			if strings.HasSuffix(zf.Name, "manifest.json") {
+				xr, e := zf.Open()
+				if e != nil {
+					return e
 				}
+				var man curseforge.ModpackManifest
+				if e = json.NewDecoder(xr).Decode(&man); e != nil {
+					return e
+				}
+				return rw.Reply(man)
 			}
 		}
 	}
@@ -75,14 +71,10 @@ func rpcScanFields(rw *rpcWriter, param *json.RawMessage) error {
 	if e = json.Unmarshal(*param, &d); e != nil {
 		return e
 	}
-	rc, e := downloadFile(d.URI)
+	zr, e := downloadZip(d.URI)
 	if e == nil {
-		zr, e := newZipReader(rc)
-		if e == nil {
-			e = rc.Close()
-			aa := scanForFields(zr, d.Access, d.Substr)
-			return rw.Reply(aa)
-		}
+		aa := scanForFields(zr, d.Access, d.Substr)
+		return rw.Reply(aa)
 	}
 	return e
 }

@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"time"
@@ -151,11 +152,16 @@ func (m *mcrpc) getAsset(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
-		rc, e := downloadFile(fmt.Sprintf("http://resources.download.minecraft.net/%s/%s", mf.Hash[:2], mf.Hash))
+		rc, n, e := downloadFile(fmt.Sprintf("http://resources.download.minecraft.net/%s/%s", mf.Hash[:2], mf.Hash))
 		if e != nil {
 			panic(e)
 		}
-		bf, e = ioutil.ReadAll(rc)
+		if n > 0 {
+			bf = make([]byte, n)
+			_, e = io.ReadAtLeast(rc, bf, int(n))
+		} else {
+			bf, e = ioutil.ReadAll(rc)
+		}
 		_ = rc.Close()
 		if e != nil {
 			panic(e)

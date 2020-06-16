@@ -36,6 +36,7 @@ func initrpc() {
 	addHandler("zipManifest", rpcZipManifest)
 	addHandler("scanFields", rpcScanFields)
 	addHandler("mcVersion", mc.rpcMCVersion)
+	addHandler("getPackage", mc.rpcGetPackage)
 }
 
 func rpcconn(w http.ResponseWriter, r *http.Request) {

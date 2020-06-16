@@ -15,7 +15,7 @@ import (
 	"github.com/Szewek/mctool/jclass"
 )
 
-func downloadFile(uri string) (rc io.ReadCloser, e error) {
+func downloadFile(uri string) (rc io.ReadCloser, n int64, e error) {
 	if _, e = url.ParseRequestURI(uri); e == nil {
 		var res *http.Response
 		res, e = http.Get(uri)
@@ -23,16 +23,16 @@ func downloadFile(uri string) (rc io.ReadCloser, e error) {
 			return
 		}
 		if res.StatusCode == 200 {
+			n = res.ContentLength
 			rc = res.Body
 			return
 		}
 		e = fmt.Errorf("HTTP Error %d %s", res.StatusCode, res.Status)
 	}
-	return nil, e
+	return nil, 0, e
 }
 func downloadJSON(uri string, a interface{}) error {
-	fmt.Printf("Downloading JSON from %q\n", uri)
-	rc, e := downloadFile(uri)
+	rc, _, e := downloadFile(uri)
 	if e != nil {
 		return e
 	}
@@ -43,13 +43,24 @@ func downloadJSON(uri string, a interface{}) error {
 	}
 	return nil
 }
-
-func newZipReader(r io.Reader) (*zip.Reader, error) {
-	bb, e := ioutil.ReadAll(r)
-	if e != nil {
-		return nil, e
+func downloadZip(uri string) (*zip.Reader, error) {
+	rc, n, e := downloadFile(uri)
+	if e == nil {
+		var bb []byte
+		if n > 0 {
+			bb = make([]byte, n)
+			_, e = io.ReadAtLeast(rc, bb, int(n))
+		} else {
+			bb, e = ioutil.ReadAll(rc)
+		}
+		_ = rc.Close()
+		if e != nil {
+			return nil, e
+		}
+		zr, e := zip.NewReader(bytes.NewReader(bb), int64(len(bb)))
+		return zr, e
 	}
-	return zip.NewReader(bytes.NewReader(bb), int64(len(bb)))
+	return nil, e
 }
 
 func scanForFields(zr *zip.Reader, access uint16, substr string) [][3]string {
