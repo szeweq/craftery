@@ -55,6 +55,8 @@ type (
 	}
 )
 
+const mcAssetURL = "https://resources.download.minecraft.net/%s/%s"
+
 var mc mcrpc
 
 func (m *mcrpc) updateManifest() error {
@@ -80,7 +82,6 @@ func (m *mcrpc) getPackage(v string) (*mcPackage, error) {
 	}
 	var mp *mcPackage
 	var ok bool
-	fmt.Printf("Getting MC Package %q...\n", v)
 	if mp, ok = m.packages[v]; !ok {
 		var vu string
 		for _, mv := range m.manifest.Versions {
@@ -107,7 +108,6 @@ func (m *mcrpc) getAssetMap(v string) (*mcAssetMap, error) {
 	var ma *mcAssetMap
 	var ok bool
 	var vi, vu string
-	fmt.Printf("Getting MC Asset map %q...\n", v)
 	for _, mv := range m.manifest.Versions {
 		if v == mv.ID {
 			mp, e := m.getPackage(v)
@@ -152,7 +152,7 @@ func (m *mcrpc) getAsset(w http.ResponseWriter, r *http.Request) {
 			http.NotFound(w, r)
 			return
 		}
-		rc, n, e := downloadFile(fmt.Sprintf("http://resources.download.minecraft.net/%s/%s", mf.Hash[:2], mf.Hash))
+		rc, n, e := downloadFile(fmt.Sprintf(mcAssetURL, mf.Hash[:2], mf.Hash))
 		if e != nil {
 			panic(e)
 		}
@@ -170,6 +170,27 @@ func (m *mcrpc) getAsset(w http.ResponseWriter, r *http.Request) {
 		ma.files[p] = bf
 	}
 	_, _ = w.Write(bf)
+}
+func (m *mcrpc) redirectAsset(w http.ResponseWriter, r *http.Request) {
+	defer func() {
+		if e := recover(); e != nil {
+			http.Error(w, fmt.Sprintf("[!] Error: %s\n", e), http.StatusInternalServerError)
+		}
+	}()
+	if e := m.updateManifest(); e != nil {
+		panic(e)
+	}
+	ma, e := m.getAssetMap(m.manifest.Latest.Release)
+	if e != nil {
+		panic(e)
+	}
+	p := r.URL.Path[4:]
+	mf, ok := ma.Objects[p]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+	http.Redirect(w, r, fmt.Sprintf(mcAssetURL, mf.Hash[:2], mf.Hash), http.StatusFound)
 }
 
 func (m *mcrpc) rpcMCVersion(rw *rpcWriter, param *json.RawMessage) error {

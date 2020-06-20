@@ -21,11 +21,12 @@ func main() {
 	}()
 	initrpc()
 	c := cors.New(cors.Options{
-		// Allow port 3000 for testing
-		AllowedOrigins: []string{localhostURL, "http://localhost:3000"},
+		// Allow port 8080 for testing
+		AllowedOrigins: []string{localhostURL, "http://localhost:8080"},
 	})
 	http.HandleFunc("/ws", rpcconn)
-	http.HandleFunc("/mc/", mc.getAsset)
+	http.HandleFunc("/mc-get/", mc.getAsset)
+	http.HandleFunc("/mc-redirect/", mc.redirectAsset)
 
 	// TEMPORARY SOLUTION!
 	http.Handle("/", http.FileServer(http.Dir("web/dist")))
