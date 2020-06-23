@@ -47,7 +47,7 @@ export default {
             let results = []
             const lf = this.pack.LatestFiles.reduce((p, c) => new Date(p.FileDate) >= new Date(c.FileDate) ? p : c)
             $sc.text = `Getting manifest from ${lf.downloadUrl}...`
-            let man = await this.$ws.call("zipManifest", lf.downloadUrl)
+            let man = await this.$ws.call("zipManifest", {url: lf.downloadUrl})
             $sc.total = man.files.length
             for (let cm of man.files) {
                 try {

@@ -7,43 +7,41 @@ import (
 	"github.com/Szewek/mctool/curseforge"
 )
 
-func rpcFindAddons(rw *rpcWriter, param *json.RawMessage) error {
-	var d struct {
+type (
+	addonQuery struct {
 		Name     string `json:"name"`
 		Category uint   `json:"category"`
 	}
-	var e error
-	if e = json.Unmarshal(*param, &d); e != nil {
-		return e
+	fileID struct {
+		Addon uint `json:"addon"`
+		File  uint `json:"file"`
 	}
+	urlQuery struct {
+		URL string `json:"url"`
+	}
+	scanFieldsQuery struct {
+		URI    string `json:"uri"`
+		Access uint16 `json:"access"`
+		Substr string `json:"substr"`
+	}
+)
+
+func rpcFindAddons(rw *rpcWriter, d *addonQuery) error {
 	as, e := curseforge.DefaultAPI.FindAddons(d.Name, d.Category)
 	if e != nil {
 		return e
 	}
 	return rw.Reply(as)
 }
-func rpcFileURI(rw *rpcWriter, param *json.RawMessage) error {
-	var d struct {
-		Addon uint `json:"addon"`
-		File  uint `json:"file"`
-	}
-	var e error
-	if e = json.Unmarshal(*param, &d); e != nil {
-		return e
-	}
+func rpcFileURI(rw *rpcWriter, d *fileID) error {
 	s, e := curseforge.DefaultAPI.DownloadURL(d.Addon, d.File)
 	if e != nil {
 		return e
 	}
 	return rw.Reply(s)
 }
-func rpcZipManifest(rw *rpcWriter, param *json.RawMessage) error {
-	var d string
-	var e error
-	if e = json.Unmarshal(*param, &d); e != nil {
-		return e
-	}
-	zr, e := downloadZip(d)
+func rpcZipManifest(rw *rpcWriter, d *urlQuery) error {
+	zr, e := downloadZip(d.URL)
 	if e == nil {
 		for _, zf := range zr.File {
 			if strings.HasSuffix(zf.Name, "manifest.json") {
@@ -61,16 +59,7 @@ func rpcZipManifest(rw *rpcWriter, param *json.RawMessage) error {
 	}
 	return e
 }
-func rpcScanFields(rw *rpcWriter, param *json.RawMessage) error {
-	var d struct {
-		URI    string `json:"uri"`
-		Access uint16 `json:"access"`
-		Substr string `json:"substr"`
-	}
-	var e error
-	if e = json.Unmarshal(*param, &d); e != nil {
-		return e
-	}
+func rpcScanFields(rw *rpcWriter, d *scanFieldsQuery) error {
 	zr, e := downloadZip(d.URI)
 	if e == nil {
 		aa := scanForFields(zr, d.Access, d.Substr)
