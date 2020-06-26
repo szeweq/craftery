@@ -50,22 +50,17 @@ func (h *Handler) Add(name string, f interface{}) {
 }
 
 func (h *Handler) Handle(ctx context.Context, conn *jsonrpc2.Conn, r *jsonrpc2.Request) {
+	rw := Writer{ctx: ctx, id: r.ID, conn: conn}
 	if hi, ok := h.m.Load(r.Method); ok {
-		rw := Writer{ctx: ctx, id: r.ID, conn: conn}
 		if e := hi.(HandleFunc)(&rw, r.Params); e != nil {
 			fmt.Printf("[error] %s: %s", r.Method, e.Error())
-			var je jsonrpc2.Error
-			je.Code = jsonrpc2.CodeInternalError
-			je.Message = "Internal error"
-			je.SetError(e)
-			_ = conn.ReplyWithError(ctx, r.ID, &je)
+			rw.SendError(jsonrpc2.CodeInternalError, "Internal error", e)
 		}
 	} else {
-		je := jsonrpc2.Error{Code: jsonrpc2.CodeInvalidRequest, Message: "Invalid request"}
-		je.SetError(r.Method)
-		_ = conn.ReplyWithError(ctx, r.ID, &je)
+		rw.SendError(jsonrpc2.CodeInvalidRequest, "Invalid request", r.Method)
 	}
 }
+
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	conn, e := h.wsup.Upgrade(w, r, nil)
 	if e != nil {

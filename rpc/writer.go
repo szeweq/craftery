@@ -20,3 +20,8 @@ func (w *Writer) Reply(a interface{}) error {
 func (w *Writer) Notify(method string, a interface{}) error {
 	return w.conn.Notify(w.ctx, method, a)
 }
+func (w *Writer) SendError(code int64, msg string, v interface{}) error {
+	je := &jsonrpc2.Error{Code: code, Message: msg}
+	je.SetError(v)
+	return w.conn.ReplyWithError(w.ctx, w.id, je)
+}
