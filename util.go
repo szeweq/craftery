@@ -46,13 +46,7 @@ func downloadJSON(uri string, a interface{}) error {
 func downloadZip(uri string) (*zip.Reader, error) {
 	rc, n, e := downloadFile(uri)
 	if e == nil {
-		var bb []byte
-		if n > 0 {
-			bb = make([]byte, n)
-			_, e = io.ReadAtLeast(rc, bb, int(n))
-		} else {
-			bb, e = ioutil.ReadAll(rc)
-		}
+		bb, e := readBytes(rc, n)
 		_ = rc.Close()
 		if e != nil {
 			return nil, e
@@ -61,6 +55,18 @@ func downloadZip(uri string) (*zip.Reader, error) {
 		return zr, e
 	}
 	return nil, e
+}
+func readBytes(rc io.Reader, n int64) (bb []byte, e error) {
+	if n > 0 {
+		bb = make([]byte, n)
+		_, e = io.ReadAtLeast(rc, bb, int(n))
+	} else {
+		bb, e = ioutil.ReadAll(rc)
+	}
+	if e != nil {
+		bb = nil
+	}
+	return
 }
 
 func scanForFields(zr *zip.Reader, access uint16, substr string) [][3]string {

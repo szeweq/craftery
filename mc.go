@@ -2,8 +2,6 @@ package main
 
 import (
 	"fmt"
-	"io"
-	"io/ioutil"
 	"net/http"
 	"time"
 
@@ -163,12 +161,7 @@ func (m *mcrpc) getAsset(w http.ResponseWriter, r *http.Request) {
 		if e != nil {
 			panic(e)
 		}
-		if n > 0 {
-			bf = make([]byte, n)
-			_, e = io.ReadAtLeast(rc, bf, int(n))
-		} else {
-			bf, e = ioutil.ReadAll(rc)
-		}
+		bf, e = readBytes(rc, n)
 		_ = rc.Close()
 		if e != nil {
 			panic(e)

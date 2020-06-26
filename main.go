@@ -6,7 +6,6 @@ import (
 	"net/http"
 
 	"github.com/pkg/browser"
-
 	"github.com/rs/cors"
 )
 
