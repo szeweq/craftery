@@ -18,7 +18,7 @@ type (
 		wsup *ws.Upgrader
 		m    sync.Map
 	}
-	HandleFunc func(*Writer, *json.RawMessage) error
+	HandleFunc = func(*Writer, *json.RawMessage) error
 )
 
 var (
@@ -71,20 +71,18 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func addHandlerReflect(fn interface{}) HandleFunc {
 	rt := reflect.TypeOf(fn)
-	if rt.Kind() == reflect.Func && rt.NumIn() == 2 && rt.NumOut() == 1 {
-		if rt.In(0).AssignableTo(writerType) && rt.Out(0).Implements(errType) && rt.In(1).Kind() == reflect.Ptr {
-			dt := rt.In(1).Elem()
-			rv := reflect.ValueOf(fn)
-			return func(rw *Writer, param *json.RawMessage) (e error) {
-				dv := reflect.New(dt)
-				if e = json.Unmarshal(*param, dv.Interface()); e == nil {
-					ev := rv.Call([]reflect.Value{reflect.ValueOf(rw), dv})[0]
-					if !ev.IsNil() {
-						e = ev.Interface().(error)
-					}
+	if rt.Kind() == reflect.Func && rt.NumIn() == 2 && rt.NumOut() == 1 && rt.In(0).AssignableTo(writerType) && rt.Out(0).Implements(errType) && rt.In(1).Kind() == reflect.Ptr {
+		dt := rt.In(1).Elem()
+		rv := reflect.ValueOf(fn)
+		return func(rw *Writer, param *json.RawMessage) (e error) {
+			dv := reflect.New(dt)
+			if e = json.Unmarshal(*param, dv.Interface()); e == nil {
+				ev := rv.Call([]reflect.Value{reflect.ValueOf(rw), dv})[0]
+				if !ev.IsNil() {
+					e = ev.Interface().(error)
 				}
-				return
 			}
+			return
 		}
 	}
 	return nil
