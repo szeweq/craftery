@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/Szewek/mctool/curseforge"
+	"github.com/Szewek/mctool/rpc"
 )
 
 type (
@@ -26,21 +27,21 @@ type (
 	}
 )
 
-func rpcFindAddons(rw *rpcWriter, d *addonQuery) error {
+func rpcFindAddons(rw *rpc.Writer, d *addonQuery) error {
 	as, e := curseforge.DefaultAPI.FindAddons(d.Name, d.Category)
 	if e != nil {
 		return e
 	}
 	return rw.Reply(as)
 }
-func rpcFileURI(rw *rpcWriter, d *fileID) error {
+func rpcFileURI(rw *rpc.Writer, d *fileID) error {
 	s, e := curseforge.DefaultAPI.DownloadURL(d.Addon, d.File)
 	if e != nil {
 		return e
 	}
 	return rw.Reply(s)
 }
-func rpcZipManifest(rw *rpcWriter, d *urlQuery) error {
+func rpcZipManifest(rw *rpc.Writer, d *urlQuery) error {
 	zr, e := downloadZip(d.URL)
 	if e == nil {
 		for _, zf := range zr.File {
@@ -59,7 +60,7 @@ func rpcZipManifest(rw *rpcWriter, d *urlQuery) error {
 	}
 	return e
 }
-func rpcScanFields(rw *rpcWriter, d *scanFieldsQuery) error {
+func rpcScanFields(rw *rpc.Writer, d *scanFieldsQuery) error {
 	zr, e := downloadZip(d.URI)
 	if e == nil {
 		aa := scanForFields(zr, d.Access, d.Substr)

@@ -3,8 +3,9 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/pkg/browser"
 	"net/http"
+
+	"github.com/pkg/browser"
 
 	"github.com/rs/cors"
 )
@@ -19,12 +20,12 @@ func main() {
 	flag.Parse()
 	fmt.Println("Launching MCTool...")
 
-	initrpc()
+	initRPC()
 	c := cors.New(cors.Options{
 		// Allow port 8080 for testing
 		AllowedOrigins: []string{localhostURL, "http://localhost:8080"},
 	})
-	http.HandleFunc("/ws", rpcconn)
+	http.Handle("/ws", rpch)
 	http.HandleFunc("/mc-get/", mc.getAsset)
 	http.HandleFunc("/mc-redirect/", mc.redirectAsset)
 

@@ -1,12 +1,13 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"time"
+
+	"github.com/Szewek/mctool/rpc"
 )
 
 type (
@@ -36,15 +37,15 @@ type (
 			URL string `json:"url"`
 		} `json:"assetIndex"`
 		Downloads struct {
-			Client mcUrl `json:"client"`
-			Server mcUrl `json:"server"`
+			Client mcURL `json:"client"`
+			Server mcURL `json:"server"`
 		} `json:"downloads"`
 	}
 	mcFileCheck struct {
 		Hash string `json:"hash"`
 		Size int    `json:"size"`
 	}
-	mcUrl struct {
+	mcURL struct {
 		SHA1 string `json:"sha1"`
 		Size int    `json:"size"`
 		URL  string `json:"url"`
@@ -52,6 +53,12 @@ type (
 	mcAssetMap struct {
 		Objects map[string]mcFileCheck `json:"objects"`
 		files   map[string][]byte      `json:"-"`
+	}
+	mcTypeQuery struct {
+		Type string
+	}
+	mcPkgQuery struct {
+		Name string
 	}
 )
 
@@ -193,35 +200,27 @@ func (m *mcrpc) redirectAsset(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, fmt.Sprintf(mcAssetURL, mf.Hash[:2], mf.Hash), http.StatusFound)
 }
 
-func (m *mcrpc) rpcMCVersion(rw *rpcWriter, param *json.RawMessage) error {
-	var d string
+func (m *mcrpc) rpcMCVersion(rw *rpc.Writer, d *mcTypeQuery) error {
+	var vd string
 	var e error
-	if e = json.Unmarshal(*param, &d); e != nil {
-		return e
-	}
 	if e = m.updateManifest(); e != nil {
 		return e
 	}
-	if d == "release" {
-		d = m.manifest.Latest.Release
-	} else if d == "snapshot" {
-		d = m.manifest.Latest.Snapshot
+	if d.Type == "release" {
+		vd = m.manifest.Latest.Release
+	} else if d.Type == "snapshot" {
+		vd = m.manifest.Latest.Snapshot
 	}
 	for _, mv := range m.manifest.Versions {
-		if d == mv.ID {
+		if vd == mv.ID {
 			return rw.Reply(mv)
 		}
 	}
 	e = rw.Reply(nil)
 	return e
 }
-func (m *mcrpc) rpcGetPackage(rw *rpcWriter, param *json.RawMessage) error {
-	var d string
-	var e error
-	if e = json.Unmarshal(*param, &d); e != nil {
-		return e
-	}
-	if mp, e := m.getPackage(d); e == nil {
+func (m *mcrpc) rpcGetPackage(rw *rpc.Writer, d *mcPkgQuery) (e error) {
+	if mp, e := m.getPackage(d.Name); e == nil {
 		return rw.Reply(mp)
 	}
 	return e
