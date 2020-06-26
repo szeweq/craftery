@@ -115,7 +115,15 @@ func (jc *JavaClassScanner) Scan() error {
 	}
 
 	// Fields
-	vs, _ = br.readU16(rs)
+	jc.readFields()
+
+	return nil
+}
+
+func (jc *JavaClassScanner) readFields() {
+	var br bufread
+	rs := jc.r
+	vs, _ := br.readU16(rs)
 	for i := uint16(0); i < vs; i++ {
 		var vh0, vh1, vh2, vh3 uint16
 		vh0, _ = br.readU16(rs)
@@ -129,8 +137,8 @@ func (jc *JavaClassScanner) Scan() error {
 		}
 		jc.Fields = append(jc.Fields, FieldInfo{Access: vh0, Name: jc.TryDeref(vh1, 1), Desc: jc.TryDeref(vh2, 1), Attrs: as})
 	}
-	return nil
 }
+
 func (jc *JavaClassScanner) readAttrInfo() (s1 string, s2 string) {
 	var br bufread
 	rs := jc.r
@@ -153,6 +161,7 @@ func (jc *JavaClassScanner) readAttrInfo() (s1 string, s2 string) {
 	}
 	return
 }
+
 func (b bufread) readU16(r io.Reader) (uint16, error) {
 	if _, e := r.Read(b[:2]); e != nil {
 		return 0, e
