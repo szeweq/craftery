@@ -4,11 +4,22 @@ import "time"
 
 type (
 	AddonSearch struct {
-		ID              int    `json:"id"`
-		Name            string `json:"name"`
-		Slug            string `json:"slug"`
-		CategorySection AddonSection
-		LatestFiles     []AddonFile
+		ID                 int               `json:"id"`
+		Name               string            `json:"name"`
+		Summary            string            `json:"summary"`
+		WebsiteURL         string            `json:"websiteUrl"`
+		Slug               string            `json:"slug"`
+		DownloadCount      float64           `json:"downloadCount"`
+		PopularityScore    float64           `json:"popularityScore"`
+		GamePopularityRank int64             `json:"gamePopularityRank"`
+		Attachments        []AddonAttachment `json:"attachments"`
+		CategorySection    AddonSection
+		LatestFiles        []AddonFile
+	}
+	AddonAttachment struct {
+		IsDefault    bool   `json:"isDefault"`
+		ThumbnailURL string `json:"thumbnailUrl"`
+		URL          string `json:"url"`
 	}
 	AddonFile struct {
 		ID          int `json:"id"`

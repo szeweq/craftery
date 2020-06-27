@@ -1,6 +1,7 @@
 <template>
     <div>
         <v-text-field
+            filled
             v-model="text"
             label="Find modpacks..."
             :disabled="lock"
@@ -11,9 +12,12 @@
         <v-list v-if="val.length">
             <v-list-item-group v-model="sel">
                 <v-list-item v-for="(m, i) in val" :key="i">
+                    <v-list-item-avatar tile size="48" class="mr-4">
+                        <v-img :src="m.avatar" />
+                    </v-list-item-avatar>
                     <v-list-item-content>
-                        <v-list-item-title v-text="m.name" />
-                        <v-list-item-subtitle v-text="m.slug" />
+                        <v-list-item-title v-text="`${m.name} [${m.slug}]`" />
+                        <v-list-item-subtitle v-text="m.summary" />
                     </v-list-item-content>
                 </v-list-item>
             </v-list-item-group>
@@ -43,6 +47,7 @@ export default {
             this.val = []
             try {
                 let d = await this.$ws.call("findAddons", {name: this.text, category: 4471})
+                d.forEach(x => x.avatar = x.attachments.filter(at => at.isDefault)[0].thumbnailUrl)
                 this.val = d
                 this.$emit('input', this.sel !== undefined ? null : this.val[this.sel])
             } catch (e) {

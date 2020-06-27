@@ -1,6 +1,7 @@
 <template>
     <div>
         <v-text-field
+            filled
             v-model="modSearch"
             label="Find mods..."
             :disabled="search"
@@ -17,9 +18,12 @@
                         @click.stop="toggleModSelect(i)"
                     ></v-checkbox>
                 </v-list-item-action>
+                <v-list-item-avatar tile size="48" class="mr-4">
+                    <v-img :src="m.avatar" />
+                </v-list-item-avatar>
                 <v-list-item-content>
-                    <v-list-item-title v-text="m.name" />
-                    <v-list-item-subtitle v-text="m.slug" />
+                    <v-list-item-title v-text="`${m.name} [${m.slug}]`" />
+                    <v-list-item-subtitle v-text="m.summary" />
                 </v-list-item-content>
             </v-list-item>
         </v-list>
@@ -40,9 +44,9 @@ export default {
         async startSearch() {
             if (this.search) return
             this.search = true
-            this.mods = []
             try {
                 let d = await this.$ws.call("findAddons", {name: this.modSearch, category: 6})
+                d.forEach(x => x.avatar = x.attachments.filter(at => at.isDefault)[0].thumbnailUrl)
                 this.val = d
                 this.$emit('input', this.val)
             } catch (e) {

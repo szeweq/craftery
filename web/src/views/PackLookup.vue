@@ -1,7 +1,7 @@
 <template>
 <v-container>
     <v-row class="justify-space-between pa-3">
-        <h1>Find modpack registries</h1>
+        <h1>Find modpack capabilities</h1>
         <v-btn :disabled="step < 3" @click="reset()">Start again</v-btn>
     </v-row>
     <v-stepper v-model="step">
@@ -14,6 +14,7 @@
         </v-stepper-header>
         <v-stepper-items>
             <v-stepper-content step="1">
+                <v-select filled v-model="type" :items="selectTypes" label="Select type to find"></v-select>
                 <PackSelector v-model="pack" />
                 <v-btn :disabled="!pack" @click="gotoStep2()">Continue</v-btn>
             </v-stepper-content>
@@ -32,10 +33,15 @@ import Scanner from '../components/Scanner'
 import PackSelector from '../components/PackSelector'
 import FieldList from '../components/FieldList'
 
+const typevals = ["Capabilities", "Registries"].map((v, i) => ({text: v, value: i}))
+const typenames = ["/Capability;", "ForgeRegistry;"]
+
 export default {
     components: {PackSelector, Scanner, FieldList},
     data: () => ({
         step: 1,
+        selectTypes: typevals,
+        type: 0,
         pack: null,
         results: []
     }),
@@ -53,7 +59,7 @@ export default {
                 try {
                     let uri = await this.$ws.call("fileURI", {addon: cm.projectID, file: cm.fileID})
                     $sc.text = `Scanning mod ${uri}...`
-                    let d = await this.$ws.call("scanFields", {uri, access: 0x8, substr: "ForgeRegistry;"})
+                    let d = await this.$ws.call("scanFields", {uri, access: 0x8, substr: typenames[this.type]})
                     for (let x of d) {
                         const [path, field, type] = x
                         results.push({mod: uri, path, field, type})

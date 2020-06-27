@@ -7,34 +7,20 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    name: 'Home',
     component: Home
   },
   {
-    path: '/findmod/caps',
-    name: 'ModCaps',
-    component: () => import(/* webpackChunkName: "findmod" */ '../views/ModCaps.vue')
+    path: '/lookup/mod',
+    component: () => import(/* webpackChunkName: "lookupmod" */ '../views/ModLookup.vue')
   },
   {
-    path: '/findmod/registries',
-    name: 'ModRegistries',
-    component: () => import(/* webpackChunkName: "findmod" */ '../views/ModRegistries.vue')
+    path: '/lookup/pack',
+    component: () => import(/* webpackChunkName: "lookuppack" */ '../views/PackLookup.vue')
   },
   {
-    path: '/findpack/caps',
-    name: 'PackCaps',
-    component: () => import(/* webpackChunkName: "findpack" */ '../views/PackCaps.vue')
-  },
-  {
-    path: '/findpack/registries',
-    name: 'PackRegistries',
-    component: () => import(/* webpackChunkName: "findpack" */ '../views/PackRegistries.vue')
-  },
-  {
-    path: '/recipe/:type',
-    name: 'RecipeType',
-    component: () => import(/* webpackChunkName: "recipe" */ '../views/RecipeType.vue')
-  },
+    path: '/addoninfo',
+    component: () => import(/* webpackChunkName: "addoninfo" */ '../views/AddonInfo.vue')
+  }
 ]
 
 const router = new VueRouter({routes})
