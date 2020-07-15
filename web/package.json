@@ -12,7 +12,7 @@
     "rpc-websockets": "^5.1.2",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4",
-    "vuetify": "^2.3.3"
+    "vuetify": "^2.3.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.4.6",
