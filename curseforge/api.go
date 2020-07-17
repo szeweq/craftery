@@ -16,10 +16,10 @@ type (
 
 var DefaultAPI = API{}
 
-const apiUrl = "https://addons-ecs.forgesvc.net/api/v2/"
+const apiURL = "https://addons-ecs.forgesvc.net/api/v2/"
 
 func (api *API) get(path string, a interface{}) error {
-	r, e := api.c.Get(apiUrl + path)
+	r, e := api.c.Get(apiURL + path)
 	if e != nil {
 		return e
 	}
@@ -38,7 +38,7 @@ func (api *API) FindAddons(query string, typ uint) ([]AddonSearch, error) {
 }
 
 func (api *API) DownloadURL(addon uint, file uint) (string, error) {
-	r, e := api.c.Get(apiUrl + fmt.Sprintf("addon/%d/file/%d/download-url", addon, file))
+	r, e := api.c.Get(fmt.Sprintf("%saddon/%d/file/%d/download-url", apiURL, addon, file))
 	if e == nil {
 		b, e := ioutil.ReadAll(r.Body)
 		if e == nil {
