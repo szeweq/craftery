@@ -33,7 +33,7 @@ func main() {
 		http.Handle("/", http.FileServer(http.Dir("web/dist")))
 
 		go func() {
-			fmt.Println("Opening http://localhost:58091 ...")
+			fmt.Println("Opening ", localhostURL, "...")
 			ie := browser.OpenURL(localhostURL)
 			if ie != nil {
 				panic(ie)
