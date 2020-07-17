@@ -3,6 +3,7 @@ package curseforge
 import "time"
 
 type (
+	// AddonSearch contains details returned from finding addons
 	AddonSearch struct {
 		ID                 int               `json:"id"`
 		Name               string            `json:"name"`
@@ -16,11 +17,15 @@ type (
 		CategorySection    AddonSection
 		LatestFiles        []AddonFile
 	}
+
+	// AddonAttachment contains URLs for image and its thumbnail
 	AddonAttachment struct {
 		IsDefault    bool   `json:"isDefault"`
 		ThumbnailURL string `json:"thumbnailUrl"`
 		URL          string `json:"url"`
 	}
+
+	// AddonFile has information about file stored in Curseforge server
 	AddonFile struct {
 		ID          int `json:"id"`
 		FileName    string
@@ -28,9 +33,13 @@ type (
 		FileLength  int
 		DownloadURL string `json:"downloadUrl"`
 	}
+
+	// AddonSection stores addon's package type
 	AddonSection struct {
 		PackageType int `json:"packageType"`
 	}
+
+	// ModpackManifest contains decoded data from "manifest.json" file in modpack ZIP file
 	ModpackManifest struct {
 		Minecraft struct {
 			Version string `json:"version"`
@@ -39,6 +48,8 @@ type (
 		Version string        `json:"version"`
 		Files   []ModpackFile `json:"files"`
 	}
+
+	// ModpackFile has information needed to download a file from Curseforge
 	ModpackFile struct {
 		ProjectID int  `json:"projectID"`
 		FileID    int  `json:"fileID"`
@@ -48,6 +59,7 @@ type (
 
 var sizeTypes = []string{"B", "kB", "MB", "GB"}
 
+// SizeBytes converts number into a readable form (number and unit are separated)
 func SizeBytes(s int) (float32, string) {
 	var i int
 	f := float32(s)
@@ -56,6 +68,7 @@ func SizeBytes(s int) (float32, string) {
 	return f, sizeTypes[i]
 }
 
+// GetLatest finds latest file from a list
 func GetLatest(aa []AddonFile) (af *AddonFile) {
 	od := time.Unix(0, 0)
 	for _, f := range aa {

@@ -9,11 +9,13 @@ import (
 )
 
 type (
+	// API is a Curseforge API Client
 	API struct {
 		c http.Client
 	}
 )
 
+// DefaultAPI is a default API client
 var DefaultAPI = API{}
 
 const apiURL = "https://addons-ecs.forgesvc.net/api/v2/"
@@ -30,6 +32,7 @@ func (api *API) get(path string, a interface{}) error {
 	return e
 }
 
+// FindAddons constructs a search query to find addons by its type
 func (api *API) FindAddons(query string, typ uint) ([]AddonSearch, error) {
 	x := new([]AddonSearch)
 	s := fmt.Sprintf("addon/search?gameId=432&sectionId=%d&searchFilter=%s", typ, url.QueryEscape(query))
@@ -37,6 +40,7 @@ func (api *API) FindAddons(query string, typ uint) ([]AddonSearch, error) {
 	return *x, e
 }
 
+// DownloadURL returns an URL for a specific addon
 func (api *API) DownloadURL(addon uint, file uint) (string, error) {
 	r, e := api.c.Get(fmt.Sprintf("%saddon/%d/file/%d/download-url", apiURL, addon, file))
 	if e == nil {
