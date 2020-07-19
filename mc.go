@@ -50,7 +50,7 @@ type (
 	}
 	mcAssetMap struct {
 		Objects map[string]mcFileCheck `json:"objects"`
-		files   map[string][]byte      `json:"-"`
+		files   map[string][]byte
 	}
 	mcTypeQuery struct {
 		Type string
