@@ -3,7 +3,12 @@
     <v-app-bar app dense flat dark>
       <v-toolbar-title><router-link to="/">MCTool</router-link></v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-icon v-if="!status" color="red">mdi-alert-circle-outline</v-icon>
+      <v-tooltip v-if="!status" bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-icon color="red" v-bind="attrs" v-on="on">mdi-alert-circle-outline</v-icon>
+        </template>
+        <span>Lost connection with backend</span>
+      </v-tooltip>
       <v-menu bottom left offset-y :close-on-content-click="false">
         <template v-slot:activator="{on, attrs}">
           <v-btn icon v-bind="attrs" v-on="on" :disabled="!notif.length"><v-icon>mdi-bell-outline</v-icon></v-btn>
@@ -24,8 +29,8 @@ export default {
     notif: []
   }),
   mounted() {
-    this.$ws.on("error", x => {
-      this.notif.push(x)
+    this.$ws.on("error", () => {
+      this.notif.push("WebSocket connection error")
     })
     this.$ws.on("close", () => {
       this.status = false
