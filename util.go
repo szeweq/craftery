@@ -3,7 +3,6 @@ package main
 import (
 	"archive/zip"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
@@ -13,6 +12,7 @@ import (
 	"sync"
 
 	"github.com/Szewek/mctool/jclass"
+	json "github.com/json-iterator/go"
 )
 
 func downloadFile(uri string) (rc io.ReadCloser, n int64, e error) {

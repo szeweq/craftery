@@ -1,11 +1,12 @@
 package curseforge
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	json "github.com/json-iterator/go"
 )
 
 type (

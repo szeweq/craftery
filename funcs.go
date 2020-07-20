@@ -1,11 +1,11 @@
 package main
 
 import (
-	"encoding/json"
 	"strings"
 
 	"github.com/Szewek/mctool/curseforge"
 	"github.com/Szewek/mctool/rpc"
+	json "github.com/json-iterator/go"
 )
 
 type (

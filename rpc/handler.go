@@ -9,6 +9,7 @@ import (
 	"sync"
 
 	ws "github.com/gorilla/websocket"
+	jsoniter "github.com/json-iterator/go"
 	"github.com/sourcegraph/jsonrpc2"
 	wsrpc "github.com/sourcegraph/jsonrpc2/websocket"
 )
@@ -76,7 +77,7 @@ func addHandlerReflect(fn interface{}) HandleFunc {
 		rv := reflect.ValueOf(fn)
 		return func(rw *Writer, param *json.RawMessage) (e error) {
 			dv := reflect.New(dt)
-			if e = json.Unmarshal(*param, dv.Interface()); e == nil {
+			if e = jsoniter.Unmarshal(*param, dv.Interface()); e == nil {
 				ev := rv.Call([]reflect.Value{reflect.ValueOf(rw), dv})[0]
 				if !ev.IsNil() {
 					e = ev.Interface().(error)
