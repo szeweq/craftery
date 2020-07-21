@@ -31,7 +31,6 @@
     </v-container>
 </template>
 <script>
-
 const typevals = ["Mods", "Modpacks"].map((v, i) => ({text: v, value: i}))
 const typecats = [6, 4471]
 

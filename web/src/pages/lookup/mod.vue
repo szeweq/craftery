@@ -29,9 +29,9 @@
 </v-container>
 </template>
 <script>
-import Scanner from '../components/Scanner'
-import ModSelector from '../components/ModSelector'
-import FieldList from '../components/FieldList'
+import Scanner from '@/components/Scanner'
+import ModSelector from '@/components/ModSelector'
+import FieldList from '@/components/FieldList'
 
 const typevals = ["Capabilities", "Registries"].map((v, i) => ({text: v, value: i}))
 const typenames = ["/Capability;", "ForgeRegistry;"]
