@@ -23,7 +23,7 @@
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.9",
-    "sass-loader": "^9.0.0",
+    "sass-loader": "^8.0.0",
     "vue-auto-routing": "^0.5.0",
     "vue-cli-plugin-auto-routing": "^0.4.1",
     "vue-cli-plugin-vuetify": "^2.0.6",
