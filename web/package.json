@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.4",
-    "rpc-websockets": "^5.1.2",
+    "rpc-websockets": "^5.2.3",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4",
     "vue-router-layout": "^0.1.2",
