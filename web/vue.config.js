@@ -1,5 +1,10 @@
 module.exports = {
-  "transpileDependencies": [
+  pluginOptions: {
+    autoRouting: {
+      chunkNamePrefix: 'page-'
+    }
+  },
+  transpileDependencies: [
     "vuetify"
   ]
 }

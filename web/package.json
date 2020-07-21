@@ -12,6 +12,7 @@
     "rpc-websockets": "^5.1.2",
     "vue": "^2.6.11",
     "vue-router": "^3.3.4",
+    "vue-router-layout": "^0.1.2",
     "vuetify": "^2.3.3"
   },
   "devDependencies": {
@@ -23,6 +24,8 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.9",
     "sass-loader": "^9.0.0",
+    "vue-auto-routing": "^0.5.0",
+    "vue-cli-plugin-auto-routing": "^0.4.1",
     "vue-cli-plugin-vuetify": "^2.0.6",
     "vue-cli-plugin-vuetify-preset-rally": "^1.0.4",
     "vue-template-compiler": "^2.6.11",
