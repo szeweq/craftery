@@ -19,7 +19,6 @@
 </template>
 <script>
 export default {
-  name: 'Home',
   data: () => ({
     tasks: [
       {name: "Search for elements in a mod", to: "/lookup/mod"},
