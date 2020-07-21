@@ -11,6 +11,6 @@
             v(v) {
                 this.$emit("input", v)
             }
-        },
+        }
     }
 </script>
