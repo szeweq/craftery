@@ -26,7 +26,7 @@
     "sass-loader": "^8.0.0",
     "vue-auto-routing": "^0.5.0",
     "vue-cli-plugin-auto-routing": "^0.4.1",
-    "vue-cli-plugin-vuetify": "^2.0.6",
+    "vue-cli-plugin-vuetify": "^2.0.7",
     "vue-cli-plugin-vuetify-preset-rally": "^1.0.4",
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.6.0"
