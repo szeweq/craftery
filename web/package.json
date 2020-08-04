@@ -22,7 +22,7 @@
     "babel-eslint": "^10.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "sass": "^1.26.9",
+    "sass": "^1.26.10",
     "sass-loader": "^8.0.0",
     "vue-auto-routing": "^0.5.0",
     "vue-cli-plugin-auto-routing": "^0.4.1",
