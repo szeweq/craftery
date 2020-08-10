@@ -7146,10 +7146,10 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-rpc-websockets@^5.2.4:
-  version "5.2.4"
-  resolved "https://registry.yarnpkg.com/rpc-websockets/-/rpc-websockets-5.2.4.tgz#a4fdc82118f240f4dd96550ec607b436cb833e2b"
-  integrity sha512-6jqeJK/18hPTsmeiN+K9O4miZiAmrIncgxfPXHwuGWs9BClA2zC3fOnTThRWo4blkrjH59oKKi0KMxSK+wdtNw==
+rpc-websockets@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.yarnpkg.com/rpc-websockets/-/rpc-websockets-5.3.1.tgz#678ca24315e4fe34a5f42ac7c2744764c056eb08"
+  integrity sha512-rIxEl1BbXRlIA9ON7EmY/2GUM7RLMy8zrUPTiLPFiYnYOz0I3PXfCmDDrge5vt4pW4oIcAXBDvgZuJ1jlY5+VA==
   dependencies:
     "@babel/runtime" "^7.8.7"
     assert-args "^1.2.1"
