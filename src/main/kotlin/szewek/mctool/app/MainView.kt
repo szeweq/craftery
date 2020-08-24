@@ -24,7 +24,6 @@ class MainView: View() {
         tabPane.apply {
             tabClosingPolicy = TabPane.TabClosingPolicy.ALL_TABS
             visibleProperty().cleanBind(hasTabs)
-            tab<ModSearch>()
         }
         root.apply {
             title = "MCTool"
@@ -43,9 +42,15 @@ class MainView: View() {
             }
             center = tabsWithEmptyPage(welcome.root)
         }
+        openTab<ModSearch>()
     }
 
-    fun openTab(ui: UIComponent) = tabPane.tab(ui)
+    fun openTab(ui: UIComponent) = with(tabPane) {
+        val tab = tab(ui)
+        tab.textProperty().cleanBind(ui.titleProperty)
+        selectionModel.select(tabs.lastIndex)
+        tab
+    }
     inline fun <reified T : UIComponent> openTab() = openTab(find<T>())
 
     fun <T: UIComponent> selectOrOpenTab(kc: KClass<T>) =
