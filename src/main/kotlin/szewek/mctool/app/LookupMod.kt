@@ -18,16 +18,14 @@ class LookupMod(private val addon: AddonSearch): View("Mod lookup: ${addon.name}
     override val root = BorderPane()
 
     init {
-        root.apply {
-            top = progressbar(progress) {
-                prefWidthProperty().bind(root.widthProperty())
-            }
-            center = tableview(fieldList) {
-                readonlyColumn("Name", Triple<String, String, String>::first).pctWidth(15)
-                readonlyColumn("From", Triple<String, String, String>::second).pctWidth(30)
-                readonlyColumn("Info", Triple<String, String, String>::third).remainingWidth()
-                smartResize()
-            }
+        root.top = progressbar(progress) {
+            prefWidthProperty().bind(root.widthProperty())
+        }
+        root.center = tableview(fieldList) {
+            readonlyColumn("Name", Triple<String, String, String>::first).pctWidth(15)
+            readonlyColumn("From", Triple<String, String, String>::second).pctWidth(30)
+            readonlyColumn("Info", Triple<String, String, String>::third).remainingWidth()
+            smartResize()
         }
         lookupFields()
     }
