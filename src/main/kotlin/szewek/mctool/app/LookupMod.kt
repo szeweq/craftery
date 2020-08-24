@@ -12,8 +12,8 @@ import szewek.mctool.util.Downloader
 import szewek.mctool.util.Scanner
 import tornadofx.*
 
-class LookupModFields(private val addon: AddonSearch): Fragment(addon.name) {
-    private val fieldList: ObservableList<Scanner.FieldInfo> = FXCollections.observableArrayList()
+class LookupMod(private val addon: AddonSearch): Fragment(addon.name) {
+    private val fieldList: ObservableList<Triple<String, String, String>> = FXCollections.observableArrayList()
     private val progress = SimpleFloatProperty()
     override val root = BorderPane()
 
@@ -21,9 +21,9 @@ class LookupModFields(private val addon: AddonSearch): Fragment(addon.name) {
         root.apply {
             top = progressbar(progress)
             center = tableview(fieldList) {
-                readonlyColumn("Name", Scanner.FieldInfo::name).pctWidth(20)
-                readonlyColumn("Type", Scanner.FieldInfo::type).pctWidth(60)
-                readonlyColumn("From", Scanner.FieldInfo::container).remainingWidth()
+                readonlyColumn("Name", Triple<String, String, String>::first).pctWidth(15)
+                readonlyColumn("From", Triple<String, String, String>::second).pctWidth(30)
+                readonlyColumn("Info", Triple<String, String, String>::third).remainingWidth()
                 smartResize()
             }
         }
@@ -39,14 +39,16 @@ class LookupModFields(private val addon: AddonSearch): Fragment(addon.name) {
                 progress.value = 0.25f
                 val z = Downloader.downloadZip(lf.downloadUrl)
                 progress.value = 0.5f
-                var ze = z.nextEntry
-                while (ze != null) {
-                    if (!ze.isDirectory && ze.name.endsWith(".class")) {
-                        val l = Scanner.scanClass(ze.name, z.readBytes())
-                        fieldList += l
-                    }
-                    ze = z.nextEntry
+                val si = Scanner.scanArchive(z)
+                val cx = si.caps.values.map { c ->
+                    val f = c.fields + c.supclasses.flatMap { si.getAllCapsFromType(it) }
+                    val x = if (f.isNotEmpty()) f.joinToString() else "Inherited from classes: " + c.supclasses.joinToString()
+                    Triple("[CAPABILITIES]", c.name, "Caps: $x")
                 }
+                val x = si.classes.values.flatMap { it.fields.values.map { v ->
+                    Triple(v.name, it.name, "Type: ${v.type}")
+                } }
+                fieldList += cx + x
             }
             progress.value = 1f
         }

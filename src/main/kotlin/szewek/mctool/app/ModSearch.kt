@@ -31,7 +31,7 @@ class ModSearch: Fragment("Search mods") {
             onDoubleClick {
                 val item = selectedItem
                 if (item != null) {
-                    find<MainView>().tabPane.tab(LookupModFields(item)) {
+                    find<MainView>().openTab(LookupMod(item)) {
                         text = "Fields: ${item.name}"
                         select()
                     }
