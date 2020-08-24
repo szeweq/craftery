@@ -53,8 +53,9 @@ class MainView: View() {
     }
     inline fun <reified T : UIComponent> openTab() = openTab(find<T>())
 
-    fun <T: UIComponent> selectOrOpenTab(kc: KClass<T>) =
-            tabPane.tabs.find { it.content.comesFrom(kc) }?.select() ?: openTab(find(kc))
+    fun <T: UIComponent> selectOrOpenTab(kc: KClass<T>) = with(tabPane) {
+        tabs.find { it.content.comesFrom(kc) }.apply { selectionModel.select(this) }
+    } ?: openTab(find(kc))
     inline fun <reified T : UIComponent> selectOrOpenTab() = selectOrOpenTab(T::class)
 
     private inline fun <T: Node> tabsWithEmptyPage(node: T, crossinline op: T.() -> Unit = {}) = stackpane {
