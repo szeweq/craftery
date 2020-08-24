@@ -1,5 +1,6 @@
 package szewek.mctool.app
 
+import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
@@ -10,9 +11,11 @@ import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.CurseforgeAPI
 import tornadofx.*
 
-class ModSearch: Fragment("Search mods") {
+class ModSearch: View("Search mods") {
     private val modlist: ObservableList<AddonSearch> = FXCollections.observableArrayList()
-    private val search = SimpleStringProperty()
+    private val search = SimpleStringProperty("")
+    private val typeId = SimpleIntegerProperty(6)
+    private val types = FXCollections.observableArrayList(6, 4471)
     override val root = BorderPane()
 
     init {
@@ -20,10 +23,19 @@ class ModSearch: Fragment("Search mods") {
             top = hbox {
                 padding = insets(4)
                 textfield(search)
+                combobox(typeId, types) {
+                    cellFormat {
+                        text = when (it) {
+                            6 -> "Mod"
+                            4471 -> "Modpack"
+                            else -> "UNKNOWN"
+                        }
+                    }
+                }
                 button("Search") {
-                    action {
+                    setOnAction {
                         if (!search.isEmpty.value) {
-                            findMods(search.value)
+                            findMods(search.value, typeId.value)
                         }
                     }
                 }
@@ -35,11 +47,8 @@ class ModSearch: Fragment("Search mods") {
                 readonlyColumn("Summary", AddonSearch::summary).remainingWidth()
                 onDoubleClick {
                     val item = selectedItem
-                    if (item != null) {
-                        find<MainView>().openTab(LookupMod(item)).apply {
-                            text = "Mod lookup: ${item.name}"
-                            select()
-                        }
+                    if (item != null && item.categorySection.packageType == 6) {
+                        find<MainView>().openTab(LookupMod(item))
                     }
                 }
                 smartResize()
@@ -47,9 +56,9 @@ class ModSearch: Fragment("Search mods") {
         }
     }
 
-    private fun findMods(query: String) {
-        GlobalScope.launch {
-            val a = CurseforgeAPI.findAddons(query, 6)
+    private fun findMods(query: String, type: Int) {
+        task {
+            val a = CurseforgeAPI.findAddons(query, type)
             modlist.setAll(*a)
         }
     }

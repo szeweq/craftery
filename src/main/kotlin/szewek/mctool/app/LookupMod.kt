@@ -12,7 +12,7 @@ import szewek.mctool.util.Downloader
 import szewek.mctool.util.Scanner
 import tornadofx.*
 
-class LookupMod(private val addon: AddonSearch): Fragment(addon.name) {
+class LookupMod(private val addon: AddonSearch): View("Mod lookup: ${addon.name}") {
     private val fieldList: ObservableList<Triple<String, String, String>> = FXCollections.observableArrayList()
     private val progress = SimpleFloatProperty()
     override val root = BorderPane()

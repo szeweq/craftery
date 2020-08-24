@@ -4,7 +4,7 @@ import tornadofx.*
 
 class MainStylesheet: Stylesheet() {
     init {
-        s(textField, button, tab) {
+        s(textField, button, comboBox, tab) {
             backgroundRadius = multi(box(0.px))
         }
     }
