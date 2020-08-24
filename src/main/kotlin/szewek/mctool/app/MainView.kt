@@ -7,6 +7,7 @@ import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import tornadofx.*
+import kotlin.reflect.KClass
 
 class MainView: View() {
     private val tabPane = TabPane()
@@ -21,18 +22,35 @@ class MainView: View() {
             height = 480.0
         }
         tabPane.apply {
+            tabClosingPolicy = TabPane.TabClosingPolicy.ALL_TABS
             visibleProperty().cleanBind(hasTabs)
             tab<ModSearch>()
         }
         root.apply {
             title = "MCTool"
+            top = menubar {
+                menu("App") {
+                    item("Lookup mods").setOnAction {
+                        selectOrOpenTab<ModSearch>()
+                    }
+                    item("About").setOnAction {
+                        About().dialog()
+                    }
+                    item("Quit").setOnAction {
+                        this@MainView.close()
+                    }
+                }
+            }
             center = tabsWithEmptyPage(welcome.root)
         }
     }
 
-    fun openTab(ui: UIComponent, op: Tab.() -> Unit = {}) = tabPane.tab(ui, op)
+    fun openTab(ui: UIComponent) = tabPane.tab(ui)
+    inline fun <reified T : UIComponent> openTab() = openTab(find<T>())
 
-    inline fun <reified T : UIComponent> openTab(noinline op: Tab.() -> Unit = {}) = openTab(find<T>(), op)
+    fun <T: UIComponent> selectOrOpenTab(kc: KClass<T>) =
+            tabPane.tabs.find { it.content.comesFrom(kc) }?.select() ?: openTab(find(kc))
+    inline fun <reified T : UIComponent> selectOrOpenTab() = selectOrOpenTab(T::class)
 
     private inline fun <T: Node> tabsWithEmptyPage(node: T, crossinline op: T.() -> Unit = {}) = stackpane {
         tabPane.attachTo(this)
