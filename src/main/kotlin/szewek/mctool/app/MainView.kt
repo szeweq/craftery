@@ -3,7 +3,6 @@ package szewek.mctool.app
 import javafx.beans.binding.Bindings
 import javafx.beans.binding.BooleanBinding
 import javafx.scene.Node
-import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import tornadofx.*
