@@ -32,7 +32,7 @@ class ModSearch: Fragment("Search mods") {
                 val item = selectedItem
                 if (item != null) {
                     find<MainView>().openTab(LookupMod(item)) {
-                        text = "Fields: ${item.name}"
+                        text = "Mod lookup: ${item.name}"
                         select()
                     }
                 }
