@@ -19,7 +19,9 @@ class LookupMod(private val addon: AddonSearch): Fragment(addon.name) {
 
     init {
         root.apply {
-            top = progressbar(progress)
+            top = progressbar(progress) {
+                prefWidthProperty().bind(root.widthProperty())
+            }
             center = tableview(fieldList) {
                 readonlyColumn("Name", Triple<String, String, String>::first).pctWidth(15)
                 readonlyColumn("From", Triple<String, String, String>::second).pctWidth(30)
