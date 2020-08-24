@@ -6,7 +6,7 @@ class AddonSearch(
     val summary: String,
     val websiteUrl: String,
     val slug: String,
-    val downloadCount: Double,
+    val downloadCount: Long,
     val popularityScore: Double,
     val gamePopularityRank: Long,
     val attachments: Array<AddonAttachment>,

@@ -3,6 +3,7 @@ package szewek.mctool.app
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
+import javafx.scene.layout.BorderPane
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.mctool.cfapi.AddonSearch
@@ -12,32 +13,37 @@ import tornadofx.*
 class ModSearch: Fragment("Search mods") {
     private val modlist: ObservableList<AddonSearch> = FXCollections.observableArrayList()
     private val search = SimpleStringProperty()
-    override val root = borderpane {
-        top = hbox {
-            padding = insets(4)
-            textfield(search)
-            button("Search") {
-                action {
-                    if (!search.isEmpty.value) {
-                        findMods(search.value)
+    override val root = BorderPane()
+
+    init {
+        root.apply {
+            top = hbox {
+                padding = insets(4)
+                textfield(search)
+                button("Search") {
+                    action {
+                        if (!search.isEmpty.value) {
+                            findMods(search.value)
+                        }
                     }
                 }
             }
-        }
-        center = tableview(modlist) {
-            readonlyColumn("Name", AddonSearch::name).pctWidth(20)
-            readonlyColumn("Slug", AddonSearch::slug).pctWidth(20)
-            readonlyColumn("Summary", AddonSearch::summary).remainingWidth()
-            onDoubleClick {
-                val item = selectedItem
-                if (item != null) {
-                    find<MainView>().openTab(LookupMod(item)) {
-                        text = "Mod lookup: ${item.name}"
-                        select()
+            center = tableview(modlist) {
+                readonlyColumn("Name", AddonSearch::name).pctWidth(20)
+                readonlyColumn("Slug", AddonSearch::slug).pctWidth(20)
+                readonlyColumn("Download count", AddonSearch::downloadCount).pctWidth(15)
+                readonlyColumn("Summary", AddonSearch::summary).remainingWidth()
+                onDoubleClick {
+                    val item = selectedItem
+                    if (item != null) {
+                        find<MainView>().openTab(LookupMod(item)).apply {
+                            text = "Mod lookup: ${item.name}"
+                            select()
+                        }
                     }
                 }
+                smartResize()
             }
-            smartResize()
         }
     }
 
