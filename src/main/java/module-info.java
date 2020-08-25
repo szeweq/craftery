@@ -1,5 +1,6 @@
 module mctool.main {
     requires kotlin.stdlib;
+    requires kotlin.reflect;
     requires tornadofx;
     requires javafx.base;
     requires javafx.controls;
