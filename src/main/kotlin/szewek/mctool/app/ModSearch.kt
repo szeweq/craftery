@@ -52,7 +52,7 @@ class ModSearch: View("Search mods") {
             onDoubleClick {
                 val item = selectedItem
                 if (item != null && item.categorySection.packageType == 6) {
-                    find<MainView>().openTab(LookupMod(item))
+                    find<MainView>().openTab(ModInfo(item))
                 }
             }
             smartResize()
