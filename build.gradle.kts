@@ -36,7 +36,6 @@ repositories {
 }
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.9")
     implementation("com.github.kittinunf.result:result:3.1.0")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")

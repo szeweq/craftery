@@ -3,7 +3,6 @@ module mctool.main {
     requires tornadofx;
     requires javafx.base;
     requires javafx.controls;
-    requires kotlinx.coroutines.core.jvm;
     requires fuel;
     requires java.sql;
     requires fuel.gson;

@@ -4,8 +4,6 @@ import javafx.beans.property.SimpleFloatProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.layout.BorderPane
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.latest
 import szewek.mctool.util.Downloader
@@ -31,14 +29,14 @@ class LookupMod(private val addon: AddonSearch): View("Mod lookup: ${addon.name}
     }
 
     private fun lookupFields() {
-        GlobalScope.launch {
+        val t = task {
             fieldList.clear()
-            progress.value = 0f
+            updateProgress(-1, 0)
             val lf = addon.latestFiles.latest()
             if (lf != null) {
-                progress.value = 0.25f
+                updateProgress(1, 4)
                 val z = Downloader.downloadZip(lf.downloadUrl)
-                progress.value = 0.5f
+                updateProgress(2, 4)
                 val si = Scanner.scanArchive(z)
                 val cx = si.caps.values.map { c ->
                     val f = c.fields + c.supclasses.flatMap { si.getAllCapsFromType(it) }
@@ -50,7 +48,8 @@ class LookupMod(private val addon: AddonSearch): View("Mod lookup: ${addon.name}
                 } }
                 fieldList += cx + x
             }
-            progress.value = 1f
+            updateProgress(4, 4)
         }
+        progress.cleanBind(t.progressProperty())
     }
 }
