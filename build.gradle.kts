@@ -22,7 +22,7 @@ java {
 }
 
 application {
-    applicationDefaultJvmArgs = mutableListOf("--add-opens", "javafx.controls/javafx.scene.control=tornadofx")
+    applicationDefaultJvmArgs = listOf("--add-opens", "javafx.controls/javafx.scene.control=tornadofx")
     mainClassName = "szewek.mctool.Launcher"
     mainModule.set("mctool.main")
 }

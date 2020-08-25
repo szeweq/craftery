@@ -3,7 +3,6 @@ package szewek.mctool.app
 import javafx.geometry.Pos
 import javafx.scene.layout.BorderPane
 import javafx.scene.text.Font
-import tornadofx.Fragment
 import tornadofx.*
 
 class About: Fragment("About") {
