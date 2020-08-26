@@ -23,3 +23,17 @@
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
     -fx-background-color: rgba(58, 102, 184, 0.67), -fx-base;
 }
+.tab-pane:top > .tab-header-area,
+.tab-pane:bottom > .tab-header-area,
+.tab-pane:left > .tab-header-area,
+.tab-pane:right > .tab-header-area { -fx-padding: 0px; }
+/* CUSTOM CLASSES */
+.bolder { -fx-font-weight: BOLD; }
+.page-header {
+    -fx-padding: 4px;
+}
+.page-header .label {
+    -fx-font-size: 16px;
+    -fx-font-weight: BOLD;
+}
+.page-info { -fx-padding: 8px; }
