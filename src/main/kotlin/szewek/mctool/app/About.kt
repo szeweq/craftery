@@ -11,11 +11,11 @@ class About: Fragment("About") {
     init {
         root.top = hbox(alignment = Pos.CENTER) {
             padding = insets(4)
-            text("MCTool") {
+            label("MCTool") {
                 font = Font.font(20.0)
             }
         }
-        root.center = text("About MCTool")
+        root.center = label("About MCTool")
         root.bottom = hbox(alignment = Pos.CENTER) {
             padding = insets(4)
             button("Close").setOnAction { this@About.close() }
