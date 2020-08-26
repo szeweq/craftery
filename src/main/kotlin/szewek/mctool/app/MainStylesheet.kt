@@ -58,7 +58,7 @@ class MainStylesheet: Stylesheet() {
             backgroundColor = multi(base.derive(-0.15))
         }
         s(".tab-pane > .tab-header-area > .headers-region > .tab:selected") {
-            backgroundColor = multi(acc, base)
+            backgroundColor = multi(acc.deriveColor(0.0, 1.0, 0.85, 0.67), base)
         }
         s(".tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator") {
             borderWidth = mbZero
