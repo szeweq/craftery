@@ -35,6 +35,7 @@ class ModInfo(private val addon: AddonSearch): View(addon.name) {
             f("Summary", addon::summary)
             af("Download count", addon::downloadCount)
             row { hyperlink(addon.websiteUrl) {
+                setOnAction { hostServices.showDocument(addon.websiteUrl) }
                 gridpaneConstraints { columnSpan = 2 }
             } }
         }
