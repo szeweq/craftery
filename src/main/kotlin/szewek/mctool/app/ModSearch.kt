@@ -41,7 +41,7 @@ class ModSearch: View("Search mods") {
             }
             progressbar {
                 padding = insets(4)
-                visibleProperty().cleanBind(loading)
+                visibleWhen(loading)
             }
         }
         root.center = tableview(modlist) {
