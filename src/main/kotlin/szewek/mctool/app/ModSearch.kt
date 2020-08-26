@@ -6,6 +6,7 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.geometry.Pos
+import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.CurseforgeAPI
@@ -22,7 +23,13 @@ class ModSearch: View("Search mods") {
     init {
         root.top = hbox(alignment = Pos.CENTER_LEFT) {
             padding = insets(4)
-            textfield(search)
+            textfield(search) {
+                setOnKeyPressed {
+                    if (it.code == KeyCode.ENTER && !search.isEmpty.value) {
+                        findMods()
+                    }
+                }
+            }
             combobox(typeId, types) {
                 cellFormat {
                     text = when (it) {
@@ -36,7 +43,7 @@ class ModSearch: View("Search mods") {
                 disableWhen(search.isEmpty)
                 setOnAction {
                     if (!search.isEmpty.value) {
-                        findMods(search.value, typeId.value)
+                        findMods()
                     }
                 }
             }
@@ -60,10 +67,10 @@ class ModSearch: View("Search mods") {
         }
     }
 
-    private fun findMods(query: String, type: Int) {
+    private fun findMods() {
         loading.set(true)
         task {
-            val a = CurseforgeAPI.findAddons(query, type)
+            val a = CurseforgeAPI.findAddons(search.value, typeId.value)
             modlist.setAll(*a)
         } finally {
             loading.set(false)
