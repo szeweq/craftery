@@ -66,7 +66,6 @@ object Scanner {
         }
         fun getResourceType(typename: String): ResourceType? {
             val tn = getLastSuperClass(typename)
-            println("TN $tn")
             for (rt in ResourceType.values()) {
                 if (tn == rt.typ) {
                     return rt
