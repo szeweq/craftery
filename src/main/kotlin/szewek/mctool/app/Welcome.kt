@@ -12,6 +12,7 @@ class Welcome: Fragment("Welcome") {
         root.apply {
             alignment = Pos.CENTER
             label("What would you like to do?") {
+                padding = insets(8.0)
                 font = Font.font(28.0)
             }
             button("Lookup fields in a mod") {
