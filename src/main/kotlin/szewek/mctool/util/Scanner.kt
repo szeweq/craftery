@@ -54,6 +54,26 @@ object Scanner {
             }
             return true
         }
+        fun getLastSuperClass(typename: String): String {
+            var tn = typename
+            do {
+                val nci = classes[tn] ?: return tn
+                if (nci.ext == "java/lang/Object" && nci.ext == "") {
+                    return tn
+                }
+                tn = nci.ext
+            } while (true)
+        }
+        fun getResourceType(typename: String): ResourceType? {
+            val tn = getLastSuperClass(typename)
+            println("TN $tn")
+            for (rt in ResourceType.values()) {
+                if (tn == rt.typ) {
+                    return rt
+                }
+            }
+            return null
+        }
         fun getAllCapsFromType(typename: String): Set<String> {
             val l = mutableSetOf<String>()
             val c = caps[typename]

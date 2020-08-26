@@ -39,7 +39,8 @@ class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
                 Triple("[CAPABILITIES]", c.name, "Caps: $x")
             }
             val x = si.classes.values.flatMap { it.fields.values.map { v ->
-                Triple(v.name, it.name, "Type: ${v.type}")
+                val rt = si.getResourceType(v.type)
+                Triple(v.name, it.name, "Type: ${v.type}\nResource type: ${rt ?: "NONE"}")
             } }
             fieldList += cx + x
             updateProgress(3, 3)
