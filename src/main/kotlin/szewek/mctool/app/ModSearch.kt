@@ -33,6 +33,7 @@ class ModSearch: View("Search mods") {
                 }
             }
             button("Search") {
+                disableWhen(search.isEmpty)
                 setOnAction {
                     if (!search.isEmpty.value) {
                         findMods(search.value, typeId.value)
