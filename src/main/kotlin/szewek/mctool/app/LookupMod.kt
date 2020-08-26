@@ -4,12 +4,13 @@ import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import szewek.mctool.cfapi.AddonFile
 import szewek.mctool.util.Downloader
+import szewek.mctool.util.ResourceType
 import szewek.mctool.util.Scanner
 import tornadofx.*
 
 class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
     private val capList: ObservableList<Triple<String, String, String>> = FXCollections.observableArrayList()
-    private val fieldList: ObservableList<Triple<String, String, String>> = FXCollections.observableArrayList()
+    private val fieldList: ObservableList<FieldData> = FXCollections.observableArrayList()
     override val root = LoaderPane()
 
     init {
@@ -27,9 +28,10 @@ class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
                 titledpane(fieldList.sizeProperty.asString("Fields (%d)")) {
                     isExpanded = false
                     tableview(fieldList) {
-                        readonlyColumn("Name", Triple<String, String, String>::first).pctWidth(15)
-                        readonlyColumn("From", Triple<String, String, String>::second).pctWidth(30)
-                        readonlyColumn("Info", Triple<String, String, String>::third).remainingWidth()
+                        readonlyColumn("Name", FieldData::name).pctWidth(15)
+                        readonlyColumn("Resource type", FieldData::rtype).pctWidth(10)
+                        readonlyColumn("From", FieldData::from).pctWidth(30)
+                        readonlyColumn("Info", FieldData::info).remainingWidth()
                         smartResize()
                     }
                 }
@@ -50,13 +52,14 @@ class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
             updateProgress(2, 3)
             val cx = si.caps.values.map { c ->
                 val f = c.fields + c.supclasses.flatMap { si.getAllCapsFromType(it) }
-                val x = if (f.isNotEmpty()) f.joinToString() else "Inherited from classes: " + c.supclasses.joinToString()
-                Triple("[CAPABILITIES]", c.name, "Caps: $x")
+                val x = if (f.isNotEmpty()) f.joinToString("\n") else "(None provided)"
+                val y = c.supclasses.let { if (it.isNotEmpty()) it.joinToString("\n") else "(None provided)" }
+                Triple(c.name, x, y)
             }
             val x = si.classes.values.flatMap { it.fields.values.map { v ->
                 val rt = si.getResourceType(v.type)
                 val ift = si.getAllInterfaceTypes(v.type)
-                Triple(v.name, it.name, "Type: ${v.type}\nInterfaces: ${ift.joinToString()}\nResource type: ${rt ?: "NONE"}")
+                FieldData(v.name, rt, it.name, "Type: ${v.type}\nInterfaces: ${ift.joinToString()}")
             } }
             updateProgress(3, 3)
             runLater {
@@ -66,4 +69,6 @@ class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
 
         }
     }
+
+    internal class FieldData(val name: String, val rtype: ResourceType, val from: String, val info: String)
 }
