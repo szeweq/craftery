@@ -1,7 +1,6 @@
 package szewek.mctool.util;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -15,7 +14,8 @@ public enum ResourceType {
 	VILLAGER_PROFESSION(Source.MINECRAFT, "entity/merchant/villager/VillagerProfession"),
 	ITEM_GROUP(Source.MINECRAFT, "item/ItemGroup"),
 	CAPABILITY(Source.FORGE, "common/capabilities/Capability"),
-	REGISTRY(Source.FORGE, "registries/IForgeRegistry");
+	REGISTRY(Source.FORGE, "registries/IForgeRegistry"),
+	UNKNOWN(Source.UNKNOWN, "");
 
 	public final Source source;
 	public final String type;
@@ -37,5 +37,7 @@ public enum ResourceType {
 		}
 	}
 
-	public static final Map<Source, List<ResourceType>> bySource = Arrays.stream(values()).collect(Collectors.groupingBy(x -> x.source));
+	public static final Map<Source, List<ResourceType>> bySource = Arrays.stream(values())
+			.filter(x -> x.source != Source.UNKNOWN)
+			.collect(Collectors.groupingBy(x -> x.source));
 }

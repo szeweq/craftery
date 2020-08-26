@@ -77,7 +77,6 @@ object Scanner {
                 }
                 q += nci.impl
                 while (q.isNotEmpty()) {
-                    println("Q ${q.joinToString()}")
                     val iface = q.removeFirst()
                     if (iface !in l) {
                         l += iface
@@ -88,14 +87,14 @@ object Scanner {
                 tn = nci.ext
             } while (true)
         }
-        fun getResourceType(typename: String): ResourceType? {
+        fun getResourceType(typename: String): ResourceType {
             val tn = getLastSuperClass(typename)
             for ((src, rts) in ResourceType.bySource) {
                 if (tn.startsWith(src.pkg)) {
-                    return rts.find { tn.substring(src.pkg.length) == it.type }
+                    return rts.find { tn.substring(src.pkg.length) == it.type } ?: ResourceType.UNKNOWN
                 }
             }
-            return null
+            return ResourceType.UNKNOWN
         }
         fun getAllCapsFromType(typename: String): Set<String> {
             val l = mutableSetOf<String>()
