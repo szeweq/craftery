@@ -7,7 +7,6 @@ plugins {
     id("org.beryx.jlink") version "2.21.3"
 }
 group = "szewek.mctool"
-version = "1.0-SNAPSHOT"
 
 val ktorVersion = "1.4.0"
 val fuelVersion = "2.2.3"
