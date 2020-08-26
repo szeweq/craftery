@@ -40,7 +40,8 @@ class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
             }
             val x = si.classes.values.flatMap { it.fields.values.map { v ->
                 val rt = si.getResourceType(v.type)
-                Triple(v.name, it.name, "Type: ${v.type}\nResource type: ${rt ?: "NONE"}")
+                val ift = si.getAllInterfaceTypes(v.type)
+                Triple(v.name, it.name, "Type: ${v.type}\nInterfaces: ${ift.joinToString()}\nResource type: ${rt ?: "NONE"}")
             } }
             fieldList += cx + x
             updateProgress(3, 3)

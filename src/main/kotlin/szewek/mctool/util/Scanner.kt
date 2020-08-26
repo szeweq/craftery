@@ -34,9 +34,11 @@ object Scanner {
         fun scanFile(name: String, data: ByteArray) {
             if (name.endsWith(".class")) {
                 val cr = ClassReader(data)
-                val ci = ClassInfo(this, cr.className, cr.superName, cr.interfaces)
-                classes[ci.name] = ci
-                cr.accept(ci, 0)
+                if (!cr.className.endsWith("/package-info")) {
+                    val ci = ClassInfo(this, cr.className, cr.superName, cr.interfaces)
+                    classes[ci.name] = ci
+                    cr.accept(ci, 0)
+                }
             }
         }
 
@@ -60,6 +62,28 @@ object Scanner {
                 val nci = classes[tn] ?: return tn
                 if (nci.ext == "java/lang/Object" && nci.ext == "") {
                     return tn
+                }
+                tn = nci.ext
+            } while (true)
+        }
+        fun getAllInterfaceTypes(typename: String): Set<String> {
+            val l = mutableSetOf<String>()
+            val q = ArrayDeque<String>()
+            var tn = typename
+            do {
+                val nci = classes[tn] ?: return l
+                if (nci.ext == "java/lang/Object" && nci.ext == "") {
+                    return l
+                }
+                q += nci.impl
+                while (q.isNotEmpty()) {
+                    println("Q ${q.joinToString()}")
+                    val iface = q.removeFirst()
+                    if (iface !in l) {
+                        l += iface
+                    }
+                    val ici = classes[iface]
+                    if (ici != null) q += ici.impl
                 }
                 tn = nci.ext
             } while (true)
