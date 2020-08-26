@@ -22,7 +22,10 @@ java {
 }
 
 application {
-    applicationDefaultJvmArgs = listOf("--add-opens", "javafx.controls/javafx.scene.control=tornadofx")
+    applicationDefaultJvmArgs = listOf(
+            "--add-opens", "javafx.controls/javafx.scene.control=tornadofx",
+            "--add-opens", "javafx.graphics/javafx.scene=tornadofx"
+    )
     mainClassName = "szewek.mctool.Launcher"
     mainModule.set("mctool.main")
 }
@@ -53,7 +56,10 @@ jlink {
     launcher {
         name = "mctool"
         jvmArgs.addAll(application.applicationDefaultJvmArgs)
-        jvmArgs.addAll(listOf("--add-opens", "javafx.controls/javafx.scene.control=szewek.mctool.merged.module"))
+        jvmArgs.addAll(listOf(
+                "--add-opens", "javafx.controls/javafx.scene.control=szewek.mctool.merged.module",
+                "--add-opens", "javafx.graphics/javafx.scene=szewek.mctool.merged.module"
+        ))
         noConsole = true
     }
     addExtraDependencies("javafx")
