@@ -7,7 +7,7 @@ import java.util.zip.ZipInputStream
 object Scanner {
     fun scanArchive(input: ZipInputStream): ScanInfo {
         val si = ScanInfo()
-        var ze = input.nextEntry;
+        var ze = input.nextEntry
         val out = ByteArrayOutputStream()
         while (ze != null) {
             if (!ze.isDirectory) {
@@ -66,9 +66,9 @@ object Scanner {
         }
         fun getResourceType(typename: String): ResourceType? {
             val tn = getLastSuperClass(typename)
-            for (rt in ResourceType.values()) {
-                if (tn == rt.typ) {
-                    return rt
+            for ((src, rts) in ResourceType.bySource) {
+                if (tn.startsWith(src.pkg)) {
+                    return rts.find { tn.substring(src.pkg.length) == it.type }
                 }
             }
             return null
