@@ -19,6 +19,8 @@ class LoaderPane: StackPane() {
         progress.prefWidthProperty().bind(box.widthProperty() / 2)
     }
 
+    override fun getUserAgentStylesheet(): String? = css()
+
     fun <T> launchTask(func: FXTask<*>.() -> T) {
         children.add(box)
         val t = task {

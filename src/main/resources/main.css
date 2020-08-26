@@ -23,15 +23,3 @@
 .tab-pane > .tab-header-area > .headers-region > .tab:selected {
     -fx-background-color: rgba(58, 102, 184, 0.67), -fx-base;
 }
-.loading-box {
-    -fx-background-color: rgba(68, 68, 68, 0.5);
-    -fx-alignment: CENTER;
-}
-.loading-box .label {
-    -fx-background-color: -fx-base;
-    -fx-min-width: 100px;
-    -fx-font-size: 16px;
-    -fx-content-display: BOTTOM;
-    -fx-graphic-text-gap: 8px;
-    -fx-padding: 8px;
-}

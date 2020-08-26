@@ -10,8 +10,6 @@ import tornadofx.*
 class MainStylesheet: Stylesheet() {
     companion object {
         val mbZero = multi(box(0.px))
-
-        inline fun <reified T> import(cssFile: String) = importStylesheet(T::class.java.getResource(cssFile).toExternalForm())
     }
 
     init {
