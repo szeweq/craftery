@@ -8,17 +8,32 @@ import szewek.mctool.util.Scanner
 import tornadofx.*
 
 class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
+    private val capList: ObservableList<Triple<String, String, String>> = FXCollections.observableArrayList()
     private val fieldList: ObservableList<Triple<String, String, String>> = FXCollections.observableArrayList()
     override val root = LoaderPane()
 
     init {
         root.apply {
-            tableview(fieldList) {
-                readonlyColumn("Name", Triple<String, String, String>::first).pctWidth(15)
-                readonlyColumn("From", Triple<String, String, String>::second).pctWidth(30)
-                readonlyColumn("Info", Triple<String, String, String>::third).remainingWidth()
-                smartResize()
-            }
+            accordion(
+                titledpane(capList.sizeProperty.asString("Capabilities (%d)")) {
+                    isExpanded = false
+                    tableview(capList) {
+                        readonlyColumn("Class", Triple<String, String, String>::first).pctWidth(20)
+                        readonlyColumn("Capabilities", Triple<String, String, String>::second).pctWidth(30)
+                        readonlyColumn("Inherited from", Triple<String, String, String>::third).remainingWidth()
+                        smartResize()
+                    }
+                },
+                titledpane(fieldList.sizeProperty.asString("Fields (%d)")) {
+                    isExpanded = false
+                    tableview(fieldList) {
+                        readonlyColumn("Name", Triple<String, String, String>::first).pctWidth(15)
+                        readonlyColumn("From", Triple<String, String, String>::second).pctWidth(30)
+                        readonlyColumn("Info", Triple<String, String, String>::third).remainingWidth()
+                        smartResize()
+                    }
+                }
+            )
         }
         lookupFields()
     }
@@ -43,8 +58,12 @@ class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
                 val ift = si.getAllInterfaceTypes(v.type)
                 Triple(v.name, it.name, "Type: ${v.type}\nInterfaces: ${ift.joinToString()}\nResource type: ${rt ?: "NONE"}")
             } }
-            fieldList += cx + x
             updateProgress(3, 3)
+            runLater {
+                capList.setAll(cx)
+                fieldList.setAll(x)
+            }
+
         }
     }
 }
