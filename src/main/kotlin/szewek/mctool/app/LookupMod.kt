@@ -43,10 +43,10 @@ class LookupMod(private val file: AddonFile): View("Lookup: ${file.fileName}") {
     private fun lookupFields() {
         root.launchTask {
             updateMessage("Downloading file...")
-            updateProgress(0, 3)
-            val z = Downloader.downloadZip(file.downloadUrl)
+            updateProgress(0, 1)
+            val z = Downloader.downloadZip(file.downloadUrl, ::updateProgress)
             updateMessage("Scanning classes...")
-            updateProgress(1, 3)
+            updateProgress(0, 1)
             val si = Scanner.scanArchive(z)
             updateMessage("Gathering results...")
             updateProgress(2, 3)
