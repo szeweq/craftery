@@ -52,6 +52,7 @@ tasks.withType<KotlinCompile> {
 }
 
 jlink {
+    options.addAll("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
     launcher {
         name = "mctool"
         jvmArgs.addAll(application.applicationDefaultJvmArgs)
@@ -62,5 +63,5 @@ jlink {
         noConsole = true
     }
     addExtraDependencies("javafx")
-    imageZip.set(project.file("${project.buildDir}/image-zip/mctool-image.zip"))
+    imageZip.set(project.file("${project.buildDir}/image-zip/mctool-img.zip"))
 }
