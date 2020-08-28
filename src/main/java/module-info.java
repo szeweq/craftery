@@ -13,6 +13,7 @@ module mctool.main {
     requires core;
     requires java.json;
     requires org.objectweb.asm.tree;
+    requires kotlin.stdlib.jdk8;
 
     exports szewek.mctool;
     exports szewek.mctool.app;

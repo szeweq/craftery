@@ -6,7 +6,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 import java.io.InputStream
-import java.util.stream.Collectors
+import java.util.stream.Stream
 import java.util.zip.ZipInputStream
 import javax.json.Json
 import javax.json.JsonObject
@@ -18,6 +18,7 @@ object Scanner {
 
     fun scanArchive(input: ZipInputStream): ScanInfo {
         val si = ScanInfo()
+        input.available()
         var ze = input.nextEntry
         while (ze != null) {
             if (!ze.isDirectory) {
@@ -28,10 +29,8 @@ object Scanner {
         return si
     }
 
-    fun fixFieldType(s: String) = s.substring(1, s.lastIndex)
-
     class ScanInfo {
-        val classNodes = mutableMapOf<String, ClassNode>()
+        val map = ClassNodeMap()
         val classes = mutableMapOf<String, ClassInfo>()
         val caps = mutableMapOf<String, CapabilitiesInfo>()
         val res = mutableMapOf<String, JsonInfo>()
@@ -79,67 +78,18 @@ object Scanner {
         }
 
         private fun scanClassFile(name: String, data: InputStream) {
-            val cr = ClassReader(data)
-            if (!cr.className.endsWith("/package-info")) {
-                val cn = ClassNode()
-                cr.accept(cn, 0)
-                val ci = ClassInfo(cn)
-                classes[cn.name] = ci
-                classNodes[cn.name] = cn
-                val cap = ci.gatherCaps()
-                if (cap != null) caps[cn.name] = cap
-            }
+            if (name.endsWith("/package-info.class")) return
+            val cn = ClassNode()
+            ClassReader(data).accept(cn, 0)
+            val ci = ClassInfo(cn)
+            classes[cn.name] = ci
+            map.nodes[cn.name] = cn
+            val cap = ci.gatherCaps()
+            if (cap != null) caps[cn.name] = cap
         }
 
-        fun isCompatible(fn: FieldNode, typename: String): Boolean {
-            val desc = fn.fixedDesc
-            if (desc == typename) {
-                return true
-            }
-            val ci = classes[desc]
-            return if (ci != null) classExtendsFrom(ci, typename) else false
-        }
-        fun classExtendsFrom(ci: ClassInfo, typename: String): Boolean {
-            var cn = ci.node
-            var nci: ClassInfo = ci
-            while(cn.superName != typename) {
-                cn = classNodes[cn.superName] ?: return false
-            }
-            return true
-        }
-        fun getLastSuperClass(typename: String): String {
-            var tn = typename
-            do {
-                val cn = classNodes[tn] ?: return tn
-                if (cn.superName == null || cn.superName == "java/lang/Object") {
-                    return tn
-                }
-                tn = cn.superName
-            } while (true)
-        }
-        fun getAllInterfaceTypes(typename: String): Set<String> {
-            val l = mutableSetOf<String>()
-            val q = ArrayDeque<String>()
-            var tn = typename
-            do {
-                val cn = classNodes[tn] ?: return l
-                if (cn.superName == null || cn.superName == "java/lang/Object") {
-                    return l
-                }
-                q += cn.interfaces
-                while (q.isNotEmpty()) {
-                    val iface = q.removeFirst()
-                    if (iface !in l) {
-                        l += iface
-                    }
-                    val icn = classNodes[iface]
-                    if (icn != null) q += icn.interfaces
-                }
-                tn = cn.superName
-            } while (true)
-        }
         fun getResourceType(typename: String): ResourceType {
-            val tn = getLastSuperClass(typename)
+            val tn = map.getLastSuperClass(typename)
             for ((src, rts) in ResourceType.bySource) {
                 if (tn.startsWith(src.pkg)) {
                     return rts.find { tn.substring(src.pkg.length) == it.type } ?: ResourceType.UNKNOWN
@@ -156,6 +106,20 @@ object Scanner {
             }
             return l.toSet()
         }
+
+        fun streamStaticFields(): Stream<Pair<String, FieldNode>> = map.nodes.values.stream()
+            .flatMap { c -> c.fields.stream().map { c.name to it } }
+            .filter { (_, n) ->
+                if (n.access and Opcodes.ACC_STATIC != 0 && n.desc != null) {
+                    n.desc.let { it.startsWith('L') && !it.startsWith("java/") }
+                } else false
+            }
+
+        fun streamCapabilities() = map.nodes.values.stream()
+            .map { c ->
+                val n = c.methods.find { "getCapability" == it.name && TypeNames.GET_CAPABILITY == it.desc }
+                if (n == null) null else CapabilitiesInfo(c.name, n.instructions)
+            }.filterNotNull()
     }
 
     class JsonInfo(val name: String, val namespace: String, val type: DataResourceType) {
@@ -172,13 +136,6 @@ object Scanner {
     }
 
     class ClassInfo(val node: ClassNode) {
-        val staticFields: Map<String, FieldNode> = node.fields.stream()
-            .filter {
-                if (it.access and Opcodes.ACC_STATIC != 0 && it.desc != null) {
-                    it.desc.let { it.startsWith('L') && !it.startsWith("java/") }
-                } else false
-            }
-            .collect(Collectors.toUnmodifiableMap({ it.name }, { it }))
 
         fun gatherCaps() = node.methodsByName("getCapability").find {
                 "(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/util/Direction;)Lnet/minecraftforge/common/util/LazyOptional;" == it.desc

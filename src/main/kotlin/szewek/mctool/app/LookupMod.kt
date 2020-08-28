@@ -9,8 +9,9 @@ import szewek.mctool.mcdata.Scanner
 import szewek.mctool.mcdata.fixedDesc
 import szewek.mctool.util.ZipLoader
 import tornadofx.*
+import kotlin.streams.toList
 
-class LookupMod(private val name: String, private val zipLoader: ZipLoader): View("Lookup: $name") {
+class LookupMod(name: String, private val zipLoader: ZipLoader): View("Lookup: $name") {
     private val dataList = FXCollections.observableArrayList<ResourceFieldData>()
     private val capList = FXCollections.observableArrayList<Triple<String, String, String>>()
     private val fieldList = FXCollections.observableArrayList<FieldData>()
@@ -58,18 +59,18 @@ class LookupMod(private val name: String, private val zipLoader: ZipLoader): Vie
                 val info = if (it.details.isEmpty()) "(None)" else it.details.entries.joinToString("\n") { (k, v) -> "$k: $v" }
                 ResourceFieldData(it.name, it.type, it.namespace, info)
             }
-            val cx = si.caps.values.map { c ->
+            val cx = si.streamCapabilities().map { c ->
                 val f = c.fields + c.supclasses.flatMap { si.getAllCapsFromType(it) }
                 val x = if (f.isNotEmpty()) f.joinToString("\n") else "(None provided)"
                 val y = c.supclasses.let { if (it.isNotEmpty()) it.joinToString("\n") else "(None provided)" }
                 Triple(c.name, x, y)
-            }
-            val x = si.classes.values.flatMap { it.staticFields.values.map { v ->
+            }.toList()
+            val x = si.streamStaticFields().map { (c, v) ->
                 val desc = v.fixedDesc
                 val rt = si.getResourceType(desc)
-                val ift = si.getAllInterfaceTypes(desc)
-                FieldData(v.name, rt, it.node.name, "Type: $desc\nInterfaces: ${ift.joinToString()}")
-            } }
+                val ift = si.map.getAllInterfaceTypes(desc)
+                FieldData(v.name, rt, c, "Type: $desc\nInterfaces: ${ift.joinToString()}")
+            }.toList()
             updateProgress(3, 3)
             runLater {
                 dataList.setAll(dx)
