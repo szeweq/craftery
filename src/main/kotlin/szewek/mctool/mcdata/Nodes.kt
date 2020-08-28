@@ -8,7 +8,6 @@ import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
-import kotlin.streams.asSequence
 
 fun ClassNode.fieldByName(name: String) = fields.find { name == it.name }
 fun ClassNode.methodsByName(name: String) = methods.filter { name == it.name }

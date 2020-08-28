@@ -6,6 +6,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 import java.io.InputStream
+import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.zip.ZipInputStream
 import javax.json.Json
@@ -32,7 +33,14 @@ object Scanner {
     class ScanInfo {
         val map = ClassNodeMap()
         val classes = mutableMapOf<String, ClassInfo>()
-        val caps = mutableMapOf<String, CapabilitiesInfo>()
+        val caps by lazy {
+            map.nodes.values.stream()
+                    .map { c ->
+                        val n = c.methods.find { "getCapability" == it.name && TypeNames.GET_CAPABILITY == it.desc }
+                        if (n == null) null else CapabilitiesInfo(c.name, n.instructions)
+                    }.filterNotNull().collect(Collectors.toMap({ it.name }, { it }))
+        }
+        //val caps = mutableMapOf<String, CapabilitiesInfo>()
         val res = mutableMapOf<String, JsonInfo>()
         val deps = mutableSetOf<String>()
 
@@ -115,11 +123,7 @@ object Scanner {
                 } else false
             }
 
-        fun streamCapabilities() = map.nodes.values.stream()
-            .map { c ->
-                val n = c.methods.find { "getCapability" == it.name && TypeNames.GET_CAPABILITY == it.desc }
-                if (n == null) null else CapabilitiesInfo(c.name, n.instructions)
-            }.filterNotNull()
+        fun streamCapabilities() = caps.values.stream()
     }
 
     class JsonInfo(val name: String, val namespace: String, val type: DataResourceType) {
