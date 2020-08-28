@@ -6,6 +6,7 @@ import javafx.scene.control.TableView
 import szewek.mctool.mcdata.DataResourceType
 import szewek.mctool.mcdata.ResourceType
 import szewek.mctool.mcdata.Scanner
+import szewek.mctool.util.ZipLoader
 import tornadofx.*
 
 class LookupMod(private val name: String, private val zipLoader: ZipLoader): View("Lookup: $name") {

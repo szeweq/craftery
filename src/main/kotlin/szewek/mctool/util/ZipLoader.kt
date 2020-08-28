@@ -1,6 +1,5 @@
-package szewek.mctool.app
+package szewek.mctool.util
 
-import szewek.mctool.util.Downloader
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File

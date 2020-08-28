@@ -1,8 +1,6 @@
 package szewek.mctool.app
 
-import javafx.beans.property.ReadOnlyListPropertyBase
 import javafx.scene.Node
-import javafx.scene.control.Control
 import javafx.scene.control.Hyperlink
 import javafx.scene.control.Label
 import javafx.scene.layout.BorderPane
@@ -12,8 +10,8 @@ import javafx.scene.layout.Priority
 import szewek.mctool.cfapi.AddonFile
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.latest
+import szewek.mctool.util.ZipLoader
 import tornadofx.*
-import kotlin.reflect.KFunction
 
 class ModInfo(private val addon: AddonSearch): View(addon.name) {
     override val root = BorderPane()

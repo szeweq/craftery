@@ -6,6 +6,7 @@ import javafx.scene.Node
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
+import szewek.mctool.util.ZipLoader
 import tornadofx.*
 import kotlin.reflect.KClass
 
