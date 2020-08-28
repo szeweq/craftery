@@ -5,6 +5,7 @@ import javafx.beans.binding.BooleanBinding
 import javafx.scene.Node
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
+import javafx.stage.FileChooser
 import tornadofx.*
 import kotlin.reflect.KClass
 
@@ -28,8 +29,19 @@ class MainView: View() {
             title = "MCTool"
             top = menubar {
                 menu("App") {
-                    item("Lookup mods").setOnAction {
+                    item("Search mods").setOnAction {
                         selectOrOpenTab<ModSearch>()
+                    }
+                    item("Scan local file...").setOnAction {
+                        val files = chooseFile(
+                            "Choose JAR file",
+                            arrayOf(FileChooser.ExtensionFilter("JAR File", "*.jar")),
+                            owner = this@MainView.currentWindow
+                        )
+                        if (files.isNotEmpty()) {
+                            val f = files[0]
+                            openTab(LookupMod(f.name, ZipLoader.FromFile(f)))
+                        }
                     }
                     item("About").setOnAction {
                         About().dialog()
