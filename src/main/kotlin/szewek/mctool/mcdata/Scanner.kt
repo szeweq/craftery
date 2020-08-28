@@ -32,7 +32,6 @@ object Scanner {
 
     class ScanInfo {
         val map = ClassNodeMap()
-        val classes = mutableMapOf<String, ClassInfo>()
         val caps by lazy {
             map.nodes.values.stream()
                     .map { c ->
@@ -40,7 +39,6 @@ object Scanner {
                         if (n == null) null else CapabilitiesInfo(c.name, n.instructions)
                     }.filterNotNull().collect(Collectors.toMap({ it.name }, { it }))
         }
-        //val caps = mutableMapOf<String, CapabilitiesInfo>()
         val res = mutableMapOf<String, JsonInfo>()
         val deps = mutableSetOf<String>()
 
@@ -89,11 +87,7 @@ object Scanner {
             if (name.endsWith("/package-info.class")) return
             val cn = ClassNode()
             ClassReader(data).accept(cn, 0)
-            val ci = ClassInfo(cn)
-            classes[cn.name] = ci
             map.nodes[cn.name] = cn
-            val cap = ci.gatherCaps()
-            if (cap != null) caps[cn.name] = cap
         }
 
         fun getResourceType(typename: String): ResourceType {
@@ -137,13 +131,6 @@ object Scanner {
                 else -> {}
             }
         }
-    }
-
-    class ClassInfo(val node: ClassNode) {
-
-        fun gatherCaps() = node.methodsByName("getCapability").find {
-                "(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/util/Direction;)Lnet/minecraftforge/common/util/LazyOptional;" == it.desc
-            }?.let { CapabilitiesInfo(node.name, it.instructions) }
     }
 
     class CapabilitiesInfo(val name: String, instructions: InsnList) {
