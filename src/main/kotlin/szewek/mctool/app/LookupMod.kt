@@ -63,7 +63,7 @@ class LookupMod(private val name: String, private val zipLoader: ZipLoader): Vie
                 val y = c.supclasses.let { if (it.isNotEmpty()) it.joinToString("\n") else "(None provided)" }
                 Triple(c.name, x, y)
             }
-            val x = si.classes.values.flatMap { it.fields.values.map { v ->
+            val x = si.classes.values.flatMap { it.staticFields.values.map { v ->
                 val rt = si.getResourceType(v.type)
                 val ift = si.getAllInterfaceTypes(v.type)
                 FieldData(v.name, rt, it.name, "Type: ${v.type}\nInterfaces: ${ift.joinToString()}")

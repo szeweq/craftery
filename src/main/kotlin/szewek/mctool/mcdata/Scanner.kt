@@ -9,6 +9,7 @@ import java.util.zip.ZipInputStream
 import javax.json.Json
 import javax.json.JsonObject
 import javax.json.JsonReaderFactory
+import kotlin.collections.ArrayDeque
 
 object Scanner {
     val TOML = TomlParser()
@@ -163,7 +164,8 @@ object Scanner {
     }
 
     class ClassInfo(private val scan: ScanInfo, val name: String, val ext: String, val impl: Array<String>): ClassVisitor(Opcodes.ASM8) {
-        val fields = mutableMapOf<String, FieldInfo>()
+        val staticFields = mutableMapOf<String, FieldInfo>()
+        val details = mutableMapOf<String, String>()
 
         override fun visitField(
             access: Int, name: String?, descriptor: String?, signature: String?, value: Any?
@@ -171,10 +173,12 @@ object Scanner {
             if (access and Opcodes.ACC_STATIC != 0 && descriptor?.startsWith('L') == true) {
                 val typename = fixFieldType(descriptor)
                 if (!typename.startsWith("java/")) {
-                    val n = name ?: "<UNKNOWN ${fields.size}>"
+                    val n = name ?: "<UNKNOWN ${staticFields.size}>"
                     val f = FieldInfo(n, typename, signature)
-                    fields[n] = f
+                    staticFields[n] = f
                 }
+            } else if (TypeNames.LAZY_OPTIONAL == descriptor) {
+                details["hasLazyOptional"] = "yes"
             }
             return null
         }
@@ -204,9 +208,11 @@ object Scanner {
         }
 
         override fun visitFieldInsn(op: Int, owner: String?, name: String?, descriptor: String?) {
-            if ("Lnet/minecraftforge/common/capabilities/Capability;" == descriptor) {
+            if (TypeNames.CAPABILITY == descriptor) {
                 fields.add("${owner ?: "UNKNOWN"}::${name ?: "UNKNOWN"}")
             }
         }
     }
+
+    class InvalidateLazyOptionalsLint
 }
