@@ -2,14 +2,15 @@ package szewek.mctool.mcdata
 
 import com.electronwill.nightconfig.core.Config
 import com.electronwill.nightconfig.toml.TomlParser
-import org.objectweb.asm.*
-import szewek.mctool.util.FieldInfo
+import org.objectweb.asm.ClassReader
+import org.objectweb.asm.Opcodes
+import org.objectweb.asm.tree.*
 import java.io.InputStream
+import java.util.stream.Collectors
 import java.util.zip.ZipInputStream
 import javax.json.Json
 import javax.json.JsonObject
 import javax.json.JsonReaderFactory
-import kotlin.collections.ArrayDeque
 
 object Scanner {
     val TOML = TomlParser()
@@ -30,6 +31,7 @@ object Scanner {
     fun fixFieldType(s: String) = s.substring(1, s.lastIndex)
 
     class ScanInfo {
+        val classNodes = mutableMapOf<String, ClassNode>()
         val classes = mutableMapOf<String, ClassInfo>()
         val caps = mutableMapOf<String, CapabilitiesInfo>()
         val res = mutableMapOf<String, JsonInfo>()
@@ -79,34 +81,40 @@ object Scanner {
         private fun scanClassFile(name: String, data: InputStream) {
             val cr = ClassReader(data)
             if (!cr.className.endsWith("/package-info")) {
-                val ci = ClassInfo(this, cr.className, cr.superName, cr.interfaces)
-                classes[ci.name] = ci
-                cr.accept(ci, 0)
+                val cn = ClassNode()
+                cr.accept(cn, 0)
+                val ci = ClassInfo(cn)
+                classes[cn.name] = ci
+                classNodes[cn.name] = cn
+                val cap = ci.gatherCaps()
+                if (cap != null) caps[cn.name] = cap
             }
         }
 
-        fun isCompatible(fi: FieldInfo, typename: String): Boolean {
-            if (fi.type == typename) {
+        fun isCompatible(fn: FieldNode, typename: String): Boolean {
+            val desc = fn.fixedDesc
+            if (desc == typename) {
                 return true
             }
-            val ci = classes[fixFieldType(fi.type)]
+            val ci = classes[desc]
             return if (ci != null) classExtendsFrom(ci, typename) else false
         }
         fun classExtendsFrom(ci: ClassInfo, typename: String): Boolean {
+            var cn = ci.node
             var nci: ClassInfo = ci
-            while(nci.ext != typename) {
-                nci = classes[ci.ext] ?: return false
+            while(cn.superName != typename) {
+                cn = classNodes[cn.superName] ?: return false
             }
             return true
         }
         fun getLastSuperClass(typename: String): String {
             var tn = typename
             do {
-                val nci = classes[tn] ?: return tn
-                if (nci.ext == "java/lang/Object" && nci.ext == "") {
+                val cn = classNodes[tn] ?: return tn
+                if (cn.superName == null || cn.superName == "java/lang/Object") {
                     return tn
                 }
-                tn = nci.ext
+                tn = cn.superName
             } while (true)
         }
         fun getAllInterfaceTypes(typename: String): Set<String> {
@@ -114,20 +122,20 @@ object Scanner {
             val q = ArrayDeque<String>()
             var tn = typename
             do {
-                val nci = classes[tn] ?: return l
-                if (nci.ext == "java/lang/Object" && nci.ext == "") {
+                val cn = classNodes[tn] ?: return l
+                if (cn.superName == null || cn.superName == "java/lang/Object") {
                     return l
                 }
-                q += nci.impl
+                q += cn.interfaces
                 while (q.isNotEmpty()) {
                     val iface = q.removeFirst()
                     if (iface !in l) {
                         l += iface
                     }
-                    val ici = classes[iface]
-                    if (ici != null) q += ici.impl
+                    val icn = classNodes[iface]
+                    if (icn != null) q += icn.interfaces
                 }
-                tn = nci.ext
+                tn = cn.superName
             } while (true)
         }
         fun getResourceType(typename: String): ResourceType {
@@ -163,56 +171,29 @@ object Scanner {
         }
     }
 
-    class ClassInfo(private val scan: ScanInfo, val name: String, val ext: String, val impl: Array<String>): ClassVisitor(Opcodes.ASM8) {
-        val staticFields = mutableMapOf<String, FieldInfo>()
-        val details = mutableMapOf<String, String>()
-
-        override fun visitField(
-            access: Int, name: String?, descriptor: String?, signature: String?, value: Any?
-        ): FieldVisitor? {
-            if (access and Opcodes.ACC_STATIC != 0 && descriptor?.startsWith('L') == true) {
-                val typename = fixFieldType(descriptor)
-                if (!typename.startsWith("java/")) {
-                    val n = name ?: "<UNKNOWN ${staticFields.size}>"
-                    val f = FieldInfo(n, typename, signature)
-                    staticFields[n] = f
-                }
-            } else if (TypeNames.LAZY_OPTIONAL == descriptor) {
-                details["hasLazyOptional"] = "yes"
+    class ClassInfo(val node: ClassNode) {
+        val staticFields: Map<String, FieldNode> = node.fields.stream()
+            .filter {
+                if (it.access and Opcodes.ACC_STATIC != 0 && it.desc != null) {
+                    it.desc.let { it.startsWith('L') && !it.startsWith("java/") }
+                } else false
             }
-            return null
-        }
+            .collect(Collectors.toUnmodifiableMap({ it.name }, { it }))
 
-        override fun visitMethod(
-            access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?
-        ): MethodVisitor? {
-            if ("getCapability" == name && "(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/util/Direction;)Lnet/minecraftforge/common/util/LazyOptional;" == descriptor) {
-                val cap = CapabilitiesInfo(this.name)
-                scan.caps[this.name] = cap
-                return cap
-            }
-            return null
-        }
+        fun gatherCaps() = node.methodsByName("getCapability").find {
+                "(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/util/Direction;)Lnet/minecraftforge/common/util/LazyOptional;" == it.desc
+            }?.let { CapabilitiesInfo(node.name, it) }
     }
 
-    class CapabilitiesInfo(val name: String): MethodVisitor(Opcodes.ASM8) {
-        var supclasses = mutableSetOf<String>()
-        var fields = mutableSetOf<String>()
-
-        override fun visitMethodInsn(
-            op: Int, owner: String?, name: String?, descriptor: String?, isInterface: Boolean
-        ) {
-            if ("getCapability" == name && this.name != owner) {
-                supclasses.add(owner ?: "UNKNOWN")
-            }
-        }
-
-        override fun visitFieldInsn(op: Int, owner: String?, name: String?, descriptor: String?) {
-            if (TypeNames.CAPABILITY == descriptor) {
-                fields.add("${owner ?: "UNKNOWN"}::${name ?: "UNKNOWN"}")
-            }
-        }
+    class CapabilitiesInfo(val name: String, methodNode: MethodNode) {
+        var supclasses: Set<String> = methodNode.instructions.stream()
+            .filterIsInstance<MethodInsnNode>()
+            .filter { "getCapability" == it.name && name != it.owner }
+            .map { it.owner ?: "UNKNOWN" }
+            .toSet()
+        var fields = methodNode.instructions.stream()
+            .filterIsInstance<FieldInsnNode>().filter { TypeNames.CAPABILITY == it.desc }
+            .map { "${it.owner ?: "UNKNOWN"}::${it.name ?: "UNKNOWN"}" }
+            .toSet()
     }
-
-    class InvalidateLazyOptionalsLint
 }

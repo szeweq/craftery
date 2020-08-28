@@ -12,6 +12,7 @@ module mctool.main {
     requires toml;
     requires core;
     requires java.json;
+    requires org.objectweb.asm.tree;
 
     exports szewek.mctool;
     exports szewek.mctool.app;

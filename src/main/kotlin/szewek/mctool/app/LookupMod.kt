@@ -6,6 +6,7 @@ import javafx.scene.control.TableView
 import szewek.mctool.mcdata.DataResourceType
 import szewek.mctool.mcdata.ResourceType
 import szewek.mctool.mcdata.Scanner
+import szewek.mctool.mcdata.fixedDesc
 import szewek.mctool.util.ZipLoader
 import tornadofx.*
 
@@ -64,9 +65,10 @@ class LookupMod(private val name: String, private val zipLoader: ZipLoader): Vie
                 Triple(c.name, x, y)
             }
             val x = si.classes.values.flatMap { it.staticFields.values.map { v ->
-                val rt = si.getResourceType(v.type)
-                val ift = si.getAllInterfaceTypes(v.type)
-                FieldData(v.name, rt, it.name, "Type: ${v.type}\nInterfaces: ${ift.joinToString()}")
+                val desc = v.fixedDesc
+                val rt = si.getResourceType(desc)
+                val ift = si.getAllInterfaceTypes(desc)
+                FieldData(v.name, rt, it.node.name, "Type: $desc\nInterfaces: ${ift.joinToString()}")
             } }
             updateProgress(3, 3)
             runLater {

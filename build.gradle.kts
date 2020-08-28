@@ -10,6 +10,7 @@ group = "szewek.mctool"
 
 val ktorVersion = "1.4.0"
 val fuelVersion = "2.2.3"
+val asmVersion = "9.0-beta"
 
 val compileKotlin: KotlinCompile by tasks
 val compileJava: JavaCompile by tasks
@@ -42,7 +43,9 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
     implementation("com.electronwill.night-config:toml:3.6.3")
-    implementation("org.ow2.asm:asm:9.0-beta")
+    implementation("org.ow2.asm:asm:$asmVersion")
+    implementation("org.ow2.asm:asm-tree:$asmVersion")
+    implementation("org.ow2.asm:asm-analysis:$asmVersion")
     implementation("no.tornado:tornadofx:1.7.20") {
         exclude("org.jetbrains.kotlin")
     }
