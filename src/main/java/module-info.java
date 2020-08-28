@@ -9,6 +9,9 @@ module mctool.main {
     requires fuel.gson;
     requires result;
     requires org.objectweb.asm;
+    requires toml;
+    requires core;
+    requires java.json;
 
     exports szewek.mctool;
     exports szewek.mctool.app;
