@@ -1,19 +1,25 @@
-package szewek.mctool.util
+package szewek.mctool.mcdata
 
+import com.electronwill.nightconfig.core.Config
+import com.electronwill.nightconfig.toml.TomlParser
 import org.objectweb.asm.*
-import java.io.ByteArrayOutputStream
+import szewek.mctool.util.FieldInfo
+import java.io.InputStream
 import java.util.zip.ZipInputStream
+import javax.json.Json
+import javax.json.JsonObject
+import javax.json.JsonReaderFactory
 
 object Scanner {
+    val TOML = TomlParser()
+    val JSON: JsonReaderFactory = Json.createReaderFactory(null)
+
     fun scanArchive(input: ZipInputStream): ScanInfo {
         val si = ScanInfo()
         var ze = input.nextEntry
-        val out = ByteArrayOutputStream()
         while (ze != null) {
             if (!ze.isDirectory) {
-                out.reset()
-                input.copyTo(out)
-                si.scanFile(ze.name, out.toByteArray())
+                si.scanFile(ze.name, input)
             }
             ze = input.nextEntry
         }
@@ -22,23 +28,59 @@ object Scanner {
 
     fun fixFieldType(s: String) = s.substring(1, s.lastIndex)
 
-    fun fixType(s: String) = s.substring(1, s.lastIndex)
-        .replace('/', '.')
-        .replace("<L", "<")
-        .replace(";L", ", ").replace(";>", ">")
-
     class ScanInfo {
         val classes = mutableMapOf<String, ClassInfo>()
         val caps = mutableMapOf<String, CapabilitiesInfo>()
+        val res = mutableMapOf<String, JsonInfo>()
+        val deps = mutableSetOf<String>()
 
-        fun scanFile(name: String, data: ByteArray) {
-            if (name.endsWith(".class")) {
-                val cr = ClassReader(data)
-                if (!cr.className.endsWith("/package-info")) {
-                    val ci = ClassInfo(this, cr.className, cr.superName, cr.interfaces)
-                    classes[ci.name] = ci
-                    cr.accept(ci, 0)
+        fun scanFile(name: String, data: InputStream) {
+            when {
+                name == "META-INF/mods.toml" -> {
+                    // Assuming this is a Forge mod
+                    val cfg = TOML.parse(data)
+                    val mods = cfg.getList<Config?>("mods")
+                    for (m in mods) {
+                        if (m == null) continue
+                        val modId = m.get<String>("modId") ?: continue
+                        val modDeps = m.getList<Config?>(listOf("dependencies", modId))
+                        for (md in modDeps) {
+                            if (md == null) continue
+                            val s = md.get<String>("modId") ?: continue
+                            if (s != "forge" && s != "minecraft") deps += s
+                        }
+                    }
                 }
+                name.endsWith(".json") -> {
+                    scanJsonFile(name, data)
+                }
+                name.endsWith(".class") -> {
+                    scanClassFile(name, data)
+                }
+            }
+        }
+
+        private fun scanJsonFile(name: String, data: InputStream) {
+            val path = name.split("/", limit = 3)
+            if (path.size < 3) {
+                return
+            }
+            val (kind, namespace, rest) = path
+            val jr = JSON.createReader(data)
+            runCatching { jr.readObject() }.onSuccess {
+                val drt = DataResourceType.detect(kind, rest)
+                val ji = JsonInfo(rest, namespace, drt)
+                ji.gatherDetails(it)
+                res[name] = ji
+            }
+        }
+
+        private fun scanClassFile(name: String, data: InputStream) {
+            val cr = ClassReader(data)
+            if (!cr.className.endsWith("/package-info")) {
+                val ci = ClassInfo(this, cr.className, cr.superName, cr.interfaces)
+                classes[ci.name] = ci
+                cr.accept(ci, 0)
             }
         }
 
@@ -104,6 +146,19 @@ object Scanner {
                 c.supclasses.mapNotNull { caps[it] }.forEach { l += it.fields }
             }
             return l.toSet()
+        }
+    }
+
+    class JsonInfo(val name: String, val namespace: String, val type: DataResourceType) {
+        val details = mutableMapOf<String, String>()
+
+        fun gatherDetails(obj: JsonObject) {
+            when (type) {
+                DataResourceType.RECIPE -> {
+                    obj.getString("type", null)?.apply { details["Type"] = this }
+                }
+                else -> {}
+            }
         }
     }
 

@@ -26,7 +26,7 @@ class ModInfo(private val addon: AddonSearch): View(addon.name) {
                 setOnAction {
                     val lf = addon.latestFiles.latest()
                     if (lf != null) {
-                        find<MainView>().openTab(LookupMod(lf))
+                        find<MainView>().openTab(LookupMod(lf.fileName, ZipLoader.FromURL(lf.downloadUrl)))
                     } else {
                         text = "No files found"
                         isDisable = true
