@@ -41,6 +41,7 @@ dependencies {
     implementation("com.github.kittinunf.result:result:3.1.0")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
+    implementation("com.electronwill.night-config:toml:3.6.3")
     implementation("org.ow2.asm:asm:9.0-beta")
     implementation("no.tornado:tornadofx:1.7.20") {
         exclude("org.jetbrains.kotlin")
