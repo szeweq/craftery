@@ -182,16 +182,16 @@ object Scanner {
 
         fun gatherCaps() = node.methodsByName("getCapability").find {
                 "(Lnet/minecraftforge/common/capabilities/Capability;Lnet/minecraft/util/Direction;)Lnet/minecraftforge/common/util/LazyOptional;" == it.desc
-            }?.let { CapabilitiesInfo(node.name, it) }
+            }?.let { CapabilitiesInfo(node.name, it.instructions) }
     }
 
-    class CapabilitiesInfo(val name: String, methodNode: MethodNode) {
-        var supclasses: Set<String> = methodNode.instructions.stream()
+    class CapabilitiesInfo(val name: String, instructions: InsnList) {
+        var supclasses: Set<String> = instructions.stream()
             .filterIsInstance<MethodInsnNode>()
             .filter { "getCapability" == it.name && name != it.owner }
             .map { it.owner ?: "UNKNOWN" }
             .toSet()
-        var fields = methodNode.instructions.stream()
+        var fields = instructions.stream()
             .filterIsInstance<FieldInsnNode>().filter { TypeNames.CAPABILITY == it.desc }
             .map { "${it.owner ?: "UNKNOWN"}::${it.name ?: "UNKNOWN"}" }
             .toSet()
