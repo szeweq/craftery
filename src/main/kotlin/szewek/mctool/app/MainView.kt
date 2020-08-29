@@ -5,10 +5,10 @@ import javafx.beans.binding.BooleanBinding
 import javafx.scene.Node
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.StackPane
-import javafx.stage.FileChooser
-import szewek.mctool.util.ZipLoader
-import tornadofx.*
+import tornadofx.UIComponent
+import tornadofx.View
+import tornadofx.cleanBind
+import tornadofx.tab
 import kotlin.reflect.KClass
 
 class MainView: View() {
