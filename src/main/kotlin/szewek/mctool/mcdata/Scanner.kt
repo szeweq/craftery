@@ -32,12 +32,15 @@ object Scanner {
 
     class ScanInfo {
         val map = ClassNodeMap()
-        val caps by lazy {
-            map.nodes.values.stream()
-                    .map { c ->
-                        val n = c.methods.find { "getCapability" == it.name && TypeNames.GET_CAPABILITY == it.desc }
-                        if (n == null) null else CapabilitiesInfo(c.name, n.instructions)
-                    }.filterNotNull().collect(Collectors.toMap({ it.name }, { it }))
+        private val caps by lazy {
+            KtUtil.buildMap<String, CapabilitiesInfo> {
+                for (c in map.nodes.values) {
+                    val n = c.methods.find { m -> "getCapability" == m.name && TypeNames.GET_CAPABILITY == m.desc }
+                    if (n != null) {
+                        it[c.name] = CapabilitiesInfo(c.name, n.instructions)
+                    }
+                }
+            }
         }
         val res = mutableMapOf<String, JsonInfo>()
         val deps = mutableSetOf<String>()
