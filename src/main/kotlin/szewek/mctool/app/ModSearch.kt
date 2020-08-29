@@ -8,6 +8,8 @@ import javafx.collections.ObservableList
 import javafx.geometry.Pos
 import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.HBox
+import javafx.scene.layout.Priority
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.CurseforgeAPI
 import tornadofx.*
@@ -21,7 +23,8 @@ class ModSearch: View("Search mods") {
     override val root = BorderPane()
 
     init {
-        root.top = hbox(alignment = Pos.CENTER_LEFT) {
+        root.top = HBox().apply {
+            alignment = Pos.CENTER_LEFT
             padding = insets(4)
             textfield(search) {
                 promptText = "Search..."
@@ -30,6 +33,7 @@ class ModSearch: View("Search mods") {
                         findMods()
                     }
                 }
+                hgrow = Priority.ALWAYS
             }
             combobox(typeId, types) {
                 cellFormat {
