@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 
 public class KtUtil {
 
+	@NotNull
 	public static <T> Stream<T> streamValuesFrom(Map<?, T> map) {
 		return map.values().stream();
 	}
