@@ -1,12 +1,10 @@
 package szewek.mctool.app
 
+import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Hyperlink
 import javafx.scene.control.Label
-import javafx.scene.layout.BorderPane
-import javafx.scene.layout.ColumnConstraints
-import javafx.scene.layout.GridPane
-import javafx.scene.layout.Priority
+import javafx.scene.layout.*
 import szewek.mctool.cfapi.AddonFile
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.latest
@@ -17,10 +15,15 @@ class ModInfo(private val addon: AddonSearch): View(addon.name) {
     override val root = BorderPane()
 
     init {
-        root.top = BorderPane().apply {
+        root.top = HBox().apply {
+            spacing = 4.0
+            alignment = Pos.CENTER_LEFT
             addClass("page-header")
-            left = label(addon.name)
-            right = button("Lookup mod code") {
+            Label(addon.name).attachTo(this) {
+                maxWidth = Double.MAX_VALUE
+                hgrow = Priority.ALWAYS
+            }
+            button("Lookup mod code") {
                 setOnAction {
                     val lf = addon.latestFiles.latest()
                     if (lf != null) {
