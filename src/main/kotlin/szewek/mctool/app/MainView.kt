@@ -5,6 +5,7 @@ import javafx.beans.binding.BooleanBinding
 import javafx.scene.Node
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.StackPane
 import javafx.stage.FileChooser
 import szewek.mctool.util.ZipLoader
 import tornadofx.*
@@ -20,7 +21,7 @@ class MainView: View() {
         primaryStage.apply {
             title = "MCTool"
             width = 800.0
-            height = 480.0
+            height = 600.0
         }
         tabPane.apply {
             tabClosingPolicy = TabPane.TabClosingPolicy.ALL_TABS
@@ -28,31 +29,8 @@ class MainView: View() {
         }
         root.apply {
             title = "MCTool"
-            top = menubar {
-                menu("App") {
-                    item("Search mods").setOnAction {
-                        selectOrOpenTab<ModSearch>()
-                    }
-                    item("Scan local file...").setOnAction {
-                        val files = chooseFile(
-                            "Choose JAR file",
-                            arrayOf(FileChooser.ExtensionFilter("JAR File", "*.jar")),
-                            owner = this@MainView.currentWindow
-                        )
-                        if (files.isNotEmpty()) {
-                            val f = files[0]
-                            openTab(LookupMod(f.name, ZipLoader.FromFile(f)))
-                        }
-                    }
-                    item("About").setOnAction {
-                        About().dialog()
-                    }
-                    item("Quit").setOnAction {
-                        this@MainView.close()
-                    }
-                }
-            }
-            center = tabsWithEmptyPage(welcome.root)
+            top = AppMenu(this@MainView)
+            centerProperty().bind(Bindings.`when`(hasTabs).then<Node>(tabPane).otherwise(welcome.root))
         }
         openTab<ModSearch>()
     }
@@ -69,10 +47,4 @@ class MainView: View() {
         tabs.find { it.content.comesFrom(kc) }.apply { selectionModel.select(this) }
     } ?: openTab(find(kc))
     inline fun <reified T : UIComponent> selectOrOpenTab() = selectOrOpenTab(T::class)
-
-    private inline fun <T: Node> tabsWithEmptyPage(node: T, crossinline op: T.() -> Unit = {}) = stackpane {
-        tabPane.attachTo(this)
-        node.visibleProperty().cleanBind(hasTabs.not())
-        node.attachTo(this, op)
-    }
 }
