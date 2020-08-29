@@ -1,7 +1,6 @@
 package szewek.mctool.mcdata
 
-import org.objectweb.asm.tree.ClassNode
-import org.objectweb.asm.tree.FieldNode
+import org.objectweb.asm.tree.*
 
 class ClassNodeMap {
     val nodes = mutableMapOf<String, ClassNode>()
@@ -17,11 +16,12 @@ class ClassNodeMap {
 
     fun classExtendsFrom(cn: ClassNode, typename: String): Boolean {
         var scn = cn
-        while(scn.superName != typename) {
+        while (scn.superName != typename) {
             scn = nodes[scn.superName] ?: return false
         }
         return true
     }
+
     fun getLastSuperClass(typename: String): String {
         var tn = typename
         do {
@@ -32,6 +32,7 @@ class ClassNodeMap {
             tn = cn.superName
         } while (true)
     }
+
     fun getAllInterfaceTypes(typename: String): Set<String> {
         val l = mutableSetOf<String>()
         val q = ArrayDeque<String>()
@@ -53,4 +54,22 @@ class ClassNodeMap {
             tn = cn.superName
         } while (true)
     }
+
+    fun streamUsagesOf(cn: ClassNode, fn: FieldNode) = nodes.valueStream()
+            .flatMap { c -> c.methods.stream().map { c to it } }
+            .flatMap { (c, m) ->
+                m.instructions.stream()
+                        .filterIsInstance<FieldInsnNode>()
+                        .filter { fn.name == it.name && fn.desc == it.desc && cn.name == it.owner }
+                        .map { Triple(c, m, it) }
+            }
+
+    fun streamUsagesOf(cn: ClassNode, mn: MethodNode) = nodes.valueStream()
+            .flatMap { c -> c.methods.stream().map { c to it } }
+            .flatMap { (c, m) ->
+                m.instructions.stream()
+                        .filterIsInstance<MethodInsnNode>()
+                        .filter { mn.name == it.name && mn.desc == it.desc && cn.name == it.owner }
+                        .map { Triple(c, m, it) }
+            }
 }
