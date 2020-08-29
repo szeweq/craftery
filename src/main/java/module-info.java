@@ -15,6 +15,7 @@ module mctool.main {
     requires org.objectweb.asm.tree;
     requires kotlin.stdlib.jdk8;
 	requires org.objectweb.asm.util;
+	requires annotations;
 
 	exports szewek.mctool;
     exports szewek.mctool.app;

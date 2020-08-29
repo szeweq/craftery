@@ -1,5 +1,7 @@
 package szewek.mctool.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -11,7 +13,9 @@ public class KtUtil {
 		return map.values().stream();
 	}
 
+	@NotNull
 	public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> c) {
+		if (c == null) return Map.of();
 		Map<K, V> map = new LinkedHashMap<>();
 		c.accept(map);
 		//noinspection unchecked
