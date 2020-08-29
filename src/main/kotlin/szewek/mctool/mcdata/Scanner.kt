@@ -5,6 +5,7 @@ import com.electronwill.nightconfig.toml.TomlParser
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
+import szewek.mctool.util.KtUtil
 import java.io.InputStream
 import java.util.stream.Collectors
 import java.util.stream.Stream
