@@ -7,7 +7,6 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
 import szewek.mctool.util.KtUtil
 import java.io.InputStream
-import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.zip.ZipInputStream
 import javax.json.Json
@@ -104,16 +103,16 @@ object Scanner {
             return ResourceType.UNKNOWN
         }
         fun getAllCapsFromType(typename: String): Set<String> {
-            val l = mutableSetOf<String>()
-            val c = caps[typename]
-            if (c != null) {
-                l += c.fields
-                c.supclasses.mapNotNull { caps[it] }.forEach { l += it.fields }
+            return mutableSetOf<String>().apply {
+                val c = caps[typename]
+                if (c != null) {
+                    this += c.fields
+                    c.supclasses.mapNotNull { caps[it] }.forEach { this += it.fields }
+                }
             }
-            return l.toSet()
         }
 
-        fun streamStaticFields(): Stream<Pair<String, FieldNode>> = map.nodes.values.stream()
+        fun streamStaticFields(): Stream<Pair<String, FieldNode>> = map.nodes.valueStream()
             .flatMap { c -> c.fields.stream().map { c.name to it } }
             .filter { (_, n) ->
                 if (n.access and Opcodes.ACC_STATIC != 0 && n.desc != null) {
@@ -121,7 +120,16 @@ object Scanner {
                 } else false
             }
 
-        fun streamCapabilities() = caps.values.stream()
+        fun streamCapabilities() = caps.valueStream()
+
+        fun streamLazyOptionals() = map.nodes.valueStream()
+            .map { c ->
+                val f = c.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
+                if (f.isEmpty()) return@map null
+                LazyOptionalInfo(map, c, f)
+            }
+            .filterNotNull()
+            .filter { it.warnings.isNotEmpty() }
     }
 
     class JsonInfo(val name: String, val namespace: String, val type: DataResourceType) {
@@ -147,5 +155,24 @@ object Scanner {
             .filterIsInstance<FieldInsnNode>().filter { TypeNames.CAPABILITY == it.desc }
             .map { "${it.owner ?: "UNKNOWN"}::${it.name ?: "UNKNOWN"}" }
             .toSet()
+    }
+
+    class LazyOptionalInfo(classes: ClassNodeMap, classNode: ClassNode, fields: List<FieldNode>) {
+        val name: String = classNode.name
+        val warnings = fields.stream().filter { f ->
+            !classes.streamUsagesOf(classNode, f).anyMatch { (_, _, i) ->
+                if (i.opcode == Opcodes.GETFIELD) {
+                    val ni = i.next
+                    if (ni is MethodInsnNode
+                            && ni.opcode == Opcodes.INVOKEVIRTUAL
+                            && ni.owner == f.fixedDesc
+                            && ni.name == "invalidate"
+                    ) {
+                        return@anyMatch true
+                    }
+                }
+                false
+            }
+        }.map { it.name to it.signature.substringAfter('<').substringBeforeLast('>') }.toSet()
     }
 }

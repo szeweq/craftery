@@ -14,8 +14,9 @@ module mctool.main {
     requires java.json;
     requires org.objectweb.asm.tree;
     requires kotlin.stdlib.jdk8;
+	requires org.objectweb.asm.util;
 
-    exports szewek.mctool;
+	exports szewek.mctool;
     exports szewek.mctool.app;
 
     opens szewek.mctool.cfapi to gson;

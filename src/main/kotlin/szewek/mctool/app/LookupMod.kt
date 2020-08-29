@@ -71,6 +71,7 @@ class LookupMod(name: String, private val zipLoader: ZipLoader): View("Lookup: $
                 val ift = si.map.getAllInterfaceTypes(desc)
                 FieldData(v.name, rt, c, "Type: $desc\nInterfaces: ${ift.joinToString()}")
             }.toList()
+            si.streamLazyOptionals().forEach { println("LAZY for ${it.name} = ${it.warnings}") }
             updateProgress(3, 3)
             runLater {
                 dataList.setAll(dx)
