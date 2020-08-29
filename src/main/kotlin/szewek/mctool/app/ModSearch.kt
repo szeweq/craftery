@@ -24,6 +24,7 @@ class ModSearch: View("Search mods") {
         root.top = hbox(alignment = Pos.CENTER_LEFT) {
             padding = insets(4)
             textfield(search) {
+                promptText = "Search..."
                 setOnKeyPressed {
                     if (it.code == KeyCode.ENTER && !search.isEmpty.value) {
                         findMods()
