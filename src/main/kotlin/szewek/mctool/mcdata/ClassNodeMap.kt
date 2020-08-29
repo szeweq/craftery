@@ -1,9 +1,13 @@
 package szewek.mctool.mcdata
 
 import org.objectweb.asm.tree.*
+import java.util.stream.Stream
 
 class ClassNodeMap {
     val nodes = mutableMapOf<String, ClassNode>()
+
+    val allClassMethods: Stream<Pair<ClassNode, MethodNode>>
+        get() = nodes.valueStream().flatMap { c -> c.methods.stream().map { c to it } }
 
     fun isCompatible(fn: FieldNode, typename: String): Boolean {
         val desc = fn.fixedDesc
@@ -55,8 +59,7 @@ class ClassNodeMap {
         } while (true)
     }
 
-    fun streamUsagesOf(cn: ClassNode, fn: FieldNode) = nodes.valueStream()
-            .flatMap { c -> c.methods.stream().map { c to it } }
+    fun streamUsagesOf(cn: ClassNode, fn: FieldNode) = allClassMethods
             .flatMap { (c, m) ->
                 m.instructions.stream()
                         .filterIsInstance<FieldInsnNode>()
@@ -64,8 +67,7 @@ class ClassNodeMap {
                         .map { Triple(c, m, it) }
             }
 
-    fun streamUsagesOf(cn: ClassNode, mn: MethodNode) = nodes.valueStream()
-            .flatMap { c -> c.methods.stream().map { c to it } }
+    fun streamUsagesOf(cn: ClassNode, mn: MethodNode) = allClassMethods
             .flatMap { (c, m) ->
                 m.instructions.stream()
                         .filterIsInstance<MethodInsnNode>()
