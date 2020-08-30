@@ -13,6 +13,9 @@ class AppMenu(mainView: MainView) : MenuBar() {
             item("Search mods").setOnAction {
                 mainView.selectOrOpenTab<ModSearch>()
             }
+            item("Language editor").setOnAction {
+                mainView.selectOrOpenTab<LanguageEditor>()
+            }
             item("Scan local file...").setOnAction {
                 val files = chooseFile(
                         "Choose JAR file",

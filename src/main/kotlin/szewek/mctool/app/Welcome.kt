@@ -3,6 +3,7 @@ package szewek.mctool.app
 import javafx.event.ActionEvent
 import javafx.event.EventHandler
 import javafx.geometry.Pos
+import javafx.scene.control.Button
 import javafx.scene.control.Control
 import javafx.scene.layout.VBox
 import javafx.scene.text.Font
@@ -18,11 +19,12 @@ class Welcome: Fragment("Welcome") {
                 padding = insets(8.0)
                 font = Font.font(28.0)
             }
-            hbox {
+            vbox {
                 maxWidthProperty().bind(root.widthProperty() * 0.4)
-                actions.forEach {
-                    button(it.text).apply {
-                        widthFrom(this@hbox)
+                children.bind(actions) {
+                    Button(it.text).apply {
+                        widthFrom(this@vbox)
+                        isFocusTraversable = false
                         onAction = it.action
                     }
                 }
@@ -34,7 +36,8 @@ class Welcome: Fragment("Welcome") {
 
     companion object {
         val actions = observableListOf(
-            "Lookup fields in a mod" { openTab<ModSearch>() }
+            "Lookup fields in a mod" { openTab<ModSearch>() },
+            "Open language editor" { openTab<LanguageEditor>() }
         )
 
         private operator fun String.invoke(action: EventHandler<ActionEvent>) = Action(this, action)
