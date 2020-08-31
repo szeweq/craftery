@@ -19,13 +19,10 @@ object Scanner {
 
     fun scanArchive(input: ZipInputStream): ScanInfo {
         val si = ScanInfo()
-        input.available()
-        var ze = input.nextEntry
-        while (ze != null) {
-            if (!ze.isDirectory) {
-                si.scanFile(ze.name, input)
+        input.eachEntry {
+            if (!it.isDirectory) {
+                si.scanFile(it.name, input)
             }
-            ze = input.nextEntry
         }
         return si
     }

@@ -2,6 +2,7 @@ package szewek.mctool.app
 
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
+import javafx.collections.ObservableList
 import javafx.scene.layout.BorderPane
 import javafx.stage.FileChooser
 import tornadofx.*
@@ -13,7 +14,7 @@ import javax.json.stream.JsonGeneratorFactory
 
 class LanguageEditor: View("Language Editor") {
     override val root = BorderPane()
-    val lang = FXCollections.observableArrayList<TranslationKeyValue>()
+    private val lang: ObservableList<TranslationKeyValue> = FXCollections.observableArrayList()
 
     init {
         root.apply {

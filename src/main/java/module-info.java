@@ -21,4 +21,5 @@ module mctool.main {
     exports szewek.mctool.app;
 
     opens szewek.mctool.cfapi to gson;
+    opens szewek.mctool.mcdata to gson;
 }

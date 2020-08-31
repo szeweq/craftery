@@ -1,7 +1,10 @@
 package szewek.mctool.app
 
 import javafx.geometry.Pos
+import javafx.scene.control.Button
+import javafx.scene.control.Label
 import javafx.scene.layout.BorderPane
+import javafx.scene.layout.HBox
 import javafx.scene.text.Font
 import tornadofx.*
 
@@ -9,16 +12,18 @@ class About: Fragment("About") {
     override val root = BorderPane()
 
     init {
-        root.top = hbox(alignment = Pos.CENTER) {
+        root.top = HBox(
+            Label("MCTool").apply { font = Font.font(20.0) }
+        ).apply {
             padding = insets(4)
-            label("MCTool") {
-                font = Font.font(20.0)
-            }
+            alignment = Pos.CENTER
         }
-        root.center = label("About MCTool")
-        root.bottom = hbox(alignment = Pos.CENTER) {
+        root.center = Label("About MCTool")
+        root.bottom = HBox(
+            Button("Close").apply { setOnAction { this@About.close() } }
+        ).apply {
             padding = insets(4)
-            button("Close").setOnAction { this@About.close() }
+            alignment = Pos.CENTER
         }
     }
 

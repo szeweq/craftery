@@ -1,10 +1,11 @@
-package szewek.mctool.app
+package szewek.mctool.layout
 
 import javafx.application.Platform
 import javafx.scene.control.Label
 import javafx.scene.control.ProgressBar
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
+import szewek.mctool.app.css
 import tornadofx.*
 
 class LoaderPane: StackPane() {

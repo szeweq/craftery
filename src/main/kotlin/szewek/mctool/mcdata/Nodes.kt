@@ -8,6 +8,8 @@ import java.util.*
 import java.util.stream.Collectors
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
 val FieldNode.fixedDesc: String get() = if (desc.startsWith('L')) desc.substring(1, desc.length - 1) else desc
 
@@ -18,3 +20,11 @@ fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
 inline fun <reified R> Stream<*>.filterIsInstance(): Stream<R> = filter { it is R } as Stream<R>
 @Suppress("UNCHECKED_CAST")
 fun <T> Stream<T?>.filterNotNull() = filter(Objects::nonNull) as Stream<T>
+
+inline fun ZipInputStream.eachEntry(fn: (ZipEntry) -> Unit) {
+    var ze = nextEntry
+    while (ze != null) {
+        fn(ze)
+        ze = nextEntry
+    }
+}

@@ -71,3 +71,6 @@ jlink {
     addExtraDependencies("javafx")
     imageZip.set(project.file("${project.buildDir}/image-zip/mctool-img.zip"))
 }
+compileKotlin.kotlinOptions {
+    freeCompilerArgs = listOf("-Xinline-classes")
+}
