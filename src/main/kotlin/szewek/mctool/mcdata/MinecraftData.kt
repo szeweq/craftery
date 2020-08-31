@@ -2,7 +2,7 @@ package szewek.mctool.mcdata
 
 import com.github.kittinunf.fuel.core.ProgressCallback
 import szewek.mctool.util.Downloader
-import java.io.File
+import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream
 
@@ -83,8 +83,13 @@ object MinecraftData {
 
     fun loadAllFilesFromJar(v: String?, progress: ProgressCallback) {
         val z = getMinecraftClientJar(v, progress)
-        if (z != null) {
-            var ze = z.nextEntry
+        val out = ByteArrayOutputStream()
+        z?.eachEntry {
+            if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
+                out.reset()
+                z.copyTo(out)
+                filesFromJar[it.name] = out.toByteArray()
+            }
         }
     }
 
