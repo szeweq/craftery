@@ -4,23 +4,36 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
 import javafx.geometry.Pos
 import javafx.scene.control.ComboBox
+import javafx.scene.control.ProgressBar
 import javafx.scene.control.ScrollPane
 import javafx.scene.layout.*
 import szewek.mctool.app.recipe.CraftingView
 import szewek.mctool.app.recipe.SlotView
 import szewek.mctool.mcdata.MinecraftData
+import szewek.mctool.mcdata.Models
 import tornadofx.*
 
 class RecipeCreator: View("Create recipes") {
     override val root = GridPane()
     private val recipeType = SimpleStringProperty("")
     private val allRecipes = FXCollections.observableArrayList<String>()
+    private val taskStatus = TaskStatus()
 
     init {
-        task { MinecraftData.getAsset("/") }
+        val t = task(taskStatus) {
+            MinecraftData.loadAllFilesFromJar(null, ::updateProgress)
+            Models.compileModels()
+            Models.compileTextures()
+        }
         val pct50 = root.widthProperty().divide(2)
 
-        root.addRow(0, ComboBox(allRecipes).apply { bind(recipeType) })
+        root.addRow(0, HBox() children {
+            + ComboBox(allRecipes).apply { bind(recipeType) }
+            + ProgressBar().apply {
+                bind(taskStatus.progress)
+                visibleWhen(taskStatus.running)
+            }
+        })
         root.addRow(
                 1,
                 VBox(CraftingView()).apply { prefWidthProperty().bind(pct50) },
