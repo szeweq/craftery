@@ -8,19 +8,19 @@ import java.util.zip.ZipInputStream
 
 object MinecraftData {
     var manifest = Manifest(mapOf(), listOf())
-    var updated = Date(0)
+    var updated = 0L
     val packages = mutableMapOf<String, Package>()
     val assets = mutableMapOf<String, AssetMap>()
     val filesFromJar = mutableMapOf<String, ByteArray>()
 
     fun updateManifest() {
         val d = System.currentTimeMillis()
-        if (d - updated.time >= 1000 * 3600) {
+        if (d - updated >= 1000 * 3600) {
             println("Updating Minecraft manifest...")
             val o = Downloader.downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json")
             if (o != null) {
                 manifest = o
-                updated.time = d
+                updated = d
             }
         }
     }

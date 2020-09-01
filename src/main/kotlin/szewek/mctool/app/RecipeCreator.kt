@@ -15,7 +15,6 @@ class RecipeCreator: View("Create recipes") {
     override val root = GridPane()
     private val recipeType = SimpleStringProperty("")
     private val allRecipes = FXCollections.observableArrayList<String>()
-    //private val mapViews = FXCollections.observableHashMap<String, Node>()
 
     init {
         task { MinecraftData.getAsset("/") }
