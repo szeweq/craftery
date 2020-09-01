@@ -1,6 +1,5 @@
 package szewek.mctool.app
 
-import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.collections.FXCollections
@@ -10,6 +9,7 @@ import javafx.scene.input.KeyCode
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.HBox
 import javafx.scene.layout.Priority
+import szewek.mctool.app.task.TaskManager
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.CurseforgeAPI
 import tornadofx.*
@@ -18,7 +18,6 @@ class ModSearch: View("Search mods") {
     private val modlist: ObservableList<AddonSearch> = FXCollections.observableArrayList()
     private val search = SimpleStringProperty("")
     private val typeId = SimpleIntegerProperty(6)
-    private val loading = SimpleBooleanProperty(false)
     private val types = FXCollections.observableArrayList(6, 4471)
     override val root = BorderPane()
 
@@ -52,10 +51,6 @@ class ModSearch: View("Search mods") {
                     }
                 }
             }
-            progressbar {
-                padding = insets(4)
-                visibleWhen(loading)
-            }
         }
         root.center = tableview(modlist) {
             readonlyColumn("Name", AddonSearch::name).pctWidth(20)
@@ -73,12 +68,12 @@ class ModSearch: View("Search mods") {
     }
 
     private fun findMods() {
-        loading.set(true)
-        task {
+        val t = task {
+            val s = search.value
+            updateMessage("Searching $s...")
             val a = CurseforgeAPI.findAddons(search.value, typeId.value)
             modlist.setAll(*a)
-        } finally {
-            loading.set(false)
         }
+        TaskManager.addTask(t)
     }
 }

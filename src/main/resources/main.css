@@ -9,9 +9,12 @@
     -fx-mark-color: ladder(-fx-base, white 30%, derive(-fx-base, -36%) 31%);
     -fx-control-inner-background: rgb(42, 42, 42);
     -fx-control-inner-background-alt: derive(-fx-control-inner-background, 5%);
+    -fx-primary-border: derive(-fx-base, 15%)
 }
 .menu-bar {
     -fx-background-color: -fx-base;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: -fx-primary-border;
 }
 .text-field {
     -fx-prompt-text-fill: #CCC;
@@ -40,3 +43,16 @@
     -fx-font-weight: BOLD;
 }
 .page-info { -fx-padding: 8px; }
+.status-bar {
+    -fx-border-width: 1 0 0 0;
+    -fx-border-color: -fx-primary-border;
+}
+.task-list {
+	-fx-border-width: 0 0 0 1;
+    -fx-border-color: -fx-primary-border;
+    -fx-padding: 2px;
+}
+.task-list .task {
+	-fx-background-color: -fx-primary-border;
+	-fx-padding: 2px;
+}
