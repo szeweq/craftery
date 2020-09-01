@@ -13,11 +13,11 @@ object MinecraftData {
     val assets = mutableMapOf<String, AssetMap>()
     val filesFromJar = mutableMapOf<String, ByteArray>()
 
-    fun updateManifest() {
+    fun updateManifest(progress: ProgressCallback) {
         val d = System.currentTimeMillis()
         if (d - updated >= 1000 * 3600) {
             println("Updating Minecraft manifest...")
-            val o = Downloader.downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json")
+            val o = Downloader.downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json", progress)
             if (o != null) {
                 manifest = o
                 updated = d
@@ -25,14 +25,14 @@ object MinecraftData {
         }
     }
 
-    fun getPackage(v: String): Package? {
-        updateManifest()
+    fun getPackage(v: String, progress: ProgressCallback): Package? {
+        updateManifest(progress)
         println("PKG for $v")
         val p = packages[v]
         if (p == null) {
             val vu = manifest.versions.find { v == it.id }
             if (vu != null) {
-                val o = Downloader.downloadJson<Package>(vu.url)
+                val o = Downloader.downloadJson<Package>(vu.url, progress)
                 if (o != null) {
                     packages[v] = o
                     return o
@@ -44,17 +44,17 @@ object MinecraftData {
         return null
     }
 
-    fun getAssetMap(v: String): AssetMap? {
-        updateManifest()
+    fun getAssetMap(v: String, progress: ProgressCallback): AssetMap? {
+        updateManifest(progress)
         println("AM for $v")
-        val am = getPackage(v)
+        val am = getPackage(v, progress)
         if (am != null) {
             println("DL ${am.downloads.map { (k, v) -> k to v.url }}")
             val vi = am.assetIndex.id
             val vu = am.assetIndex.url
             val ma = assets[vi]
             if (ma == null) {
-                val dl = Downloader.downloadJson<AssetMap>(vu)
+                val dl = Downloader.downloadJson<AssetMap>(vu, progress)
                 if (dl != null) {
                     assets[vi] = dl
                     return dl
@@ -66,31 +66,49 @@ object MinecraftData {
         return null
     }
 
-    fun getAsset(p: String) {
-        updateManifest()
+    fun getAsset(p: String, progress: ProgressCallback) {
+        updateManifest(progress)
         val v = manifest.latest["release"] ?: return
-        val ma = getAssetMap(v) ?: return
+        val ma = getAssetMap(v, progress) ?: return
         val mf = ma.objects[p]
     }
 
-    fun getMinecraftClientJar(v: String?, progress: ProgressCallback): ZipInputStream? {
-        updateManifest()
-        val z = v ?: manifest.latest["release"] ?: return null
-        val p = getPackage(z) ?: return null
-        val u = p.downloads["client"]?.url ?: return null
-        return Downloader.downloadZip(u, progress)
+    private fun getMinecraftClientJar(v: String?, progress: ProgressCallback): ZipInputStream? {
+        updateManifest(progress)
+        progress(0, 1)
+        val z = v ?: manifest.latest["release"]
+        if (z == null) {
+            println("No Minecraft version selected!")
+            return null
+        }
+        val p = getPackage(z, progress)
+        progress(0, 1)
+        if (p == null) {
+            println("No package found for $z!")
+            return null
+        }
+        val u = p.downloads["client"]?.url
+        if (u == null) {
+            println("No URL specified for client version $z!")
+            return null
+        }
+        println("Downloading Minecraft client $z jar...")
+        return Downloader.downloadZip(u) { c, t -> println("DL $c / $t") }
     }
 
     fun loadAllFilesFromJar(v: String?, progress: ProgressCallback) {
         val z = getMinecraftClientJar(v, progress)
-        val out = ByteArrayOutputStream()
+        //progress(0, 1)
+        val out = ByteArrayOutputStream(1024)
+        println("Unpacking Minecraft client...")
         z?.eachEntry {
             if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
                 out.reset()
-                z.copyTo(out)
+                z.copyWithProgress(out, it.size) { c, t -> println("COPY $c / $t") }
                 filesFromJar[it.name] = out.toByteArray()
             }
         }
+        progress(1, 1)
     }
 
     class Manifest(val latest: Map<String, String>, val versions: List<Version>)
