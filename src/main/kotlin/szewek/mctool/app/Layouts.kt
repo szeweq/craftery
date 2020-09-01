@@ -15,7 +15,7 @@ inline infix fun <T: Parent> T.children(fn: ChildrenOf<T>.() -> Unit): T {
 }
 
 inline class ChildrenOf<T: Parent>(val _parent: Parent) {
-    inline operator fun <reified N: Node> N.unaryPlus() = _parent.addChildIfPossible(this)
+    inline operator fun <reified N: Node> N.unaryPlus(): N = apply { _parent.addChildIfPossible(this) }
 }
 
 inline fun MenuBar.build(fn: MenuBarBuilder.() -> Unit): MenuBar {

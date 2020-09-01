@@ -4,7 +4,6 @@ import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Label
-import javafx.scene.control.Tooltip
 import javafx.scene.image.ImageView
 import javafx.scene.layout.AnchorPane
 import szewek.mctool.mcdata.Models
