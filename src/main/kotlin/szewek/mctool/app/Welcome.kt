@@ -23,7 +23,7 @@ class Welcome: Fragment("Welcome") {
                 maxWidthProperty().bind(root.widthProperty() * 0.4)
                 children.bind(actions) {
                     Button(it.text).apply {
-                        widthFrom(this@vbox)
+                        fitToWidth(this@vbox)
                         isFocusTraversable = false
                         onAction = it.action
                     }

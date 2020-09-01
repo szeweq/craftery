@@ -20,8 +20,5 @@ inline fun <reified T : UIComponent> ButtonBase.linkNewTab() = this.setOnAction 
 inline fun <reified T : UIComponent> Node.comesFrom() = properties[UI_COMPONENT_PROPERTY] is T
 fun <T : UIComponent> Node.comesFrom(kc: KClass<T>) = kc.isInstance(properties[UI_COMPONENT_PROPERTY])
 
-fun Region.widthFrom(other: Region) = apply { prefWidthProperty().bind(other.widthProperty()) }
-fun Region.heightFrom(other: Region) = apply { prefHeightProperty().bind(other.heightProperty()) }
-
 inline fun <reified T : Application> import(cssFile: String) = importStylesheet(T::class.java.getResource(cssFile).toExternalForm())
 inline fun <reified T : Node> T.css(): String? = T::class.java.let { it.getResource("/css/${it.simpleName}.css").toExternalForm() }

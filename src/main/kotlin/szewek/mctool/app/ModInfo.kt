@@ -36,7 +36,7 @@ class ModInfo(private val addon: AddonSearch): View(addon.name) {
             }
         }
         root.center = gridpane {
-            widthFrom(root)
+            fitToWidth(root)
             addClass("page-info")
             columnConstraints.setAll(ColumnConstraints(), ColumnConstraints(-1.0, -1.0, Double.MAX_VALUE).also { hgrow = Priority.ALWAYS })
             hgap = 4.0
@@ -48,7 +48,7 @@ class ModInfo(private val addon: AddonSearch): View(addon.name) {
             hf("Website URL", addon::websiteUrl)
             row {
                 tableview(observableListOf(*addon.latestFiles)) {
-                    widthFrom(this@gridpane)
+                    fitToWidth(this@gridpane)
                     readonlyColumn("Name", AddonFile::fileName).pctWidth(30)
                     readonlyColumn("Date", AddonFile::fileDate).pctWidth(25)
                     readonlyColumn("File size", AddonFile::fileLength).pctWidth(15)
