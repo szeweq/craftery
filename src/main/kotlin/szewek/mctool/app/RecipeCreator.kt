@@ -22,8 +22,7 @@ class RecipeCreator: View("Create recipes") {
     init {
         val t = task(taskStatus) {
             MinecraftData.loadAllFilesFromJar(null, ::updateProgress)
-            Models.compileModels()
-            Models.compileTextures()
+            Models.compile()
         }
         val pct50 = root.widthProperty().divide(2)
 

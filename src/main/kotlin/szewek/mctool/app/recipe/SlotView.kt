@@ -1,33 +1,38 @@
 package szewek.mctool.app.recipe
 
-import javafx.beans.property.SimpleDoubleProperty
+import javafx.beans.binding.Bindings
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.beans.property.SimpleStringProperty
-import javafx.geometry.Pos
 import javafx.scene.control.Label
 import javafx.scene.control.Tooltip
+import javafx.scene.image.ImageView
 import javafx.scene.layout.AnchorPane
+import szewek.mctool.mcdata.Models
 import tornadofx.managedWhen
 import tornadofx.visibleWhen
 
-class SlotView(big: Boolean = false): AnchorPane() {
-    val type = SimpleStringProperty("")
+class SlotView(name: String = "minecraft:golden_shovel", big: Boolean = false): AnchorPane() {
+    val type = SimpleStringProperty(name)
     private val count = SimpleIntegerProperty(0)
 
     init {
-        val d = if (big) 48.0 else 32.0
-        val s = if (big) 12.0 else 4.0
+        val d = if (big) 48.0 else 36.0
+        val s = if (big) 3.0 else 2.0
         setMinSize(d, d)
         setMaxSize(d, d)
         setPrefSize(d, d)
         style = "-fx-border-color: #888; -fx-border-width: 2px;"
-        children += Label("?").apply {
-            tooltip = Tooltip().apply { textProperty().bind(type) }
-            alignment = Pos.CENTER
-            setTopAnchor(this, s)
-            setBottomAnchor(this, s)
-            setLeftAnchor(this, s)
-            setRightAnchor(this, s)
+        children += ImageView().apply {
+            imageProperty().bind(Bindings.createObjectBinding({ Models.getImageOf(type.value) }, type, Models.compileState))
+            //tooltip = Tooltip().apply { textProperty().bind(type) }
+            //alignment = Pos.CENTER
+            isSmooth = false
+            fitWidth = d - s * 2
+            fitHeight = d - s * 2
+            setTopAnchor(this, 0.0)
+            setBottomAnchor(this, 0.0)
+            setLeftAnchor(this, 0.0)
+            setRightAnchor(this, 0.0)
         }
         val visible = count.greaterThan(0)
         children += Label().apply {

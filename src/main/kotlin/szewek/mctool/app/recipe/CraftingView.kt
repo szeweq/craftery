@@ -9,16 +9,16 @@ class CraftingView: HBox(4.0) {
     init {
         alignment = Pos.CENTER
         children += TilePane().apply {
-            setPrefSize(32.0 * 3, 32.0 * 3)
+            setPrefSize(36.0 * 3, 36.0 * 3)
             minWidthProperty().bind(prefWidthProperty())
             minHeightProperty().bind(prefHeightProperty())
             prefColumns = 3
             prefRows = 3
         } children {
             for (i in 0..8) {
-                + SlotView()
+                + SlotView("minecraft:dirt")
             }
         }
-        children += SlotView(true)
+        children += SlotView(big = true)
     }
 }

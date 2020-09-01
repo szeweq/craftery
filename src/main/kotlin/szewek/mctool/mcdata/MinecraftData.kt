@@ -98,13 +98,12 @@ object MinecraftData {
 
     fun loadAllFilesFromJar(v: String?, progress: ProgressCallback) {
         val z = getMinecraftClientJar(v, progress)
-        //progress(0, 1)
-        val out = ByteArrayOutputStream(1024)
+        val out = ByteArrayOutputStream(DEFAULT_BUFFER_SIZE)
         println("Unpacking Minecraft client...")
         z?.eachEntry {
             if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
                 out.reset()
-                z.copyWithProgress(out, it.size) { c, t -> println("COPY $c / $t") }
+                z.copyTo(out)
                 filesFromJar[it.name] = out.toByteArray()
             }
         }
