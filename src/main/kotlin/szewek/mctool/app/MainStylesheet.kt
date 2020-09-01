@@ -13,7 +13,7 @@ class MainStylesheet: Stylesheet() {
     }
 
     init {
-        s(textField, button, comboBox, tab) {
+        s(textField, button, comboBox, tab, toggleButton) {
             backgroundRadius = mbZero
         }
         s(".tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator") {
