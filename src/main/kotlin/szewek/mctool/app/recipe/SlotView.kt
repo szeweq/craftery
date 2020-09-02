@@ -10,7 +10,7 @@ import szewek.mctool.mcdata.Models
 import tornadofx.managedWhen
 import tornadofx.visibleWhen
 
-class SlotView(name: String = "minecraft:golden_shovel", big: Boolean = false): AnchorPane() {
+class SlotView(name: String = "minecraft:item/golden_shovel", big: Boolean = false): AnchorPane() {
     val type = SimpleStringProperty(name)
     private val count = SimpleIntegerProperty(0)
 

@@ -42,9 +42,9 @@ object Models {
             jr.runCatching { use {
                 val o = readObject()
                 val p = o.getString("parent")
-                val t = o.getJsonObject("textures").mapNotNull { (k, v) ->
+                val t = if (o.containsKey("textures")) o.getJsonObject("textures").mapNotNull { (k, v) ->
                     if (v is JsonString) k to v.string else null
-                }.toMap()
+                }.toMap() else emptyMap()
                 if (p != null) {
                     modelMap[n] = ModelData(p, t)
                 }
@@ -66,7 +66,7 @@ object Models {
     fun getImageOf(name: String): Image? {
         if (!compileState.get()) return null
         val (ns, item) = decodeName(name)
-        val m = "assets/$ns/models/item/$item.json"
+        val m = "assets/$ns/models/$item.json"
         val model = modelMap[m]
         if (model != null) {
             if (model.textures.isEmpty()) {
