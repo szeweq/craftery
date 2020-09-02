@@ -1,23 +1,15 @@
 package szewek.mctool.app.task
 
-import javafx.beans.InvalidationListener
-import javafx.beans.Observable
-import javafx.beans.WeakInvalidationListener
-import javafx.beans.binding.Bindings
+import javafx.application.Platform
 import javafx.beans.binding.ObjectBinding
-import javafx.beans.property.ObjectProperty
 import javafx.beans.property.SimpleBooleanProperty
-import javafx.beans.property.SimpleObjectProperty
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
-import javafx.collections.ObservableList
 import javafx.concurrent.Task
 import javafx.concurrent.Worker
-import javafx.concurrent.WorkerStateEvent
-import javafx.event.EventHandler
-import javafx.event.EventType
-import tornadofx.minus
-import tornadofx.observableListOf
+import tornadofx.*
+import java.util.*
+import java.util.concurrent.ArrayBlockingQueue
 
 object TaskManager {
     val taskListOpen = SimpleBooleanProperty(false)
@@ -25,7 +17,18 @@ object TaskManager {
     val lastTask = LatestTaskProperty()
 
     fun addTask(t: Task<*>) {
-        tasks += t
+        if (Platform.isFxApplicationThread()) {
+            tasks += t
+            removeOnFinish(t)
+        } else {
+            Platform.runLater {
+                tasks += t
+                removeOnFinish(t)
+            }
+        }
+    }
+
+    fun removeOnFinish(t: Task<*>) {
         val csl = object : ChangeListener<Worker.State> {
             override fun changed(ov: ObservableValue<out Worker.State>, os: Worker.State?, ns: Worker.State?) {
                 if (ns == Worker.State.SUCCEEDED || ns == Worker.State.CANCELLED || ns == Worker.State.FAILED) {
@@ -37,6 +40,19 @@ object TaskManager {
         t.stateProperty().addListener(csl)
     }
 
+    fun createTaskQueue(vararg tt: FXTask<*>.() -> Unit) {
+        val q = ArrayBlockingQueue<FXTask<*>.() -> Unit>(tt.size)
+        q.addAll(tt)
+        genTask(q)
+    }
+
+    private fun genTask(tt: TaskQueue) {
+        val fn = tt.poll()
+        if (fn != null) {
+            addTask(task(func = fn).apply { finally { genTask(tt) } })
+        }
+    }
+
     class LatestTaskProperty: ObjectBinding<Task<*>?>() {
         init {
             bind(tasks)
@@ -46,3 +62,6 @@ object TaskManager {
         override fun getDependencies() =  observableListOf(tasks)
     }
 }
+
+typealias TaskFunc = FXTask<*>.() -> Unit
+typealias TaskQueue = Queue<TaskFunc>

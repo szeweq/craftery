@@ -24,7 +24,9 @@ java {
 application {
     applicationDefaultJvmArgs = listOf(
             "--add-opens", "javafx.controls/javafx.scene.control=tornadofx",
-            "--add-opens", "javafx.graphics/javafx.scene=tornadofx"
+            "--add-opens", "javafx.graphics/javafx.scene=tornadofx",
+            "--add-exports", "javafx.graphics/com.sun.javafx.tk=tornadofx"
+            // module javafx.graphics does not export com.sun.javafx.tk to module tornadofx
     )
     mainClassName = "szewek.mctool.Launcher"
     mainModule.set("mctool.main")
@@ -64,7 +66,8 @@ jlink {
         jvmArgs.addAll(application.applicationDefaultJvmArgs)
         jvmArgs.addAll(listOf(
                 "--add-opens", "javafx.controls/javafx.scene.control=szewek.mctool.merged.module",
-                "--add-opens", "javafx.graphics/javafx.scene=szewek.mctool.merged.module"
+                "--add-opens", "javafx.graphics/javafx.scene=szewek.mctool.merged.module",
+                "--add-exports", "javafx.graphics/com.sun.javafx.tk=szewek.mctool.merged.module"
         ))
         noConsole = true
     }

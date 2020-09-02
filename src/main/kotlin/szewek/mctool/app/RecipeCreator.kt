@@ -9,6 +9,7 @@ import javafx.scene.control.ScrollPane
 import javafx.scene.layout.*
 import szewek.mctool.app.recipe.CraftingView
 import szewek.mctool.app.recipe.SlotView
+import szewek.mctool.app.task.TaskManager
 import szewek.mctool.mcdata.MinecraftData
 import szewek.mctool.mcdata.Models
 import tornadofx.*
@@ -20,10 +21,10 @@ class RecipeCreator: View("Create recipes") {
     private val taskStatus = TaskStatus()
 
     init {
-        val t = task(taskStatus) {
-            MinecraftData.loadAllFilesFromJar(null, ::updateProgress)
-            Models.compile()
-        }
+        TaskManager.createTaskQueue(
+                MinecraftData.loadAllFilesFromJar(null),
+                Models.compile()
+        )
         val pct50 = root.widthProperty().divide(2)
 
         root.addRow(0, HBox() children {

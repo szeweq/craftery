@@ -1,7 +1,10 @@
 package szewek.mctool.mcdata
 
 import com.github.kittinunf.fuel.core.ProgressCallback
+import szewek.mctool.app.task.TaskFunc
 import szewek.mctool.util.Downloader
+import tornadofx.FXTask
+import tornadofx.Latch
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream
@@ -96,18 +99,23 @@ object MinecraftData {
         return Downloader.downloadZip(u) { c, t -> println("DL $c / $t") }
     }
 
-    fun loadAllFilesFromJar(v: String?, progress: ProgressCallback) {
-        val z = getMinecraftClientJar(v, progress)
-        val out = ByteArrayOutputStream(DEFAULT_BUFFER_SIZE)
-        println("Unpacking Minecraft client...")
-        z?.eachEntry {
-            if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
-                out.reset()
-                z.copyTo(out)
-                filesFromJar[it.name] = out.toByteArray()
+    fun loadAllFilesFromJar(v: String?): TaskFunc {
+        return {
+            updateMessage("Getting Minecraft client...")
+            val z = getMinecraftClientJar(v, ::updateProgress)
+            val out = ByteArrayOutputStream(DEFAULT_BUFFER_SIZE)
+            updateMessage("Unpacking Minecraft client...")
+            updateProgress(1, 2)
+            z?.eachEntry {
+                if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
+                    updateMessage("Unzipping file ${it.name}...")
+                    out.reset()
+                    z.copyTo(out)
+                    filesFromJar[it.name] = out.toByteArray()
+                }
             }
+            updateProgress(2, 2)
         }
-        progress(1, 1)
     }
 
     class Manifest(val latest: Map<String, String>, val versions: List<Version>)

@@ -1,9 +1,13 @@
 package szewek.mctool.mcdata
 
+import javafx.application.Platform
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.image.Image
-import tornadofx.observableMapOf
+import szewek.mctool.app.task.TaskFunc
+import szewek.mctool.app.task.TaskManager
+import tornadofx.task
 import java.io.ByteArrayInputStream
+import java.util.concurrent.CountDownLatch
 import java.util.regex.Pattern
 import javax.json.Json
 import javax.json.JsonString
@@ -15,13 +19,22 @@ object Models {
     private val matchModel = Pattern.compile("^assets/[a-z]+/models")
     private val matchTex = Pattern.compile("^assets/[a-z]+/textures")
 
-    fun compile() {
-        compileModels()
-        compileTextures()
-        compileState.set(true)
+    fun compile(): TaskFunc {
+        return {
+            updateMessage("Compiling resources")
+            val latch = CountDownLatch(2)
+            val mt = task(func = compileModels(latch))
+            val tt = task(func = compileTextures(latch))
+            TaskManager.addTask(mt)
+            TaskManager.addTask(tt)
+            latch.await()
+            Platform.runLater { compileState.set(true) }
+            updateMessage("All compiled!")
+        }
+
     }
 
-    fun compileModels() {
+    private fun compileModels(latch: CountDownLatch): TaskFunc = {
         val allModels = MinecraftData.filesFromJar.filterKeys { matchModel.matcher(it).find() }
         for ((n, mb) in allModels) {
             val input = ByteArrayInputStream(mb)
@@ -37,15 +50,17 @@ object Models {
                 }
             } }
         }
+        latch.countDown()
     }
 
-    fun compileTextures() {
+    private fun compileTextures(latch: CountDownLatch): TaskFunc = {
         val allTex = MinecraftData.filesFromJar.filterKeys { matchTex.matcher(it).find() }
         for ((n, tb) in allTex) {
             val input = ByteArrayInputStream(tb)
             val img = Image(input)
             textures[n] = img
         }
+        latch.countDown()
     }
 
     fun getImageOf(name: String): Image? {
