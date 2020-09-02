@@ -2,20 +2,15 @@ package szewek.mctool.app
 
 import javafx.beans.binding.Bindings
 import javafx.beans.binding.BooleanBinding
-import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.Node
-import javafx.scene.control.Label
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
-import javafx.scene.layout.HBox
-import javafx.scene.layout.VBox
 import szewek.mctool.app.task.StatusBar
 import szewek.mctool.app.task.TaskListView
 import tornadofx.*
 import kotlin.reflect.KClass
 
 class MainView: View() {
-    private val tasksOpen = SimpleBooleanProperty(false)
     private val tabPane = TabPane()
     private val hasTabs: BooleanBinding = Bindings.isNotEmpty(tabPane.tabs)
     private val welcome = Welcome()
