@@ -8,11 +8,12 @@ import szewek.mctool.mcdata.DataResourceType
 import szewek.mctool.mcdata.ResourceType
 import szewek.mctool.mcdata.Scanner
 import szewek.mctool.mcdata.fixedDesc
-import szewek.mctool.util.ZipLoader
+import szewek.mctool.util.FileLoader
 import tornadofx.*
+import java.util.zip.ZipInputStream
 import kotlin.streams.toList
 
-class LookupMod(name: String, private val zipLoader: ZipLoader): View("Lookup: $name") {
+class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $name") {
     private val dataList = FXCollections.observableArrayList<ResourceFieldData>()
     private val capList = FXCollections.observableArrayList<Triple<String, String, String>>()
     private val fieldList = FXCollections.observableArrayList<FieldData>()
@@ -50,10 +51,10 @@ class LookupMod(name: String, private val zipLoader: ZipLoader): View("Lookup: $
         root.launchTask {
             updateMessage("Downloading file...")
             updateProgress(0, 1)
-            val z = zipLoader.load(::updateProgress)
+            val fi = loader.load(::updateProgress)
             updateMessage("Scanning classes...")
             updateProgress(0, 1)
-            val si = Scanner.scanArchive(z)
+            val si = Scanner.scanArchive(ZipInputStream(fi))
             updateMessage("Gathering results...")
             updateProgress(2, 3)
             val dx = si.res.values.map {

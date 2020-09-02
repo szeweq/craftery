@@ -2,7 +2,7 @@ package szewek.mctool.app
 
 import javafx.scene.control.MenuBar
 import javafx.stage.FileChooser
-import szewek.mctool.util.ZipLoader
+import szewek.mctool.util.FileLoader
 import tornadofx.chooseFile
 
 class AppMenu(mainView: MainView) : MenuBar() {
@@ -17,7 +17,7 @@ class AppMenu(mainView: MainView) : MenuBar() {
                     )
                     if (files.isNotEmpty()) {
                         val f = files[0]
-                        mainView.openTab(LookupMod(f.name, ZipLoader.FromFile(f)))
+                        mainView.openTab(LookupMod(f.name, FileLoader.fromFile(f)))
                     }
                 }
                 "About" action { About().dialog() }

@@ -8,7 +8,7 @@ import javafx.scene.layout.*
 import szewek.mctool.cfapi.AddonFile
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.latest
-import szewek.mctool.util.ZipLoader
+import szewek.mctool.util.FileLoader
 import tornadofx.*
 
 class ModInfo(private val addon: AddonSearch): View(addon.name) {
@@ -27,7 +27,7 @@ class ModInfo(private val addon: AddonSearch): View(addon.name) {
                 setOnAction {
                     val lf = addon.latestFiles.latest()
                     if (lf != null) {
-                        find<MainView>().openTab(LookupMod(lf.fileName, ZipLoader.FromURL(lf.downloadUrl)))
+                        find<MainView>().openTab(LookupMod(lf.fileName, FileLoader.fromURL(lf.downloadUrl)))
                     } else {
                         text = "No files found"
                         isDisable = true
