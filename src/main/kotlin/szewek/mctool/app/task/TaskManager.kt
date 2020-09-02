@@ -1,20 +1,23 @@
 package szewek.mctool.app.task
 
 import javafx.application.Platform
-import javafx.beans.binding.ObjectBinding
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.beans.value.ChangeListener
 import javafx.beans.value.ObservableValue
 import javafx.concurrent.Task
 import javafx.concurrent.Worker
-import tornadofx.*
+import szewek.mctool.app.objectBinding
+import tornadofx.FXTask
+import tornadofx.finally
+import tornadofx.observableListOf
+import tornadofx.task
 import java.util.*
 import java.util.concurrent.ArrayBlockingQueue
 
 object TaskManager {
     val taskListOpen = SimpleBooleanProperty(false)
     val tasks = observableListOf<Task<*>>()
-    val lastTask = LatestTaskBinding()
+    val lastTask = tasks.objectBinding { findLast { it.isDone } }
 
     fun addTask(t: Task<*>) {
         if (Platform.isFxApplicationThread()) {
@@ -28,7 +31,7 @@ object TaskManager {
         }
     }
 
-    fun removeOnFinish(t: Task<*>) {
+    private fun removeOnFinish(t: Task<*>) {
         val csl = object : ChangeListener<Worker.State> {
             override fun changed(ov: ObservableValue<out Worker.State>, os: Worker.State?, ns: Worker.State?) {
                 if (ns == Worker.State.SUCCEEDED || ns == Worker.State.CANCELLED || ns == Worker.State.FAILED) {
@@ -51,15 +54,6 @@ object TaskManager {
         if (fn != null) {
             addTask(task(func = fn).apply { finally { genTask(tt) } })
         }
-    }
-
-    class LatestTaskBinding: ObjectBinding<Task<*>?>() {
-        init {
-            bind(tasks)
-        }
-
-        override fun computeValue() = tasks.findLast { !it.isDone }
-        override fun getDependencies() =  observableListOf(tasks)
     }
 }
 

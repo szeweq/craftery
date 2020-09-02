@@ -14,12 +14,12 @@ public class KtUtil {
 		return map.values().stream();
 	}
 
+	@SuppressWarnings("unchecked")
 	@NotNull
 	public static <K, V> Map<K, V> buildMap(Consumer<Map<K, V>> c) {
 		if (c == null) return Map.of();
 		Map<K, V> map = new LinkedHashMap<>();
 		c.accept(map);
-		//noinspection unchecked
 		return Map.ofEntries(map.entrySet().toArray(new Map.Entry[0]));
 	}
 
