@@ -14,7 +14,7 @@ import java.util.concurrent.ArrayBlockingQueue
 object TaskManager {
     val taskListOpen = SimpleBooleanProperty(false)
     val tasks = observableListOf<Task<*>>()
-    val lastTask = LatestTaskProperty()
+    val lastTask = LatestTaskBinding()
 
     fun addTask(t: Task<*>) {
         if (Platform.isFxApplicationThread()) {
@@ -53,7 +53,7 @@ object TaskManager {
         }
     }
 
-    class LatestTaskProperty: ObjectBinding<Task<*>?>() {
+    class LatestTaskBinding: ObjectBinding<Task<*>?>() {
         init {
             bind(tasks)
         }
