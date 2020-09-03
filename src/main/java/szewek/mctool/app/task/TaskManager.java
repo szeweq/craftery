@@ -23,7 +23,6 @@ public class TaskManager {
         if (!Platform.isFxApplicationThread()) {
             Platform.runLater(() -> addTask(t));
         }
-        System.out.println("ADDING TASK " + t);
         tasks.add(t);
         removeOnFinish(t);
     }
