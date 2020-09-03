@@ -9,6 +9,9 @@ class ClassNodeMap {
     val allClassMethods: Stream<Pair<ClassNode, MethodNode>>
         get() = nodes.valueStream().flatMap { c -> c.methods.stream().map { c to it } }
 
+    val allClassFields: Stream<Pair<ClassNode, FieldNode>>
+        get() = nodes.valueStream().flatMap { c -> c.fields.stream().map { c to it } }
+
     fun isCompatible(fn: FieldNode, typename: String): Boolean {
         val desc = fn.fixedDesc
         if (desc == typename) {
