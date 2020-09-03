@@ -24,9 +24,9 @@ public enum DataResourceType {
 	static DataResourceType detect(String mainDir, String path) {
 		switch (mainDir) {
 			case "assets":
-				return dirMatch(path, BLOCK_STATE, ITEM_MODEL, BLOCK_MODEL, ITEM_TEXTURE, BLOCK_TEXTURE);
+				return dirMatch(path, BLOCK_STATE, ITEM_MODEL, BLOCK_MODEL, ITEM_TEXTURE, BLOCK_TEXTURE, TRANSLATION);
 			case "data":
-				return dirMatch(path, RECIPE, LOOT_TABLE, TRANSLATION, ITEM_TAG, BLOCK_TAG, FLUID_TAG);
+				return dirMatch(path, RECIPE, LOOT_TABLE, ITEM_TAG, BLOCK_TAG, FLUID_TAG);
 		}
 		return UNKNOWN;
 	}
