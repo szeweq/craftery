@@ -1,6 +1,7 @@
 package szewek.mctool.mcdata
 
 import org.objectweb.asm.tree.*
+import java.util.ArrayDeque
 import java.util.stream.Stream
 
 class ClassNodeMap {
