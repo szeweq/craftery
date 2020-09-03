@@ -10,6 +10,7 @@ import javafx.scene.layout.*
 import szewek.mctool.app.recipe.CraftingView
 import szewek.mctool.app.recipe.SlotView
 import szewek.mctool.app.task.TaskManager
+import szewek.mctool.app.task.createTaskQueue
 import szewek.mctool.mcdata.MinecraftData
 import szewek.mctool.mcdata.Models
 import tornadofx.*
@@ -21,7 +22,7 @@ class RecipeCreator: View("Create recipes") {
     private val taskStatus = TaskStatus()
 
     init {
-        TaskManager.createTaskQueue(
+        createTaskQueue(
                 MinecraftData.loadAllFilesFromJar(null),
                 Models.compile()
         )

@@ -38,11 +38,11 @@ public class TaskNodes {
         tlp.setMinWidth(200);
         tlp.setMaxWidth(200);
 
-        var openProp = TaskManager.INSTANCE.getTaskListOpen();
+        var openProp = TaskManager.taskListOpen;
         tlp.managedProperty().bind(openProp);
         tlp.visibleProperty().bind(openProp);
 
-        FXKt.bindChildren(tlp, TaskManager.INSTANCE.getTasks(), task -> {
+        FXKt.bindChildren(tlp, TaskManager.tasks, task -> {
             var l = new Label();
             l.textProperty().bind(task.messageProperty());
             var pb = new ProgressBar();
@@ -64,7 +64,7 @@ public class TaskNodes {
         l.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(l, Priority.ALWAYS);
 
-        var lt = TaskManager.INSTANCE.getLastTask();
+        var lt = TaskManager.lastTask;
         var pb = new ProgressBar();
         pb.setPadding(new Insets(4));
         var tnn = Bindings.isNotNull(lt);
@@ -73,7 +73,7 @@ public class TaskNodes {
 
         var tb = new ToggleButton("Tasks");
         tb.setFocusTraversable(false);
-        TaskManager.INSTANCE.getTaskListOpen().bind(tb.selectedProperty());
+        TaskManager.taskListOpen.bind(tb.selectedProperty());
 
         sb.getChildren().addAll(l, pb, tb);
         lt.addListener((observable, ov, nv) -> {
