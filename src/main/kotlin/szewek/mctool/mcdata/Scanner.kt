@@ -7,7 +7,6 @@ import java.util.zip.ZipInputStream
 import javax.json.Json
 import javax.json.JsonObject
 import javax.json.JsonReaderFactory
-import kotlin.streams.asSequence
 
 object Scanner {
     val TOML = TomlParser()

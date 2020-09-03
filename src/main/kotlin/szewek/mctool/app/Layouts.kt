@@ -7,7 +7,6 @@ import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import tornadofx.addChildIfPossible
-import tornadofx.menu
 
 inline infix fun <T: Parent> T.children(fn: ChildrenOf<T>.() -> Unit): T {
     fn(ChildrenOf(this))

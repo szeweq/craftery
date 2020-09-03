@@ -1,11 +1,9 @@
 package szewek.mctool.app
 
-import javafx.geometry.Pos
-import javafx.scene.control.ContentDisplay
-import javafx.scene.paint.Color
-import javafx.scene.paint.Stop
-import javafx.scene.text.FontWeight
-import tornadofx.*
+import tornadofx.Stylesheet
+import tornadofx.box
+import tornadofx.multi
+import tornadofx.px
 
 class MainStylesheet: Stylesheet() {
     companion object {

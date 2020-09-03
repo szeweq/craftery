@@ -3,8 +3,6 @@ package szewek.mctool.mcdata
 import com.github.kittinunf.fuel.core.ProgressCallback
 import szewek.mctool.app.task.TaskFunc
 import szewek.mctool.util.Downloader
-import tornadofx.FXTask
-import tornadofx.Latch
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream

@@ -74,8 +74,8 @@ class LanguageEditor: View("Language Editor") {
     }
 
     private fun saveTranslation(f: File) {
-        f.outputStream().use {
-            val jg = JGF.createGenerator(it)
+        f.outputStream().use { fos ->
+            val jg = JGF.createGenerator(fos)
             jg.writeStartObject()
             val l = lang.sortedBy { it.key }
             for (t in l) {

@@ -4,14 +4,11 @@ import javafx.application.Application
 import javafx.beans.Observable
 import javafx.beans.binding.Bindings
 import javafx.beans.binding.ObjectBinding
-import javafx.beans.value.ChangeListener
-import javafx.beans.value.ObservableValue
 import javafx.collections.ObservableList
 import javafx.scene.Node
-import javafx.scene.control.ButtonBase
-import javafx.scene.layout.Region
-import tornadofx.*
-import java.util.concurrent.Callable
+import tornadofx.UIComponent
+import tornadofx.UI_COMPONENT_PROPERTY
+import tornadofx.importStylesheet
 import kotlin.reflect.KClass
 
 inline fun <reified T : UIComponent> Node.comesFrom() = properties[UI_COMPONENT_PROPERTY] is T
