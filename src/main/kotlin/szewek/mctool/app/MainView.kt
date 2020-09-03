@@ -6,7 +6,7 @@ import javafx.scene.Node
 import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import szewek.mctool.app.task.StatusBar
-import szewek.mctool.app.task.TaskListView
+import szewek.mctool.app.task.TaskListPane
 import tornadofx.*
 import kotlin.reflect.KClass
 
@@ -14,7 +14,7 @@ class MainView: View() {
     private val tabPane = TabPane()
     private val hasTabs: BooleanBinding = Bindings.isNotEmpty(tabPane.tabs)
     private val welcome = Welcome()
-    private val tasks = TaskListView()
+    private val tasks = TaskListPane()
     private val statusBar = StatusBar()
     override val root = BorderPane()
 
