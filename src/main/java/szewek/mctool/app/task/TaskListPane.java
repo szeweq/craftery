@@ -21,6 +21,7 @@ public class TaskListPane extends VBox {
 			var l = new Label();
 			l.textProperty().bind(task.messageProperty());
 			var pb = new ProgressBar();
+			pb.prefWidthProperty().bind(widthProperty());
 			pb.progressProperty().bind(task.progressProperty());
 			var vb = new VBox(l, pb);
 			vb.getStyleClass().add("task");

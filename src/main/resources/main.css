@@ -33,6 +33,15 @@
 .tab-pane:bottom > .tab-header-area,
 .tab-pane:left > .tab-header-area,
 .tab-pane:right > .tab-header-area { -fx-padding: 0px; }
+.progress-bar > .track {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+.progress-bar > .bar {
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 0.15em;
+}
 /* CUSTOM CLASSES */
 .bolder { -fx-font-weight: BOLD; }
 .page-header {

@@ -22,6 +22,7 @@ class StatusBar: HBox() {
                 hgrow = Priority.ALWAYS
             }
             val pb = + ProgressBar().apply {
+                paddingAll = 4
                 val tnn = Bindings.isNotNull(TaskManager.lastTask)
                 visibleWhen(tnn)
                 managedWhen(tnn)
