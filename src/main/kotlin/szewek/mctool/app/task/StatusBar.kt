@@ -15,7 +15,6 @@ class StatusBar: HBox() {
     init {
         addClass("status-bar")
         alignment = Pos.CENTER_LEFT
-        style = "-fx-border-width: 1 0 0 0; -fx-border-color: -fx-primary-border;"
         children {
             val l = + Label().apply {
                 paddingAll = 4
