@@ -17,7 +17,7 @@ import java.util.concurrent.ArrayBlockingQueue
 object TaskManager {
     val taskListOpen = SimpleBooleanProperty(false)
     val tasks = observableListOf<Task<*>>()
-    val lastTask = tasks.objectBinding { findLast { it.isDone } }
+    val lastTask = tasks.objectBinding { findLast { !it.isDone } }
 
     fun addTask(t: Task<*>) {
         if (Platform.isFxApplicationThread()) {
