@@ -94,7 +94,8 @@ object MinecraftData {
             return null
         }
         println("Downloading Minecraft client $z jar...")
-        return Downloader.downloadZip(u) { c, t -> println("DL $c / $t") }
+        val input = Downloader.downloadFile(u) { c, t -> println("DL $c / $t") }
+        return ZipInputStream(input)
     }
 
     fun loadAllFilesFromJar(v: String?): TaskFunc {
