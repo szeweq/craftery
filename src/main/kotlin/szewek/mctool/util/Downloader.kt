@@ -9,7 +9,7 @@ import java.io.InputStream
 
 object Downloader {
     fun downloadFile(url: String, progress: ProgressCallback): InputStream = Fuel.get(url)
-            .requestProgress(progress)
+            .responseProgress(progress)
             .responseUnit().second.body().toStream()
 
     inline fun <reified T : Any> downloadJson(url: String) = Fuel.get(url)
