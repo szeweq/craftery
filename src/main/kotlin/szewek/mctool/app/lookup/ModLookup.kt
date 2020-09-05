@@ -1,12 +1,13 @@
 package szewek.mctool.app.lookup
 
+import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
 import javafx.scene.control.TableView
 import szewek.mctool.mcdata.ScanInfo
 
-abstract class ModLookup<T>(private val fmt: String) {
+abstract class ModLookup<T>(fmt: String) {
     val list: ObservableList<T> = FXCollections.observableArrayList()
     val title = Bindings.size(list).asString(fmt)
     abstract val explain: String?
@@ -18,9 +19,9 @@ abstract class ModLookup<T>(private val fmt: String) {
         decorate()
     }
 
-    fun lazyGather(si: ScanInfo): () -> Unit {
+    fun lazyGather(si: ScanInfo) {
         val l = gatherItems(si)
-        return {
+        Platform.runLater {
             list.setAll(l)
         }
     }

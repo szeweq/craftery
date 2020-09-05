@@ -5,6 +5,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
+import szewek.mctool.util.ClassNodeMap
 import szewek.mctool.util.KtUtil
 import java.io.InputStream
 import java.util.stream.Stream
@@ -13,7 +14,7 @@ class ScanInfo {
     val map = ClassNodeMap()
     private val caps by lazy {
         KtUtil.buildMap<String, Scanner.CapabilitiesInfo> {
-            for (c in map.nodes.values) {
+            for (c in map.classes) {
                 val n = c.methods.find { m -> "getCapability" == m.name && TypeNames.GET_CAPABILITY == m.desc }
                 if (n != null) {
                     it[c.name] = Scanner.CapabilitiesInfo(c.name, n.instructions)
@@ -69,7 +70,7 @@ class ScanInfo {
         if (name.endsWith("/package-info.class")) return
         val cn = ClassNode()
         ClassReader(data).accept(cn, 0)
-        map.nodes[cn.name] = cn
+        map.add(cn)
     }
 
     fun getResourceType(typename: String): ResourceType {
@@ -100,7 +101,7 @@ class ScanInfo {
 
     fun streamCapabilities() = caps.valueStream()
 
-    fun streamLazyOptionals() = map.nodes.valueStream()
+    fun streamLazyOptionals() = map.classes.stream()
         .map { c ->
             val f = c.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
             if (f.isEmpty()) return@map null

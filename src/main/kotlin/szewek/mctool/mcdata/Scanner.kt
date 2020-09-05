@@ -3,6 +3,7 @@ package szewek.mctool.mcdata
 import com.electronwill.nightconfig.toml.TomlParser
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
+import szewek.mctool.util.ClassNodeMap
 import java.util.zip.ZipInputStream
 import javax.json.Json
 import javax.json.JsonObject

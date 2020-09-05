@@ -1,5 +1,6 @@
 package szewek.mctool.app
 
+import javafx.application.Platform
 import javafx.geometry.Side
 import javafx.scene.control.Label
 import javafx.scene.control.Tab
@@ -45,12 +46,10 @@ class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $na
             val si = Scanner.scanArchive(ZipInputStream(fi))
             updateMessage("Gathering results...")
             updateProgress(2, 3)
-            val lg = lookups.map { it.lazyGather(si) }
-            updateProgress(3, 3)
-            runLater {
-                lg.forEach { it() }
+            for (l in lookups) {
+                l.lazyGather(si)
             }
-
+            updateProgress(3, 3)
         }
     }
 
