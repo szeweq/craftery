@@ -94,7 +94,7 @@ object MinecraftData {
             return null
         }
         println("Downloading Minecraft client $z jar...")
-        val input = Downloader.downloadFile(u) { c, t -> println("DL $c / $t") }
+        val input = Downloader.downloadFile(u, progress)
         return ZipInputStream(input)
     }
 
@@ -104,7 +104,6 @@ object MinecraftData {
             val z = getMinecraftClientJar(v, ::updateProgress)
             val out = ByteArrayOutputStream(DEFAULT_BUFFER_SIZE)
             updateMessage("Unpacking Minecraft client...")
-            updateProgress(1, 2)
             z?.eachEntry {
                 if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
                     updateMessage("Unzipping file ${it.name}...")
@@ -113,7 +112,6 @@ object MinecraftData {
                     filesFromJar[it.name] = out.toByteArray()
                 }
             }
-            updateProgress(2, 2)
         }
     }
 
