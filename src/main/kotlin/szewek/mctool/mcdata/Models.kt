@@ -14,8 +14,8 @@ import javax.json.Json
 import javax.json.JsonString
 
 object Models {
-    val modelMap = mutableMapOf<String, ModelData>()
-    val textures = mutableMapOf<String, Image>()
+    private val modelMap = mutableMapOf<String, ModelData>()
+    private val textures = mutableMapOf<String, Image>()
     val compileState = SimpleBooleanProperty(false)
     private val matchModel = Pattern.compile("^assets/[a-z]+/models/.*\\.json$")
     private val matchTex = Pattern.compile("^assets/[a-z]+/textures/.*\\.png$")
@@ -59,9 +59,6 @@ object Models {
         for ((n, tb) in allTex) {
             val input = ByteArrayInputStream(tb)
             val img = Image(input)
-            if (img.width == 0.0 && img.height == 0.0) {
-                println("Found empty image: $n | $img")
-            }
             textures[n] = scale(img, 2)
         }
         latch.countDown()
