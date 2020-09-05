@@ -16,8 +16,3 @@ fun <T : UIComponent> Node.comesFrom(kc: KClass<T>) = kc.isInstance(properties[U
 
 inline fun <reified T : Application> T.import(cssFile: String) = importStylesheet(T::class.java.getResource(cssFile).toExternalForm())
 inline fun <reified T : Node> T.css(): String? = T::class.java.let { it.getResource("/css/${it.simpleName}.css").toExternalForm() }
-
-inline fun <T, O> ObservableList<T>.objectBinding(
-        vararg deps: Observable,
-        crossinline fn: ObservableList<T>.() -> O
-): ObjectBinding<O> = Bindings.createObjectBinding({ fn(this) }, this, *deps)
