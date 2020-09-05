@@ -1,9 +1,7 @@
 package szewek.mctool.util
 
 import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.Deserializable
 import com.github.kittinunf.fuel.core.ProgressCallback
-import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.core.responseUnit
 import com.github.kittinunf.fuel.gson.responseObject
 import com.github.kittinunf.result.getOrElse
@@ -26,8 +24,4 @@ object Downloader {
                 println("Err $it")
                 null
             }
-
-    class StreamDeserializer: Deserializable<InputStream> {
-        override fun deserialize(response: Response) = response.body().toStream()
-    }
 }
