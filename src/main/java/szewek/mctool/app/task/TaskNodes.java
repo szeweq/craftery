@@ -56,17 +56,15 @@ public class TaskNodes {
 
     private static void statusBar() {
         final var sb = statusBar;
-        sb.getStyleClass().add("task-list");
+        sb.getStyleClass().add("status-bar");
         sb.setAlignment(Pos.CENTER_LEFT);
 
         var l = new Label();
-        l.setPadding(new Insets(4));
         l.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(l, Priority.ALWAYS);
 
         var lt = TaskManager.lastTask;
         var pb = new ProgressBar();
-        pb.setPadding(new Insets(4));
         var tnn = Bindings.isNotNull(lt);
         pb.visibleProperty().bind(tnn);
         pb.managedProperty().bind(tnn);
