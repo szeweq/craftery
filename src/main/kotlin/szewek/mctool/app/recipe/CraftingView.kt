@@ -16,7 +16,7 @@ class CraftingView: HBox(4.0) {
             prefRows = 3
         } children {
             for (i in 0..8) {
-                + SlotView("minecraft:item/dirt")
+                + SlotView("minecraft:item/dirt", true)
             }
         }
         children += SlotView("minecraft:item/flint", true)

@@ -3,6 +3,7 @@ package szewek.mctool.mcdata
 import javafx.application.Platform
 import javafx.beans.property.SimpleBooleanProperty
 import javafx.scene.image.Image
+import javafx.scene.image.WritableImage
 import szewek.mctool.app.task.TaskFunc
 import szewek.mctool.app.task.TaskManager
 import tornadofx.task
@@ -16,8 +17,8 @@ object Models {
     val modelMap = mutableMapOf<String, ModelData>()
     val textures = mutableMapOf<String, Image>()
     val compileState = SimpleBooleanProperty(false)
-    private val matchModel = Pattern.compile("^assets/[a-z]+/models")
-    private val matchTex = Pattern.compile("^assets/[a-z]+/textures")
+    private val matchModel = Pattern.compile("^assets/[a-z]+/models/.*\\.json$")
+    private val matchTex = Pattern.compile("^assets/[a-z]+/textures/.*\\.png$")
 
     fun compile(): TaskFunc {
         return {
@@ -58,13 +59,39 @@ object Models {
         for ((n, tb) in allTex) {
             val input = ByteArrayInputStream(tb)
             val img = Image(input)
-            textures[n] = img
+            if (img.width == 0.0 && img.height == 0.0) {
+                println("Found empty image: $n | $img")
+            }
+            textures[n] = scale(img, 2)
         }
         latch.countDown()
     }
 
+    private fun scale(img: Image, scale: Int): Image {
+        val w = img.width.toInt()
+        val h = img.height.toInt()
+        if (w == 0 && h == 0 || scale == 1) {
+            return img
+        }
+        val wimg = WritableImage(w * scale, h * scale)
+        val pr = img.pixelReader
+        val pw = wimg.pixelWriter
+        for (y in 0 until h) {
+            for (x in 0 until w) {
+                val argb = pr.getArgb(x, y)
+                for (dx in 0 until scale) {
+                    for (dy in 0 until scale) {
+                        pw.setArgb(scale * x + dx, scale * y + dy, argb)
+                    }
+                }
+            }
+        }
+        return wimg
+    }
+
     fun getImageOf(name: String): Image? {
         if (!compileState.get()) return null
+        if (name == "") return null
         val (ns, item) = decodeName(name)
         val m = "assets/$ns/models/$item.json"
         val model = modelMap[m]
