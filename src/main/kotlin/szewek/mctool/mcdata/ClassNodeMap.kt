@@ -63,7 +63,7 @@ class ClassNodeMap {
         } while (true)
     }
 
-    fun streamUsagesOf(cn: ClassNode, fn: FieldNode) = allClassMethods
+    fun streamUsagesOf(cn: ClassNode, fn: FieldNode): Stream<Triple<ClassNode, MethodNode, FieldInsnNode>> = allClassMethods
             .flatMap { (c, m) ->
                 m.instructions.stream()
                         .filterIsInstance<FieldInsnNode>()
@@ -71,7 +71,7 @@ class ClassNodeMap {
                         .map { Triple(c, m, it) }
             }
 
-    fun streamUsagesOf(cn: ClassNode, mn: MethodNode) = allClassMethods
+    fun streamUsagesOf(cn: ClassNode, mn: MethodNode): Stream<Triple<ClassNode, MethodNode, MethodInsnNode>> = allClassMethods
             .flatMap { (c, m) ->
                 m.instructions.stream()
                         .filterIsInstance<MethodInsnNode>()
