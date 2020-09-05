@@ -22,6 +22,7 @@ public class TaskManager {
     public static void addTask(final Task<?> t) {
         if (!Platform.isFxApplicationThread()) {
             Platform.runLater(() -> addTask(t));
+            return;
         }
         tasks.add(t);
         removeOnFinish(t);
@@ -32,7 +33,7 @@ public class TaskManager {
             @Override
             public void changed(ObservableValue<? extends Worker.State> ov, Worker.State os, Worker.State ns) {
                 if (ns == Worker.State.SUCCEEDED || ns == Worker.State.CANCELLED || ns == Worker.State.FAILED) {
-                    tasks.remove(t);
+                    Platform.runLater(() -> tasks.remove(t));
                     ov.removeListener(this);
                 }
             }
