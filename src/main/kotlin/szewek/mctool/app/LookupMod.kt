@@ -1,37 +1,69 @@
 package szewek.mctool.app
 
 import javafx.application.Platform
+import javafx.beans.binding.Bindings
+import javafx.beans.binding.StringBinding
+import javafx.beans.property.SimpleIntegerProperty
+import javafx.collections.FXCollections
 import javafx.geometry.Side
+import javafx.scene.Node
 import javafx.scene.control.Label
+import javafx.scene.control.ListView
 import javafx.scene.control.Tab
 import javafx.scene.control.TabPane
+import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Priority
+import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import szewek.mctool.app.lookup.*
 import szewek.mctool.layout.LoaderPane
 import szewek.mctool.mcdata.Scanner
 import szewek.mctool.util.FileLoader
-import tornadofx.View
-import tornadofx.paddingAll
-import tornadofx.runLater
+import tornadofx.*
 import java.util.zip.ZipInputStream
 
 class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $name") {
-    private val lookups = setOf(
+    override val root = LoaderPane()
+    private val lookups = FXCollections.observableArrayList(
             ListResourceData(),
             DetectCapabilities(),
             StaticFields(),
             SuspiciousLazyOptionals()
     )
-    override val root = LoaderPane()
-    private val nav = TabPane()
+    private val index = SimpleIntegerProperty()
+    private val pages = FXCollections.observableArrayList<Node>()
+    private val list = FXCollections.observableArrayList<StringBinding>()
 
     init {
-        nav.side = Side.LEFT
-        nav.tabClosingPolicy = TabPane.TabClosingPolicy.UNAVAILABLE
-        root.children += nav
+        pages.bind(lookups) {
+            val tv = it.makeTable()
+            if (it.explain == null) tv else {
+                val vb = VBox()
+                vb.children += Label(it.explain).apply { paddingAll = 4 }
+                vb.children += tv
+                VBox.setVgrow(tv, Priority.ALWAYS)
+                vb
+            }
+        }
+        list.bind(lookups) {
+            it.title
+        }
 
-        lookups.forEach { lookupTab(it) }
+        root.children += BorderPane().apply {
+            centerProperty().bind(Bindings.valueAt(pages, index))
+            left = ListView<StringBinding>().apply {
+                maxWidth = 200.0
+                items = list
+                cellFormat {
+                    textProperty().cleanBind(item)
+                }
+                selectionModel.apply {
+                    select(index.get())
+                    index.bind(selectedIndexProperty())
+                }
+                isFocusTraversable = false
+            }
+        }
 
         lookupFields()
     }
@@ -51,19 +83,5 @@ class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $na
             }
             updateProgress(3, 3)
         }
-    }
-
-    private fun <T> lookupTab(ml: ModLookup<T>) {
-        val tv = ml.makeTable()
-        val tab = Tab()
-        tab.textProperty().bind(ml.title)
-        tab.content = if (ml.explain == null) tv else {
-            val vb = VBox()
-            vb.children += Label(ml.explain).apply { paddingAll = 4 }
-            vb.children += tv
-            VBox.setVgrow(tv, Priority.ALWAYS)
-            vb
-        }
-        nav.tabs += tab
     }
 }
