@@ -1,25 +1,26 @@
 package szewek.mctool.app
 
-import javafx.application.Platform
 import javafx.beans.binding.Bindings
 import javafx.beans.binding.StringBinding
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.collections.FXCollections
-import javafx.geometry.Side
 import javafx.scene.Node
 import javafx.scene.control.Label
 import javafx.scene.control.ListView
-import javafx.scene.control.Tab
-import javafx.scene.control.TabPane
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Priority
-import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
-import szewek.mctool.app.lookup.*
+import szewek.mctool.app.lookup.DetectCapabilities
+import szewek.mctool.app.lookup.ListResourceData
+import szewek.mctool.app.lookup.StaticFields
+import szewek.mctool.app.lookup.SuspiciousLazyOptionals
 import szewek.mctool.layout.LoaderPane
 import szewek.mctool.mcdata.Scanner
 import szewek.mctool.util.FileLoader
-import tornadofx.*
+import tornadofx.View
+import tornadofx.bind
+import tornadofx.cleanBind
+import tornadofx.paddingAll
 import java.util.zip.ZipInputStream
 
 class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $name") {
