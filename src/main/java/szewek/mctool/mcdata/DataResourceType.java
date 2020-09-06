@@ -22,13 +22,11 @@ public enum DataResourceType {
 
 
 	static DataResourceType detect(String mainDir, String path) {
-		switch (mainDir) {
-			case "assets":
-				return dirMatch(path, BLOCK_STATE, ITEM_MODEL, BLOCK_MODEL, ITEM_TEXTURE, BLOCK_TEXTURE, TRANSLATION);
-			case "data":
-				return dirMatch(path, RECIPE, LOOT_TABLE, ITEM_TAG, BLOCK_TAG, FLUID_TAG);
-		}
-		return UNKNOWN;
+		return switch (mainDir) {
+			case "assets" -> dirMatch(path, BLOCK_STATE, ITEM_MODEL, BLOCK_MODEL, ITEM_TEXTURE, BLOCK_TEXTURE, TRANSLATION);
+			case "data" -> dirMatch(path, RECIPE, LOOT_TABLE, ITEM_TAG, BLOCK_TAG, FLUID_TAG);
+			default -> UNKNOWN;
+		};
 	}
 
 	private static DataResourceType dirMatch(String path, DataResourceType ...drts) {
