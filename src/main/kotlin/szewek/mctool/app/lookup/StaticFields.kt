@@ -15,7 +15,7 @@ class StaticFields: ModLookup<StaticFields.FieldData>("Static fields: %d") {
 
     override val explain = "List of static fields with detected types"
 
-    override fun TableView<FieldData>.decorate() {
+    override fun decorate(tv: TableView<FieldData>) = tv.run {
         readonlyColumn("Name", FieldData::name).pctWidth(15)
         readonlyColumn("Resource type", FieldData::rtype).pctWidth(10)
         readonlyColumn("From", FieldData::from).pctWidth(30)

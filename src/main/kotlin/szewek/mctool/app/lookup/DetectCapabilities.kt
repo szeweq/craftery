@@ -1,7 +1,6 @@
 package szewek.mctool.app.lookup
 
 import javafx.scene.control.TableView
-import szewek.mctool.app.LookupMod
 import szewek.mctool.mcdata.ScanInfo
 import tornadofx.pctWidth
 import tornadofx.readonlyColumn
@@ -13,7 +12,7 @@ class DetectCapabilities: ModLookup<Triple<String, String, String>>("Capabilitie
     val NONE = "(None provided)"
     override val explain = "List of detected capabilities used by this mod"
 
-    override fun TableView<Triple<String, String, String>>.decorate() {
+    override fun decorate(tv: TableView<Triple<String, String, String>>) = tv.run {
         readonlyColumn("Class", Triple<String, String, String>::first).pctWidth(20)
         readonlyColumn("Capabilities", Triple<String, String, String>::second).pctWidth(30)
         readonlyColumn("Inherited from", Triple<String, String, String>::third).remainingWidth()

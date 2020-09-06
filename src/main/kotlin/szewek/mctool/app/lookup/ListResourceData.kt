@@ -13,7 +13,7 @@ class ListResourceData: ModLookup<ListResourceData.DataFields>("Resources: %d") 
 
     override val explain: String? = null
 
-    override fun TableView<DataFields>.decorate() {
+    override fun decorate(tv: TableView<DataFields>) = tv.run {
         readonlyColumn("Path", DataFields::name).pctWidth(30)
         readonlyColumn("Type", DataFields::drtype).pctWidth(15)
         readonlyColumn("Namespace", DataFields::namespace).pctWidth(15)

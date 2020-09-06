@@ -11,7 +11,7 @@ import kotlin.streams.toList
 class SuspiciousLazyOptionals: ModLookup<Triple<String, String, String>>("Suspicious LazyOptionals: %d") {
     override val explain = "MCTool detected LazyOptional objects that are not being invalidated properly (it may be done somewhere else)"
 
-    override fun TableView<Triple<String, String, String>>.decorate() {
+    override fun decorate(tv: TableView<Triple<String, String, String>>) = tv.run {
         readonlyColumn("Class", Triple<String, String, String>::first).pctWidth(35)
         readonlyColumn("Name", Triple<String, String, String>::second).pctWidth(15)
         readonlyColumn("Generic class", Triple<String, String, String>::third).remainingWidth()
