@@ -1,7 +1,6 @@
 package szewek.mctool.app
 
 import javafx.beans.binding.Bindings
-import javafx.beans.binding.StringBinding
 import javafx.beans.property.SimpleIntegerProperty
 import javafx.collections.FXCollections
 import javafx.scene.Node
@@ -33,7 +32,6 @@ class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $na
     )
     private val index = SimpleIntegerProperty()
     private val pages = FXCollections.observableArrayList<Node>()
-    private val list = FXCollections.observableArrayList<StringBinding>()
 
     init {
         pages.bind(lookups) {
@@ -46,17 +44,13 @@ class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $na
                 vb
             }
         }
-        list.bind(lookups) {
-            it.title
-        }
 
         root.children += BorderPane().apply {
             centerProperty().bind(Bindings.valueAt(pages, index))
-            left = ListView<StringBinding>().apply {
+            left = ListView(lookups).apply {
                 maxWidth = 200.0
-                items = list
                 cellFormat {
-                    textProperty().cleanBind(item)
+                    textProperty().cleanBind(item.title)
                 }
                 selectionModel.apply {
                     select(index.get())
