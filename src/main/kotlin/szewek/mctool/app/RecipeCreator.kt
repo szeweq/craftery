@@ -9,11 +9,13 @@ import javafx.scene.control.ScrollPane
 import javafx.scene.layout.*
 import szewek.mctool.app.recipe.CraftingView
 import szewek.mctool.app.recipe.SlotView
-import szewek.mctool.app.task.TaskManager
 import szewek.mctool.app.task.createTaskQueue
 import szewek.mctool.mcdata.MinecraftData
 import szewek.mctool.mcdata.Models
-import tornadofx.*
+import tornadofx.TaskStatus
+import tornadofx.View
+import tornadofx.bind
+import tornadofx.visibleWhen
 
 class RecipeCreator: View("Create recipes") {
     override val root = GridPane()
