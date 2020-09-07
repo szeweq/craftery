@@ -57,7 +57,6 @@ class LanguageEditor: View("Language Editor") {
     class TranslationKeyValue(val key: String, val orig: String) {
         var transProp = SimpleStringProperty("")
         var trans: String by transProp
-        fun transProperty() = transProp
     }
 
     private fun loadFile(f: File) {
