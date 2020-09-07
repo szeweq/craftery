@@ -11,7 +11,7 @@ import szewek.mctool.cfapi.latest
 import szewek.mctool.util.FileLoader
 import tornadofx.*
 
-class ModInfo(private val addon: AddonSearch): View(addon.name) {
+class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
     override val root = BorderPane()
 
     init {
@@ -23,14 +23,16 @@ class ModInfo(private val addon: AddonSearch): View(addon.name) {
                 maxWidth = Double.MAX_VALUE
                 hgrow = Priority.ALWAYS
             }
-            button("Lookup mod code") {
-                setOnAction {
-                    val lf = addon.latestFiles.latest()
-                    if (lf != null) {
-                        find<MainView>().openTab(LookupMod(lf.fileName, FileLoader.fromURL(lf.downloadUrl)))
-                    } else {
-                        text = "No files found"
-                        isDisable = true
+            if (addon.categorySection.packageType == 6) {
+                button("Lookup mod code") {
+                    setOnAction {
+                        val lf = addon.latestFiles.latest()
+                        if (lf != null) {
+                            find<MainView>().openTab(LookupMod(lf.fileName, FileLoader.fromURL(lf.downloadUrl)))
+                        } else {
+                            text = "No files found"
+                            isDisable = true
+                        }
                     }
                 }
             }

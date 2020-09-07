@@ -59,8 +59,8 @@ class ModSearch: View("Search mods") {
             readonlyColumn("Summary", AddonSearch::summary).remainingWidth()
             onDoubleClick {
                 val item = selectedItem
-                if (item != null && item.categorySection.packageType == 6) {
-                    find<MainView>().openTab(ModInfo(item))
+                if (item != null) {
+                    find<MainView>().openTab(AddonInfoView(item))
                 }
             }
             smartResize()
