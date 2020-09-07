@@ -14,10 +14,6 @@ class MainStylesheet: Stylesheet() {
         s(textField, button, comboBox, tab, toggleButton) {
             backgroundRadius = mbZero
         }
-        s(".tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator") {
-            borderWidth = mbZero
-            borderRadius = mbZero
-        }
         progressBar { bar { backgroundRadius = mbZero } }
     }
 }
