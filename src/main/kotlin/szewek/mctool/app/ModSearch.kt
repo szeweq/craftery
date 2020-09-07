@@ -22,32 +22,7 @@ class ModSearch: View("Search mods") {
     override val root = BorderPane()
 
     init {
-        root.top = HBox().apply {
-            alignment = Pos.CENTER_LEFT
-            padding = insets(4)
-            textfield(search) {
-                promptText = "Search..."
-                setOnKeyPressed {
-                    if (it.code == KeyCode.ENTER) {
-                        findMods()
-                    }
-                }
-                hgrow = Priority.ALWAYS
-            }
-            combobox(typeId, types) {
-                cellFormat {
-                    text = when (it) {
-                        6 -> "Mod"
-                        4471 -> "Modpack"
-                        else -> "UNKNOWN"
-                    }
-                }
-            }
-            button("Search") {
-                disableWhen(search.isEmpty)
-                setOnAction { findMods() }
-            }
-        }
+        root.top = createTopBar()
         root.center = tableview(modlist) {
             readonlyColumn("Name", AddonSearch::name).pctWidth(20)
             readonlyColumn("Slug", AddonSearch::slug).pctWidth(20)
@@ -60,6 +35,26 @@ class ModSearch: View("Search mods") {
                 }
             }
             smartResize()
+        }
+    }
+
+    private fun createTopBar() = HBox().apply {
+        addClass("page-header")
+        textfield(search) {
+            promptText = "Search..."
+            setOnKeyPressed {
+                if (it.code == KeyCode.ENTER) { findMods() }
+            }
+            hgrow = Priority.ALWAYS
+        }
+        combobox(typeId, types) {
+            cellFormat {
+                text = when (it) { 6 -> "Mod" 4471 -> "Modpack" else -> "UNKNOWN" }
+            }
+        }
+        button("Search") {
+            disableWhen(search.isEmpty)
+            setOnAction { findMods() }
         }
     }
 
