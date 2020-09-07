@@ -28,7 +28,7 @@ class ModSearch: View("Search mods") {
             textfield(search) {
                 promptText = "Search..."
                 setOnKeyPressed {
-                    if (it.code == KeyCode.ENTER && !search.isEmpty.value) {
+                    if (it.code == KeyCode.ENTER) {
                         findMods()
                     }
                 }
@@ -45,11 +45,7 @@ class ModSearch: View("Search mods") {
             }
             button("Search") {
                 disableWhen(search.isEmpty)
-                setOnAction {
-                    if (!search.isEmpty.value) {
-                        findMods()
-                    }
-                }
+                setOnAction { findMods() }
             }
         }
         root.center = tableview(modlist) {
@@ -68,6 +64,9 @@ class ModSearch: View("Search mods") {
     }
 
     private fun findMods() {
+        if (search.isEmpty.get()) {
+            return
+        }
         val t = task {
             val s = search.value
             updateMessage("Searching $s...")
