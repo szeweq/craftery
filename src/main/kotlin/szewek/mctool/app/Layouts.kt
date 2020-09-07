@@ -8,12 +8,12 @@ import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import tornadofx.addChildIfPossible
 
-inline infix fun <T: Parent> T.children(fn: ChildrenOf<T>.() -> Unit): T {
+inline infix fun <T: Parent> T.children(fn: ChildrenOf.() -> Unit): T {
     fn(ChildrenOf(this))
     return this
 }
 
-inline class ChildrenOf<T: Parent>(val _parent: Parent) {
+inline class ChildrenOf(val _parent: Parent) {
     inline operator fun <reified N: Node> N.unaryPlus(): N = apply { _parent.addChildIfPossible(this) }
 }
 
