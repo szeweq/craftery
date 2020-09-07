@@ -1,6 +1,7 @@
 package szewek.mctool.app.task;
 
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -32,14 +33,11 @@ public class TaskNodes {
 
     private static void taskListPane() {
         final var tlp = taskListPane;
-
         tlp.getStyleClass().add("task-list");
         tlp.setMinWidth(200);
         tlp.setMaxWidth(200);
 
-        var openProp = TaskManager.taskListOpen;
-        tlp.managedProperty().bind(openProp);
-        tlp.visibleProperty().bind(openProp);
+        showNodeWhen(tlp, TaskManager.taskListOpen);
 
         FXKt.bindChildren(tlp, TaskManager.tasks, task -> {
             var l = new Label();
@@ -64,9 +62,7 @@ public class TaskNodes {
 
         var lt = TaskManager.lastTask;
         var pb = new ProgressBar();
-        var tnn = Bindings.isNotNull(lt);
-        pb.visibleProperty().bind(tnn);
-        pb.managedProperty().bind(tnn);
+        showNodeWhen(pb, Bindings.isNotNull(lt));
 
         var tb = new ToggleButton("Tasks");
         tb.setFocusTraversable(false);
@@ -85,5 +81,10 @@ public class TaskNodes {
                 l.setText("");
             }
         });
+    }
+
+    private static void showNodeWhen(Node n, ObservableValue<Boolean> ov) {
+        n.visibleProperty().bind(ov);
+        n.managedProperty().bind(ov);
     }
 }
