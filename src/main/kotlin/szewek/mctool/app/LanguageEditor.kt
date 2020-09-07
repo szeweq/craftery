@@ -20,28 +20,13 @@ class LanguageEditor: View("Language Editor") {
         root.apply {
             top = toolbar {
                 button("Load original file").setOnAction {
-                    val files = chooseFile(
-                        "Choose JSON file",
-                        arrayOf(FileChooser.ExtensionFilter("JSON File", "*.json")),
-                        owner = currentWindow
-                    )
-                    if (files.isNotEmpty()) {
-                        val f = files[0]
-                        println("Selected file: " + f.absolutePath)
-                        loadFile(f)
+                    chooseJSON("Choose JSON file") {
+                        loadFile(it[0])
                     }
                 }
                 button("Save translations").setOnAction {
-                    val files = chooseFile(
-                        "Save translated file",
-                        arrayOf(FileChooser.ExtensionFilter("JSON File", "*.json")),
-                        mode = FileChooserMode.Save,
-                        owner = currentWindow
-                    )
-                    if (files.isNotEmpty()) {
-                        val f = files[0]
-                        println("Selected file: " + f.absolutePath)
-                        saveTranslation(f)
+                    chooseJSON("Save translated file", FileChooserMode.Save) {
+                        saveTranslation(it[0])
                     }
                 }
             }
@@ -51,6 +36,18 @@ class LanguageEditor: View("Language Editor") {
                 column<TranslationKeyValue, String>("Translation") { it.value.transProp }.makeEditable().remainingWidth()
                 smartResize()
             }
+        }
+    }
+
+    private fun chooseJSON(title: String, mode: FileChooserMode = FileChooserMode.Single, fn: (List<File>) -> Unit) {
+        val files = chooseFile(
+                title,
+                arrayOf(FileChooser.ExtensionFilter("JSON File", "*.json")),
+                mode = mode,
+                owner = currentWindow
+        )
+        if (files.isNotEmpty()) {
+            fn(files)
         }
     }
 
