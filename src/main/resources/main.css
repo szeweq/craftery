@@ -50,6 +50,7 @@
 .bolder { -fx-font-weight: BOLD; }
 .page-header {
     -fx-padding: 4px;
+    -fx-alignment: center-left;
 }
 .page-header .label {
     -fx-font-size: 16px;

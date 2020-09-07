@@ -16,8 +16,6 @@ class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
 
     init {
         root.top = HBox().apply {
-            spacing = 4.0
-            alignment = Pos.CENTER_LEFT
             addClass("page-header")
             Label(addon.name).attachTo(this) {
                 maxWidth = Double.MAX_VALUE
@@ -37,31 +35,33 @@ class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
                 }
             }
         }
-        root.center = gridpane {
-            fitToWidth(root)
-            addClass("page-info")
-            columnConstraints.setAll(ColumnConstraints(), ColumnConstraints(-1.0, -1.0, Double.MAX_VALUE).also { hgrow = Priority.ALWAYS })
-            hgap = 4.0
-            vgap = 4.0
-            f("Name", addon::name)
-            f("Slug", addon::slug)
-            f("Summary", addon::summary)
-            af("Download count", addon::downloadCount)
-            hf("Website URL", addon::websiteUrl)
-            row {
-                tableview(observableListOf(*addon.latestFiles)) {
-                    fitToWidth(this@gridpane)
-                    readonlyColumn("Name", AddonFile::fileName).pctWidth(30)
-                    readonlyColumn("Date", AddonFile::fileDate).pctWidth(25)
-                    readonlyColumn("File size", AddonFile::fileLength).pctWidth(15)
-                    readonlyColumn("Versions", AddonFile::gameVersion) {
-                        cellFormat { text = it.joinToString() }
-                        remainingWidth()
-                    }
-                    smartResize()
-                    gridpaneConstraints {
-                        columnSpan = 2
-                    }
+        root.center = createGridPane()
+    }
+
+    private fun createGridPane() = GridPane().apply {
+        fitToWidth(root)
+        addClass("page-info")
+        columnConstraints.setAll(ColumnConstraints(), ColumnConstraints(-1.0, -1.0, Double.MAX_VALUE).also { hgrow = Priority.ALWAYS })
+        hgap = 4.0
+        vgap = 4.0
+        f("Name", addon::name)
+        f("Slug", addon::slug)
+        f("Summary", addon::summary)
+        af("Download count", addon::downloadCount)
+        hf("Website URL", addon::websiteUrl)
+        row {
+            tableview(observableListOf(*addon.latestFiles)) {
+                fitToWidth(this@apply)
+                readonlyColumn("Name", AddonFile::fileName).pctWidth(30)
+                readonlyColumn("Date", AddonFile::fileDate).pctWidth(25)
+                readonlyColumn("File size", AddonFile::fileLength).pctWidth(15)
+                readonlyColumn("Versions", AddonFile::gameVersion) {
+                    cellFormat { text = it.joinToString() }
+                    remainingWidth()
+                }
+                smartResize()
+                gridpaneConstraints {
+                    columnSpan = 2
                 }
             }
         }
