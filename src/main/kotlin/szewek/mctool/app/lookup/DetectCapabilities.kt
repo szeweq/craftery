@@ -9,7 +9,6 @@ import tornadofx.smartResize
 import kotlin.streams.toList
 
 class DetectCapabilities: ModLookup<Triple<String, String, String>>("Capabilities: %d") {
-    val NONE = "(None provided)"
     override val explain = "List of detected capabilities used by this mod"
 
     override fun decorate(tv: TableView<Triple<String, String, String>>) = tv.run {
@@ -22,8 +21,8 @@ class DetectCapabilities: ModLookup<Triple<String, String, String>>("Capabilitie
     override fun gatherItems(si: ScanInfo): List<Triple<String, String, String>> {
         return si.streamCapabilities().map { c ->
             val f = c.fields + c.supclasses.flatMap { si.getAllCapsFromType(it) }
-            val x = if (f.isNotEmpty()) f.joinToString("\n") else NONE
-            val y = c.supclasses.let { if (it.isNotEmpty()) it.joinToString("\n") else NONE }
+            val x = if (f.isNotEmpty()) f.joinToString("\n") else "(None provided)"
+            val y = c.supclasses.let { if (it.isNotEmpty()) it.joinToString("\n") else "(None provided)" }
             Triple(c.name, x, y)
         }.toList()
     }
