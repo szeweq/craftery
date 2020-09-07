@@ -13,7 +13,6 @@ import javafx.scene.layout.AnchorPane
 import javafx.stage.Screen
 import szewek.mctool.mcdata.Models
 import tornadofx.managedWhen
-import tornadofx.show
 import tornadofx.visibleWhen
 
 class SlotView(

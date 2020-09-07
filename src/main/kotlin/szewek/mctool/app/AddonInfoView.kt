@@ -1,6 +1,5 @@
 package szewek.mctool.app
 
-import javafx.geometry.Pos
 import javafx.scene.Node
 import javafx.scene.control.Hyperlink
 import javafx.scene.control.Label
