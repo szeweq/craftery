@@ -6,11 +6,14 @@ import javafx.beans.property.SimpleStringProperty
 import javafx.scene.control.Label
 import javafx.scene.image.ImageView
 import javafx.scene.input.ClipboardContent
+import javafx.scene.input.DragEvent
+import javafx.scene.input.MouseEvent
 import javafx.scene.input.TransferMode
 import javafx.scene.layout.AnchorPane
 import javafx.stage.Screen
 import szewek.mctool.mcdata.Models
 import tornadofx.managedWhen
+import tornadofx.show
 import tornadofx.visibleWhen
 
 class SlotView(
@@ -19,12 +22,12 @@ class SlotView(
 ): AnchorPane() {
     val type = SimpleStringProperty(name)
     private val count = SimpleIntegerProperty(0)
+    private val imgprop = Bindings.createObjectBinding({ Models.getImageOf(type.value) }, type, Models.compileState)
 
     init {
         val ps = Screen.getPrimary()
         val ox = ps.outputScaleX
         val oy = ps.outputScaleY
-
         val d = 34.0
         val s = 2.0
         setMinSize(d / ox, d / oy)
@@ -32,17 +35,13 @@ class SlotView(
         setPrefSize(d / ox, d / oy)
         style = "-fx-border-color: #AAA #666 #666 #AAA; -fx-border-width: 1px;"
 
-        val imgprop = Bindings.createObjectBinding({ Models.getImageOf(type.value) }, type, Models.compileState)
-
         children += ImageView().apply {
             imageProperty().bind(imgprop)
             isPreserveRatio = true
             fitWidth = 32.0 / ox
             fitHeight = 32.0 / oy
             setTopAnchor(this, 0.0)
-            //setBottomAnchor(this, 0.0)
             setLeftAnchor(this, 0.0)
-            //setRightAnchor(this, 0.0)
         }
         val visible = count.greaterThan(1)
         children += Label().apply {
@@ -53,35 +52,43 @@ class SlotView(
             setRightAnchor(this, s)
         }
 
-        setOnDragDetected {
-            val tm = if (targetable && !it.isControlDown) TransferMode.MOVE else TransferMode.COPY
-            val db = startDragAndDrop(tm)
-            val cb = ClipboardContent()
-            cb.putString(type.value)
-            db.dragView = imgprop.value
-            db.setContent(cb)
-            it.consume()
+        setOnDragDetected(::dragDetected)
+        setOnDragOver(::draggingOver)
+        setOnDragDropped(::dragDropping)
+        setOnDragDone(::dragDone)
+    }
+
+    private fun dragDetected(e: MouseEvent) {
+        val tm = if (targetable && !e.isControlDown) TransferMode.MOVE else TransferMode.COPY
+        val db = startDragAndDrop(tm)
+        val cb = ClipboardContent()
+        cb.putString(type.value)
+        db.dragView = imgprop.value
+        db.setContent(cb)
+        e.consume()
+    }
+
+    private fun draggingOver(e: DragEvent) {
+        if (e.gestureSource != this && targetable && e.dragboard.hasString()) {
+            e.acceptTransferModes(*TransferMode.COPY_OR_MOVE)
         }
-        setOnDragOver {
-            if (it.gestureSource != this && targetable && it.dragboard.hasString()) {
-                it.acceptTransferModes(*TransferMode.COPY_OR_MOVE)
-            }
-            it.consume()
+        e.consume()
+    }
+
+    private fun dragDropping(e: DragEvent) {
+        val db = e.dragboard
+        var b = false
+        if (db.hasString() && targetable) {
+            type.value = db.string
+            b = true
         }
-        setOnDragDropped {
-            val db = it.dragboard
-            var b = false
-            if (db.hasString() && targetable) {
-                type.value = db.string
-                b = true
-            }
-            it.isDropCompleted = b
-            it.consume()
-        }
-        setOnDragDone {
-            if (it.transferMode == TransferMode.MOVE && targetable) {
-                type.value = ""
-            }
+        e.isDropCompleted = b
+        e.consume()
+    }
+
+    private fun dragDone(e: DragEvent) {
+        if (e.transferMode == TransferMode.MOVE && targetable) {
+            type.value = ""
         }
     }
 }
