@@ -37,9 +37,7 @@ class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $na
         pages.bind(lookups) {
             val tv = it.makeTable()
             if (it.explain == null) tv else {
-                val vb = VBox()
-                vb.children += Label(it.explain).apply { paddingAll = 4 }
-                vb.children += tv
+                val vb = VBox(Label(it.explain).apply { paddingAll = 4 }, tv)
                 VBox.setVgrow(tv, Priority.ALWAYS)
                 vb
             }
