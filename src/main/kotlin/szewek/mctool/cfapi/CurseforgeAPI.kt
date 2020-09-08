@@ -15,7 +15,6 @@ object CurseforgeAPI {
         return Fuel.get(CF_API + "addon/$addonId/files").responseObject<Array<AddonFile>>().third.get()
     }
 
-    //suspend fun downloadURL(addon: Int, file: Int): String {
-    //    return client.get(CF_API + "addon/$addon/file/$file/download-url")
-    //}
+    fun downloadURL(addon: Int, file: Int): String = Fuel.get(CF_API + "addon/$addon/file/$file/download-url")
+            .responseString().third.get()
 }
