@@ -47,6 +47,7 @@ class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
         vgap = 4.0
         f("Name", addon::name)
         f("Slug", addon::slug)
+        f("Authors") { addon.authors.joinToString { it.name } }
         f("Summary", addon::summary)
         af("Download count", addon::downloadCount)
         hf("Website URL", addon::websiteUrl)
