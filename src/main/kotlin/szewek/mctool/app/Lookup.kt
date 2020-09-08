@@ -76,12 +76,14 @@ class Lookup(
                 updateMessage("Reading manifest...")
                 updateProgress(0, 1)
                 val files = Modpack.readManifest(ZipInputStream(fi))
-                for ((pid, fid) in files) {
+                val l = files.size
+                files.forEachIndexed { i, (pid, fid) ->
+                    updateMessage("Getting file URL [$i / $l]...")
+                    updateProgress(0, 1)
                     val murl = CurseforgeAPI.downloadURL(pid, fid)
-                    if (!murl.endsWith(".jar")) { continue }
+                    if (!murl.endsWith(".jar")) { return@forEachIndexed }
                     val mname = murl.substringAfterLast('/')
                     updateMessage("Downloading $mname...")
-                    updateProgress(0, 1)
                     val mf = Downloader.downloadFile(murl, ::updateProgress)
                     updateMessage("Scanning $mname...")
                     si.scanArchive(ZipInputStream(mf))
