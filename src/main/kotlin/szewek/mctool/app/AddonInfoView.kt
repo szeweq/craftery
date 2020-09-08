@@ -8,6 +8,7 @@ import szewek.mctool.cfapi.AddonFile
 import szewek.mctool.cfapi.AddonSearch
 import szewek.mctool.cfapi.latest
 import szewek.mctool.util.FileLoader
+import szewek.mctool.util.KtUtil
 import tornadofx.*
 
 class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
@@ -38,7 +39,10 @@ class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
     private fun createGridPane() = GridPane().apply {
         fitToWidth(root)
         addClass("page-info")
-        columnConstraints.setAll(ColumnConstraints(), ColumnConstraints(-1.0, -1.0, Double.MAX_VALUE).also { hgrow = Priority.ALWAYS })
+        columnConstraints.setAll(
+                ColumnConstraints(90.0, -1.0, -1.0),
+                ColumnConstraints(-1.0, -1.0, Double.MAX_VALUE).also { hgrow = Priority.ALWAYS }
+        )
         hgap = 4.0
         vgap = 4.0
         f("Name", addon::name)
@@ -51,7 +55,10 @@ class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
                 fitToWidth(this@apply)
                 readonlyColumn("Name", AddonFile::fileName).pctWidth(30)
                 readonlyColumn("Date", AddonFile::fileDate).pctWidth(25)
-                readonlyColumn("File size", AddonFile::fileLength).pctWidth(15)
+                readonlyColumn("File size", AddonFile::fileLength) {
+                    cellFormat { text = KtUtil.lengthInBytes(it.toLong()) }
+                    pctWidth(15)
+                }
                 readonlyColumn("Versions", AddonFile::gameVersion) {
                     cellFormat { text = it.joinToString() }
                     remainingWidth()

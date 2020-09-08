@@ -23,5 +23,21 @@ public class KtUtil {
 		return Map.ofEntries(map.entrySet().toArray(new Map.Entry[0]));
 	}
 
+	private static final String SIZES = "kMGT";
+
+	public static String lengthInBytes(long size) {
+		var i = 0;
+		double x = size;
+		while (x >= 1024.0) {
+			x /= 1024.0;
+			i++;
+		}
+		if (i == 0) {
+			return "" + size + " bytes";
+		}
+		if (i > 4) { i = 4; }
+		return String.format("%.2f %cB", x, SIZES.charAt(i - 1));
+	}
+
 	private KtUtil() {}
 }
