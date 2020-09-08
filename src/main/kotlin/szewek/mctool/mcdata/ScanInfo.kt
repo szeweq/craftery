@@ -8,9 +8,9 @@ import org.objectweb.asm.tree.FieldNode
 import szewek.mctool.util.ClassNodeMap
 import szewek.mctool.util.KtUtil
 import java.io.InputStream
-import java.nio.charset.Charset
 import java.util.stream.Stream
 import java.util.zip.ZipInputStream
+import javax.json.JsonString
 
 class ScanInfo {
     val map = ClassNodeMap()
@@ -26,6 +26,7 @@ class ScanInfo {
     }
     val res = mutableMapOf<String, Scanner.JsonInfo>()
     val deps = mutableSetOf<String>()
+    val tags = mutableMapOf<String, MutableSet<String>>()
 
     fun scanArchive(input: ZipInputStream) {
         input.eachEntry {
@@ -70,9 +71,22 @@ class ScanInfo {
         val jr = Scanner.JSON.createReader(data, Charsets.UTF_8)
         runCatching { jr.readObject() }.onSuccess {
             val drt = DataResourceType.detect(kind, rest)
-            val ji = Scanner.JsonInfo(rest, namespace, drt)
-            ji.gatherDetails(it)
-            res[name] = ji
+            if (drt.isTagType) {
+                val cs = it.getJsonArray("values").stream()
+                        .map { jv -> if (jv is JsonString) jv.string else null }
+                        .filterNotNull()
+                        .toMutableSet()
+                val ts = tags[name]
+                if (ts == null) {
+                    tags[name] = cs
+                } else {
+                    ts += cs
+                }
+            } else {
+                val ji = Scanner.JsonInfo(rest, namespace, drt)
+                ji.gatherDetails(it)
+                res[name] = ji
+            }
         }
     }
 

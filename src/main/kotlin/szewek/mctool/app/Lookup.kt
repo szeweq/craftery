@@ -32,7 +32,8 @@ class Lookup(
             ListResourceData(),
             DetectCapabilities(),
             StaticFields(),
-            SuspiciousLazyOptionals()
+            SuspiciousLazyOptionals(),
+            ListAllTags()
     )
     private val index = SimpleIntegerProperty()
     private val pages = FXCollections.observableArrayList<Node>()
