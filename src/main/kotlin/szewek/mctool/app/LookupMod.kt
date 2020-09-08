@@ -80,6 +80,7 @@ class LookupMod(
                 val files = Modpack.readManifest(ZipInputStream(fi))
                 for ((pid, fid) in files) {
                     val murl = CurseforgeAPI.downloadURL(pid, fid)
+                    if (!murl.endsWith(".jar")) { continue }
                     val mname = murl.substringAfterLast('/')
                     updateMessage("Downloading $mname...")
                     updateProgress(0, 1)
