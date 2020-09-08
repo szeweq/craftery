@@ -22,6 +22,10 @@ public enum DataResourceType {
 		this.dir = dir;
 	}
 
+	public boolean isTagType() {
+		return dir.startsWith("tags/");
+	}
+
 
 	static DataResourceType detect(String mainDir, String path) {
 		return switch (mainDir) {
