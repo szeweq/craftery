@@ -9,10 +9,7 @@ import javafx.scene.control.ListView
 import javafx.scene.layout.BorderPane
 import javafx.scene.layout.Priority
 import javafx.scene.layout.VBox
-import szewek.mctool.app.lookup.DetectCapabilities
-import szewek.mctool.app.lookup.ListResourceData
-import szewek.mctool.app.lookup.StaticFields
-import szewek.mctool.app.lookup.SuspiciousLazyOptionals
+import szewek.mctool.app.lookup.*
 import szewek.mctool.cfapi.CurseforgeAPI
 import szewek.mctool.layout.LoaderPane
 import szewek.mctool.mcdata.Modpack
@@ -25,7 +22,7 @@ import tornadofx.cleanBind
 import tornadofx.paddingAll
 import java.util.zip.ZipInputStream
 
-class LookupMod(
+class Lookup(
         name: String,
         private val loader: FileLoader,
         private val modpack: Boolean = false

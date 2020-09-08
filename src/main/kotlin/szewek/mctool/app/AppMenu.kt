@@ -17,7 +17,7 @@ class AppMenu(mainView: MainView) : MenuBar() {
                     )
                     if (files.isNotEmpty()) {
                         val f = files[0]
-                        mainView.openTab(LookupMod(f.name, FileLoader.fromFile(f)))
+                        mainView.openTab(Lookup(f.name, FileLoader.fromFile(f)))
                     }
                 }
                 "About" action { About().dialog() }

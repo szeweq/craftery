@@ -24,7 +24,7 @@ class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
                 setOnAction {
                     val lf = addon.latestFiles.latest()
                     if (lf != null) {
-                        find<MainView>().openTab(LookupMod(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
+                        find<MainView>().openTab(Lookup(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
                     } else {
                         text = "No files found"
                         isDisable = true
