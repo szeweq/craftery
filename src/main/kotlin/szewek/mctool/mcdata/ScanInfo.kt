@@ -8,7 +8,9 @@ import org.objectweb.asm.tree.FieldNode
 import szewek.mctool.util.ClassNodeMap
 import szewek.mctool.util.KtUtil
 import java.io.InputStream
+import java.nio.charset.Charset
 import java.util.stream.Stream
+import java.util.zip.ZipInputStream
 
 class ScanInfo {
     val map = ClassNodeMap()
@@ -24,6 +26,14 @@ class ScanInfo {
     }
     val res = mutableMapOf<String, Scanner.JsonInfo>()
     val deps = mutableSetOf<String>()
+
+    fun scanArchive(input: ZipInputStream) {
+        input.eachEntry {
+            if (!it.isDirectory) {
+                scanFile(it.name, input)
+            }
+        }
+    }
 
     fun scanFile(name: String, data: InputStream) {
         when {
@@ -57,7 +67,7 @@ class ScanInfo {
             return
         }
         val (kind, namespace, rest) = path
-        val jr = Scanner.JSON.createReader(data)
+        val jr = Scanner.JSON.createReader(data, Charsets.UTF_8)
         runCatching { jr.readObject() }.onSuccess {
             val drt = DataResourceType.detect(kind, rest)
             val ji = Scanner.JsonInfo(rest, namespace, drt)

@@ -13,8 +13,11 @@ import szewek.mctool.app.lookup.DetectCapabilities
 import szewek.mctool.app.lookup.ListResourceData
 import szewek.mctool.app.lookup.StaticFields
 import szewek.mctool.app.lookup.SuspiciousLazyOptionals
+import szewek.mctool.cfapi.CurseforgeAPI
 import szewek.mctool.layout.LoaderPane
-import szewek.mctool.mcdata.Scanner
+import szewek.mctool.mcdata.Modpack
+import szewek.mctool.mcdata.ScanInfo
+import szewek.mctool.util.Downloader
 import szewek.mctool.util.FileLoader
 import tornadofx.View
 import tornadofx.bind
@@ -22,7 +25,11 @@ import tornadofx.cleanBind
 import tornadofx.paddingAll
 import java.util.zip.ZipInputStream
 
-class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $name") {
+class LookupMod(
+        name: String,
+        private val loader: FileLoader,
+        private val modpack: Boolean = false
+): View("Lookup: $name") {
     override val root = LoaderPane()
     private val lookups = FXCollections.observableArrayList(
             ListResourceData(),
@@ -58,17 +65,37 @@ class LookupMod(name: String, private val loader: FileLoader): View("Lookup: $na
             }
         }
 
-        lookupFields()
+        processLookups()
     }
 
-    private fun lookupFields() {
+    private fun processLookups() {
         root.launchTask {
-            updateMessage("Downloading file...")
-            updateProgress(0, 1)
-            val fi = loader.load(::updateProgress)
-            updateMessage("Scanning classes...")
-            updateProgress(0, 1)
-            val si = Scanner.scanArchive(ZipInputStream(fi))
+            val si = ScanInfo()
+            if (modpack) {
+                updateMessage("Downloading modpack...")
+                updateProgress(0, 1)
+                val fi = loader.load(::updateProgress)
+                updateMessage("Reading manifest...")
+                updateProgress(0, 1)
+                val files = Modpack.readManifest(ZipInputStream(fi))
+                for ((pid, fid) in files) {
+                    val murl = CurseforgeAPI.downloadURL(pid, fid)
+                    val mname = murl.substringAfterLast('/')
+                    updateMessage("Downloading $mname...")
+                    updateProgress(0, 1)
+                    val mf = Downloader.downloadFile(murl, ::updateProgress)
+                    updateMessage("Scanning $mname...")
+                    si.scanArchive(ZipInputStream(mf))
+                }
+            } else {
+                updateMessage("Downloading file...")
+                updateProgress(0, 1)
+                val fi = loader.load(::updateProgress)
+                updateMessage("Scanning classes...")
+                updateProgress(0, 1)
+                si.scanArchive(ZipInputStream(fi))
+            }
+
             updateMessage("Gathering results...")
             updateProgress(2, 3)
             for (l in lookups) {

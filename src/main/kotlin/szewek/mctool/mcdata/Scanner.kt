@@ -3,6 +3,7 @@ package szewek.mctool.mcdata
 import com.electronwill.nightconfig.toml.TomlParser
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.*
+import szewek.mctool.cfapi.CurseforgeAPI
 import szewek.mctool.util.ClassNodeMap
 import java.util.zip.ZipInputStream
 import javax.json.Json
@@ -12,16 +13,6 @@ import javax.json.JsonReaderFactory
 object Scanner {
     val TOML = TomlParser()
     val JSON: JsonReaderFactory = Json.createReaderFactory(null)
-
-    fun scanArchive(input: ZipInputStream): ScanInfo {
-        val si = ScanInfo()
-        input.eachEntry {
-            if (!it.isDirectory) {
-                si.scanFile(it.name, input)
-            }
-        }
-        return si
-    }
 
     class JsonInfo(val name: String, val namespace: String, val type: DataResourceType) {
         val details = mutableMapOf<String, String>()

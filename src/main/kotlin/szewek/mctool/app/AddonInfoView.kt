@@ -20,16 +20,14 @@ class AddonInfoView(private val addon: AddonSearch): View(addon.name) {
                 maxWidth = Double.MAX_VALUE
                 hgrow = Priority.ALWAYS
             }
-            if (addon.categorySection.packageType == 6) {
-                button("Lookup mod code") {
-                    setOnAction {
-                        val lf = addon.latestFiles.latest()
-                        if (lf != null) {
-                            find<MainView>().openTab(LookupMod(lf.fileName, FileLoader.fromURL(lf.downloadUrl)))
-                        } else {
-                            text = "No files found"
-                            isDisable = true
-                        }
+            button("Lookup") {
+                setOnAction {
+                    val lf = addon.latestFiles.latest()
+                    if (lf != null) {
+                        find<MainView>().openTab(LookupMod(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
+                    } else {
+                        text = "No files found"
+                        isDisable = true
                     }
                 }
             }
