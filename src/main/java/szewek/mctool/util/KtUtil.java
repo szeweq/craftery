@@ -33,7 +33,7 @@ public class KtUtil {
 			i++;
 		}
 		if (i == 0) {
-			return "" + size + " bytes";
+			return size + " bytes";
 		}
 		if (i > 4) { i = 4; }
 		return String.format("%.2f %cB", x, SIZES.charAt(i - 1));
