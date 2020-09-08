@@ -19,6 +19,8 @@ val FieldNode.fixedDesc: String get() = if (desc.startsWith('L')) desc.substring
 inline fun <reified T> Map<*, T>.valueStream(): Stream<T> = KtUtil.streamValuesFrom(this)
 fun InsnList.stream(): Stream<AbstractInsnNode> = StreamSupport.stream(spliterator(), false)
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
+fun <T> Stream<T>.toMutableSet(): MutableSet<T> = collect(Collectors.toSet())
+
 @Suppress("UNCHECKED_CAST")
 inline fun <reified R> Stream<*>.filterIsInstance(): Stream<R> = filter { it is R } as Stream<R>
 @Suppress("UNCHECKED_CAST")
