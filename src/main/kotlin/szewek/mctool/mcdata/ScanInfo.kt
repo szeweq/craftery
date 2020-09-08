@@ -36,7 +36,7 @@ class ScanInfo {
         }
     }
 
-    fun scanFile(name: String, data: InputStream) {
+    private fun scanFile(name: String, data: InputStream) {
         when {
             name == "META-INF/mods.toml" -> {
                 // Assuming this is a Forge mod
@@ -72,15 +72,15 @@ class ScanInfo {
         runCatching { jr.readObject() }.onSuccess {
             val drt = DataResourceType.detect(kind, rest)
             if (drt.isTagType) {
+                val loc = Scanner.pathToLocation(name)
                 val cs = it.getJsonArray("values").stream()
                         .map { jv -> if (jv is JsonString) jv.string else null }
                         .filterNotNull()
-                        .toMutableSet()
-                val ts = tags[name]
+                val ts = tags[loc]
                 if (ts == null) {
-                    tags[name] = cs
+                    tags[loc] = cs.toMutableSet()
                 } else {
-                    ts += cs
+                    cs.forEach(ts::add)
                 }
             } else {
                 val ji = Scanner.JsonInfo(rest, namespace, drt)
