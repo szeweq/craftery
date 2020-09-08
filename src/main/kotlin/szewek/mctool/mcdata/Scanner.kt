@@ -55,6 +55,9 @@ object Scanner {
                 }
                 false
             }
-        }.map { it.name to it.signature.substringAfter('<').substringBeforeLast('>') }.toSet()
+        }.map {
+            if (it.signature == null) { it.name to "NONE" }
+            else { it.name to it.signature.substringAfter('<').substringBeforeLast('>') }
+        }.toSet()
     }
 }
