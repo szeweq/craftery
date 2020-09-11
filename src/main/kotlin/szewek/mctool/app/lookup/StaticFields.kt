@@ -3,6 +3,7 @@ package szewek.mctool.app.lookup
 import javafx.scene.control.TableView
 import szewek.mctool.mcdata.ResourceType
 import szewek.mctool.mcdata.ScanInfo
+import szewek.mctool.mcdata.Scanner
 import szewek.mctool.mcdata.fixedDesc
 import tornadofx.pctWidth
 import tornadofx.readonlyColumn
@@ -28,7 +29,8 @@ class StaticFields: ModLookup<StaticFields.FieldData>("Static fields: %d") {
             val desc = v.fixedDesc
             val rt = si.getResourceType(desc)
             val ift = si.map.getAllInterfaceTypes(desc)
-            FieldData(v.name, rt, c.name, "Type: $desc\nInterfaces: ${ift.joinToString()}")
+            val sig = if (v.signature != null) "\nSignature: ${Scanner.genericFromSignature(v.signature)}" else ""
+            FieldData(v.name, rt, c.name, "Type: $desc\nInterfaces: ${ift.joinToString()}$sig")
         }.toList()
     }
 }
