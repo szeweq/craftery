@@ -7,8 +7,14 @@ import javafx.scene.control.Menu
 import javafx.scene.control.MenuBar
 import javafx.scene.control.MenuItem
 import tornadofx.addChildIfPossible
+import kotlin.reflect.full.createInstance
 
-inline infix fun <T: Parent> T.children(fn: ChildrenOf.() -> Unit): T {
+inline fun <T: Parent> T.children(fn: ChildrenOf.() -> Unit): T {
+    fn(ChildrenOf(this))
+    return this
+}
+inline fun <T: Parent> T.with(pfn: (T.() -> Unit) = {}, fn: ChildrenOf.() -> Unit): T {
+    pfn(this)
     fn(ChildrenOf(this))
     return this
 }
