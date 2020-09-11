@@ -54,10 +54,10 @@ class ScanInfo {
                 }
             }
             name.endsWith(".json") -> {
-                scanJsonFile(name, data)
+                if (!name.endsWith("sounds.json")) scanJsonFile(name, data)
             }
             name.endsWith(".class") -> {
-                scanClassFile(name, data)
+                if (!(name.startsWith("kotlin") || name.startsWith("scala"))) scanClassFile(name, data)
             }
         }
     }
@@ -101,7 +101,7 @@ class ScanInfo {
         val tn = map.getLastSuperClass(typename)
         for ((src, rts) in ResourceType.bySource) {
             if (tn.startsWith(src.pkg)) {
-                return rts.find { tn.substring(src.pkg.length) == it.type } ?: ResourceType.UNKNOWN
+                return rts.find { it.isCompatible(tn) } ?: ResourceType.UNKNOWN
             }
         }
         return ResourceType.UNKNOWN
