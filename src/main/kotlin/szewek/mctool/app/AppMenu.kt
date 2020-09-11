@@ -27,6 +27,7 @@ class AppMenu(mainView: MainView) : MenuBar() {
                 "Search mods" action { mainView.selectOrOpenTab<ModSearch>() }
                 "Language editor" action { mainView.selectOrOpenTab<LanguageEditor>() }
                 "Create recipes" action { mainView.selectOrOpenTab<RecipeCreator>() }
+                "Mapping viewer" action { mainView.selectOrOpenTab<MappingViewer>() }
             }
         }
     }
