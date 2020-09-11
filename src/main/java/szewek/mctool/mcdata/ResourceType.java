@@ -15,6 +15,10 @@ public enum ResourceType {
 	ITEM_GROUP(Source.MINECRAFT, "item/ItemGroup"),
 	CAPABILITY(Source.FORGE, "common/capabilities/Capability"),
 	REGISTRY(Source.FORGE, "registries/IForgeRegistry"),
+	TAG(Source.MINECRAFT, "tags/ITag"),
+	WORLDGEN_FEATURE(Source.MINECRAFT, "world/gen/feature/Feature"),
+	ENCHANTMENT(Source.MINECRAFT, "enchantment/Enchantment"),
+	FOOD(Source.MINECRAFT, "item/Food"),
 	UNKNOWN(Source.UNKNOWN, "");
 
 	public final Source source;
@@ -23,6 +27,16 @@ public enum ResourceType {
 	ResourceType(Source src, String typ) {
 		source = src;
 		type = typ;
+	}
+
+	public boolean isCompatible(String typename) {
+		var tn = typename.substring(source.pkg.length());
+		var b = tn.equals(typename);
+		if (!b) switch (this) {
+			case REGISTRY: return tn.equals("registries/ForgeRegistry");
+			case TAG: return tn.equals("tags/Itag$INamedTag") || tn.equals("tags/Tag");
+		}
+		return b;
 	}
 
 	public enum Source {
