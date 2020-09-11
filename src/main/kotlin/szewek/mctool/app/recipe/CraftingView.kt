@@ -14,7 +14,7 @@ class CraftingView: HBox(4.0) {
             minHeightProperty().bind(prefHeightProperty())
             prefColumns = 3
             prefRows = 3
-        } children {
+        }.children {
             for (i in 0..8) {
                 + SlotView("minecraft:item/dirt", true)
             }

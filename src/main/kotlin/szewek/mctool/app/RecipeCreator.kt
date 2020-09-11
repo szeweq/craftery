@@ -22,7 +22,7 @@ class RecipeCreator: View("Create recipes") {
     init {
         val pct50 = root.widthProperty().divide(2)
 
-        root.addRow(0, HBox() children {
+        root.addRow(0, HBox().children {
             + ComboBox(allRecipes).apply { bind(recipeType) }
         })
         root.addRow(
@@ -30,7 +30,7 @@ class RecipeCreator: View("Create recipes") {
                 VBox(CraftingView()).apply { prefWidthProperty().bind(pct50) },
                 ScrollPane(TilePane().apply {
                     alignment = Pos.TOP_LEFT
-                } children { for (i in 0..26) { + SlotView() } }).apply {
+                }.children { for (i in 0..26) { + SlotView() } }).apply {
                     prefWidthProperty().bind(pct50)
                     isFitToWidth = true
                     isFitToHeight = true
