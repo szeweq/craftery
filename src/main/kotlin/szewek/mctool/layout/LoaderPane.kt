@@ -6,6 +6,7 @@ import javafx.scene.control.ProgressBar
 import javafx.scene.layout.StackPane
 import javafx.scene.layout.VBox
 import szewek.mctool.app.css
+import szewek.mctool.app.task.TaskManager
 import tornadofx.*
 
 class LoaderPane: StackPane() {
@@ -31,6 +32,7 @@ class LoaderPane: StackPane() {
                 Platform.runLater(::onTaskFinish)
             }
         }
+        TaskManager.addTask(t)
         progress.bind(t.progressProperty(), true)
         msg.bind(t.messageProperty(), true)
     }
