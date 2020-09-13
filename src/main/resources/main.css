@@ -46,6 +46,26 @@
     -fx-background-radius: 0;
     -fx-padding: 0.15em;
 }
+.list-view, .list-view:focused,
+.table-view, .table-view:focused {
+    -fx-background-color: -fx-control-inner-background;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-background-radius: 0;
+}
+.scroll-bar > .increment-button > .increment-arrow,
+.scroll-bar > .decrement-button > .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color,derive(-fx-base,65%);
+}
+.scroll-bar > .increment-button:hover > .increment-arrow,
+.scroll-bar > .decrement-button:hover > .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color,derive(-fx-base,70%);
+}
+.scroll-bar > .increment-button:pressed > .increment-arrow,
+.scroll-bar > .decrement-button:pressed > .decrement-arrow {
+    -fx-background-color: -fx-mark-highlight-color,derive(-fx-base,75%);
+}
+
 /* CUSTOM CLASSES */
 .bolder { -fx-font-weight: BOLD; }
 .page-header {
