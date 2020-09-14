@@ -15,16 +15,16 @@ import javax.json.JsonString
 class ScanInfo {
     val map = ClassNodeMap()
     private val caps by lazy {
-        KtUtil.buildMap<String, Scanner.CapabilitiesInfo> {
+        KtUtil.buildMap<String, CapabilitiesInfo> {
             for (c in map.classes) {
                 val n = c.methods.find { m -> "getCapability" == m.name && TypeNames.GET_CAPABILITY == m.desc }
                 if (n != null) {
-                    it[c.name] = Scanner.CapabilitiesInfo(c.name, n.instructions)
+                    it[c.name] = CapabilitiesInfo(c.name, n.instructions)
                 }
             }
         }
     }
-    val res = mutableMapOf<String, Scanner.JsonInfo>()
+    val res = mutableMapOf<String, JsonInfo>()
     val deps = mutableSetOf<String>()
     val tags = mutableMapOf<String, MutableSet<String>>()
 
@@ -83,7 +83,7 @@ class ScanInfo {
                     cs.forEach(ts::add)
                 }
             } else {
-                val ji = Scanner.JsonInfo(rest, namespace, drt)
+                val ji = JsonInfo(rest, namespace, drt)
                 ji.gatherDetails(it)
                 res[name] = ji
             }
@@ -129,7 +129,7 @@ class ScanInfo {
         .map { c ->
             val f = c.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
             if (f.isEmpty()) return@map null
-            Scanner.LazyOptionalInfo(map, c, f)
+            LazyOptionalInfo(map, c, f)
         }
         .filterNotNull()
         .filter { it.warnings.isNotEmpty() }
