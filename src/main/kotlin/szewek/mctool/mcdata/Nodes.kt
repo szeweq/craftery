@@ -20,6 +20,7 @@ inline fun <reified T> Map<*, T>.valueStream(): Stream<T> = KtUtil.streamValuesF
 fun InsnList.stream(): Stream<AbstractInsnNode> = StreamSupport.stream(spliterator(), false)
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
 fun <T> Stream<T>.toMutableSet(): MutableSet<T> = collect(Collectors.toSet())
+fun <T, K, V> Stream<T>.toMap(kfn: (T) -> K, vfn: (T) -> V): MutableMap<K, V> = collect(Collectors.toMap(kfn, vfn))
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified R> Stream<*>.filterIsInstance(): Stream<R> = filter { it is R } as Stream<R>

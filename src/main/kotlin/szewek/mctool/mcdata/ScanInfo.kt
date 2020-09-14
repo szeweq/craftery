@@ -25,7 +25,7 @@ class ScanInfo {
         }
     }
     val res = mutableMapOf<String, JsonInfo>()
-    val deps = mutableSetOf<String>()
+    private val deps = mutableSetOf<String>()
     val tags = mutableMapOf<String, MutableSet<String>>()
 
     fun scanArchive(input: ZipInputStream) {
@@ -125,7 +125,7 @@ class ScanInfo {
 
     fun streamCapabilities() = caps.valueStream()
 
-    fun streamLazyOptionals() = map.classes.stream()
+    fun streamLazyOptionals(): Stream<LazyOptionalInfo> = map.classStream
         .map { c ->
             val f = c.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
             if (f.isEmpty()) return@map null

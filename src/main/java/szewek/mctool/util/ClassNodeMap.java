@@ -20,6 +20,10 @@ public class ClassNodeMap {
         return nodes.values();
     }
 
+    public Stream<ClassNode> getClassStream() {
+        return nodes.values().stream();
+    }
+
     public Stream<Pair<ClassNode, MethodNode>> getAllClassMethods() {
         return getFlattenedClassValues(c -> c.methods);
     }
@@ -99,27 +103,28 @@ public class ClassNodeMap {
         } while (true);
     }
 
-    public Stream<Triple<ClassNode, MethodNode, FieldInsnNode>> streamUsagesOf(ClassNode cn, FieldNode fn) {
+    public <N extends AbstractInsnNode> Stream<Triple<ClassNode, MethodNode, N>> instructionsStream(Function<Stream<AbstractInsnNode>, Stream<N>> tfn) {
         return getAllClassMethods().flatMap(p -> {
             var c = p.getFirst();
             var m = p.getSecond();
-            return StreamSupport.stream(m.instructions.spliterator(), false)
-                    .map(it -> it instanceof FieldInsnNode ? (FieldInsnNode) it : null)
-                    .filter(Objects::nonNull)
-                    .filter(it -> fn.name.equals(it.name) && fn.desc.equals(it.desc) && cn.name.equals(it.owner))
+            return tfn.apply(StreamSupport.stream(m.instructions.spliterator(), false))
                     .map(it -> new Triple<>(c, m, it));
         });
     }
 
+    public Stream<Triple<ClassNode, MethodNode, FieldInsnNode>> streamUsagesOf(ClassNode cn, FieldNode fn) {
+        return instructionsStream(s -> s
+                .map(it -> it instanceof FieldInsnNode ? (FieldInsnNode) it : null)
+                .filter(Objects::nonNull)
+                .filter(it -> fn.name.equals(it.name) && fn.desc.equals(it.desc) && cn.name.equals(it.owner))
+        );
+    }
+
     public Stream<Triple<ClassNode, MethodNode, MethodInsnNode>> streamUsagesOf(ClassNode cn, MethodNode mn) {
-        return getAllClassMethods().flatMap(p -> {
-            var c = p.getFirst();
-            var m = p.getSecond();
-            return StreamSupport.stream(m.instructions.spliterator(), false)
-                    .map(it -> it instanceof MethodInsnNode ? (MethodInsnNode) it : null)
-                    .filter(Objects::nonNull)
-                    .filter(it -> mn.name.equals(it.name) && mn.desc.equals(it.desc) && cn.name.equals(it.owner))
-                    .map(it -> new Triple<>(c, m, it));
-        });
+        return instructionsStream(s -> s
+                .map(it -> it instanceof MethodInsnNode ? (MethodInsnNode) it : null)
+                .filter(Objects::nonNull)
+                .filter(it -> mn.name.equals(it.name) && mn.desc.equals(it.desc) && cn.name.equals(it.owner))
+        );
     }
 }
