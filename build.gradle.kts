@@ -9,7 +9,7 @@ plugins {
 group = "szewek.mctool"
 
 val ktorVersion = "1.4.0"
-val fuelVersion = "2.2.3"
+val fuelVersion = "2.3.1"
 val asmVersion = "9.0"
 
 val compileKotlin: KotlinCompile by tasks
