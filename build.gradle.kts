@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.4.21-2"
+    kotlin("jvm") version "1.4.0"
     application
     id("org.openjfx.javafxplugin") version "0.0.9"
     id("org.beryx.jlink") version "2.21.3"
@@ -9,7 +9,7 @@ plugins {
 group = "szewek.mctool"
 
 val ktorVersion = "1.4.0"
-val fuelVersion = "2.2.3"
+val fuelVersion = "2.3.1"
 val asmVersion = "9.0"
 
 val compileKotlin: KotlinCompile by tasks
@@ -40,7 +40,7 @@ repositories {
     mavenCentral()
 }
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21-2")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.0")
     implementation("com.github.kittinunf.result:result:3.1.0")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
