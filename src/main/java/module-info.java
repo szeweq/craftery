@@ -16,10 +16,11 @@ module mctool.main {
     requires kotlin.stdlib.jdk8;
 	requires org.objectweb.asm.util;
 	requires annotations;
+	requires com.google.gson;
 
 	exports szewek.mctool;
     exports szewek.mctool.app;
 
-    opens szewek.mctool.cfapi to gson;
-    opens szewek.mctool.mcdata to gson;
+    opens szewek.mctool.cfapi to com.google.gson;
+    opens szewek.mctool.mcdata to com.google.gson;
 }
