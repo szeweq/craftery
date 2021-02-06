@@ -41,7 +41,7 @@ repositories {
 }
 dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.21-2")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.30")
     implementation("com.github.kittinunf.result:result:3.1.0")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
