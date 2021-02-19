@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "1.4.30"
     application
     id("org.openjfx.javafxplugin") version "0.0.9"
-    id("org.beryx.jlink") version "2.21.3"
+    id("org.beryx.jlink") version "2.23.3"
 }
 group = "szewek.mctool"
 
