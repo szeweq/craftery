@@ -13,12 +13,12 @@ class About: Fragment("About") {
 
     init {
         root.top = HBox(
-            Label("MCTool").apply { font = Font.font(20.0) }
+            Label("Craftery").apply { font = Font.font(20.0) }
         ).apply {
             padding = insets(4)
             alignment = Pos.CENTER
         }
-        root.center = Label("About MCTool")
+        root.center = Label("© 2020-2021 Szewek")
         root.bottom = HBox(
             Button("Close").apply { setOnAction { this@About.close() } }
         ).apply {

@@ -17,7 +17,7 @@ class MainView: View() {
 
     init {
         primaryStage.apply {
-            title = "MCTool"
+            title = "Craftery"
             width = 800.0
             height = 600.0
         }
@@ -27,7 +27,7 @@ class MainView: View() {
             managedWhen(hasTabs)
         }
         root.apply {
-            title = "MCTool"
+            title = "Craftery"
             top = AppMenu(this@MainView)
             centerProperty().bind(Bindings.`when`(hasTabs).then<Node>(tabPane).otherwise(welcome.root))
             right = TaskNodes.getTaskListPane()
