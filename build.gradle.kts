@@ -9,7 +9,7 @@ group = "szewek.mctool"
 
 val ktorVersion = "1.4.0"
 val fuelVersion = "2.3.1"
-val asmVersion = "9.0"
+val asmVersion = "9.1"
 
 //val compileKotlin: KotlinCompile by tasks
 //val compileJava: JavaCompile by tasks
