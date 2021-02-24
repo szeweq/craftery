@@ -2,9 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.4.30"
-    application
-    id("org.openjfx.javafxplugin") version "0.0.9"
-    id("org.beryx.jlink") version "2.21.3"
+
+    id("org.jetbrains.compose") version "0.3.0-rc1"
 }
 group = "szewek.mctool"
 
@@ -12,35 +11,39 @@ val ktorVersion = "1.4.0"
 val fuelVersion = "2.3.1"
 val asmVersion = "9.0"
 
-val compileKotlin: KotlinCompile by tasks
-val compileJava: JavaCompile by tasks
-compileJava.destinationDir = compileKotlin.destinationDir
+//val compileKotlin: KotlinCompile by tasks
+//val compileJava: JavaCompile by tasks
+//compileJava.destinationDir = compileKotlin.destinationDir
+
+repositories {
+    jcenter()
+    mavenCentral()
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
+}
 
 java {
     sourceCompatibility = JavaVersion.VERSION_14
     targetCompatibility = JavaVersion.VERSION_14
 }
 
-application {
-    applicationDefaultJvmArgs = listOf(
-            "--add-opens", "javafx.controls/javafx.scene.control=tornadofx",
-            "--add-opens", "javafx.graphics/javafx.scene=tornadofx",
-            "--add-exports", "javafx.graphics/com.sun.javafx.tk=tornadofx"
-            // module javafx.graphics does not export com.sun.javafx.tk to module tornadofx
-    )
-    mainClassName = "szewek.mctool.Launcher"
-    mainModule.set("mctool.main")
+compose.desktop {
+    application {
+        mainClass = "szewek.craftery.MainKt"
+        nativeDistributions {
+            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.AppImage, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+            packageName = "craftery"
+        }
+    }
 }
 
-javafx {
-    version = "14"
-    modules("javafx.controls")
-}
-repositories {
-    mavenCentral()
-}
 dependencies {
+    implementation(compose.desktop.currentOs)
+
+    // Two JSON libraries
     implementation("com.google.code.gson:gson:2.8.6")
+    implementation("javax.json:javax.json-api:1.1.4")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.30")
     implementation("com.github.kittinunf.result:result:3.1.0")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
@@ -51,16 +54,14 @@ dependencies {
     implementation("org.ow2.asm:asm-analysis:$asmVersion")
     implementation("org.ow2.asm:asm-commons:$asmVersion")
     implementation("org.ow2.asm:asm-util:$asmVersion")
-    implementation("no.tornado:tornadofx:1.7.20") {
-        exclude("org.jetbrains.kotlin")
-    }
     testImplementation(kotlin("test-junit"))
 }
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "14"
+    kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
 }
 
-jlink {
+/* jlink {
     options.addAll("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
     launcher {
         name = "mctool"
@@ -74,7 +75,4 @@ jlink {
     }
     addExtraDependencies("javafx")
     imageZip.set(project.file("${project.buildDir}/image-zip/mctool-img.zip"))
-}
-compileKotlin.kotlinOptions {
-    freeCompilerArgs = listOf("-Xinline-classes")
-}
+} */
