@@ -2,23 +2,15 @@ package szewek.craftery.views
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -28,6 +20,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import szewek.craftery.layout.SimpleTextField
 import szewek.craftery.layout.View
 import szewek.craftery.layout.defaultScrollbarOnDark
 import szewek.craftery.layout.hover
@@ -40,7 +33,7 @@ class LanguageEditor: View("Language Editor") {
     private val lang = mutableStateListOf<TranslationKeyValue>()
 
     class TranslationKeyValue(val key: String, val orig: String) {
-        val trans = mutableStateOf("")
+        var trans by mutableStateOf("")
     }
 
     init {
@@ -49,18 +42,7 @@ class LanguageEditor: View("Language Editor") {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    override fun content() = Scaffold(topBar = {
-        Row(Modifier.padding(start = 2.dp, end = 2.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-            Button({
-                val f = chooseJSON()
-                if (f != null) GlobalScope.launch(Dispatchers.IO) { loadFile(f) }
-            }) { Text("Load original file") }
-            Button({
-                val f = chooseJSON(true)
-                if (f != null) GlobalScope.launch(Dispatchers.IO) { saveTranslation(f) }
-            }) { Text("Save translations") }
-        }
-    }) {
+    override fun content() = Scaffold(topBar = { topBar() }) {
         Box {
             val state = rememberLazyListState()
             val onHover = MaterialTheme.colors.onSurface.copy(0.2f)
@@ -72,7 +54,6 @@ class LanguageEditor: View("Language Editor") {
                             Text(it.key, Modifier.padding(2.dp))
                             Row {
                                 val mod = Modifier.weight(0.5f).padding(2.dp)
-                                val (trans, setTrans) = it.trans
                                 ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
                                     Column(mod) {
                                         Text("Original", fontWeight = FontWeight.Bold)
@@ -80,12 +61,11 @@ class LanguageEditor: View("Language Editor") {
                                     }
                                     Column(mod) {
                                         Text("Translated", fontWeight = FontWeight.Bold)
-                                        BasicTextField(
-                                            trans, setTrans,
-                                            Modifier.fillMaxWidth().background(onHover, MaterialTheme.shapes.small).padding(4.dp),
-                                            textStyle = TextStyle(Color.White),
-                                            cursorBrush = SolidColor(Color.White),
-                                            singleLine = true
+                                        SimpleTextField(
+                                            it.trans,
+                                            it::trans::set,
+                                            Modifier.fillMaxWidth(),
+                                            background = onHover
                                         )
                                     }
                                 }
@@ -100,6 +80,21 @@ class LanguageEditor: View("Language Editor") {
                 defaultScrollbarOnDark
             )
         }
+    }
+
+    @Composable
+    private fun topBar() = Row(
+        Modifier.padding(start = 2.dp, end = 2.dp, bottom = 2.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Button({
+            val f = chooseJSON()
+            if (f != null) GlobalScope.launch(Dispatchers.IO) { loadFile(f) }
+        }) { Text("Load original file") }
+        Button({
+            val f = chooseJSON(true)
+            if (f != null) GlobalScope.launch(Dispatchers.IO) { saveTranslation(f) }
+        }) { Text("Save translations") }
     }
 
     private fun chooseJSON(save: Boolean = false) = with(chooser) {
@@ -132,7 +127,7 @@ class LanguageEditor: View("Language Editor") {
                 jw.beginObject()
                 val l = lang.sortedBy { it.key }
                 for (t in l) {
-                    val trans = t.trans.value
+                    val trans = t.trans
                     if (trans.isNotEmpty()) {
                         jw.name(t.key).value(trans)
                     }
