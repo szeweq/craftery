@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
@@ -28,8 +29,9 @@ fun ImageURL(
     alpha: Float = DefaultAlpha,
     colorFilter: ColorFilter? = null
 ) {
+    val scope = rememberCoroutineScope()
     val imgBytes = remember { mutableStateOf(emptyImageBytes) }
-    GlobalScope.launch {
+    scope.launch {
         val stream = Downloader.downloadFile(url) { _, _ -> }
         imgBytes.value = stream.readBytes()
     }
@@ -39,3 +41,5 @@ fun ImageURL(
 val emptyImageBytes: ByteArray = ByteArrayOutputStream().also {
     ImageIO.write(BufferedImage(1, 1, TYPE_INT_ARGB), "png", it)
 }.toByteArray()
+
+val emptySkijaImage: org.jetbrains.skija.Image = org.jetbrains.skija.Image.makeFromEncoded(emptyImageBytes)
