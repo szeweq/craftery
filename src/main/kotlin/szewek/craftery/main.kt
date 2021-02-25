@@ -39,12 +39,14 @@ fun main() = Window(title = "Craftery") {
                     Row(Modifier.fillMaxHeight().weight(1f), verticalAlignment = Alignment.CenterVertically) {
                         TabsView(ViewManager.views)
                     }
-                    Row(Modifier.fillMaxHeight().requiredWidth(28.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(Modifier.fillMaxHeight().requiredWidth(28.dp).padding(vertical = 6.dp)) {
                         val menuToggle = remember { mutableStateOf(false) }
                         val iconSize = 28.dp
                         val dismiss = { menuToggle.value = false }
 
-                        Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize).clickable { menuToggle.value = true })
+                        IconButton({ menuToggle.value = true }) {
+                            Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
+                        }
                         DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
                             menuContent(dismiss)
                         }
