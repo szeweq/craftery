@@ -1,11 +1,12 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
     kotlin("jvm") version "1.4.30"
 
-    id("org.jetbrains.compose") version "0.3.0-rc1"
+    id("org.jetbrains.compose") version "0.3.0"
 }
-group = "szewek.mctool"
+group = "szewek.craftery"
 
 val ktorVersion = "1.4.0"
 val fuelVersion = "2.3.1"
@@ -30,7 +31,7 @@ compose.desktop {
     application {
         mainClass = "szewek.craftery.MainKt"
         nativeDistributions {
-            targetFormats(org.jetbrains.compose.desktop.application.dsl.TargetFormat.AppImage, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Dmg, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Exe, org.jetbrains.compose.desktop.application.dsl.TargetFormat.Deb)
+            targetFormats(TargetFormat.AppImage, TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "craftery"
         }
     }
