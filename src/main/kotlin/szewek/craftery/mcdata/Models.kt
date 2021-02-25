@@ -1,38 +1,51 @@
 package szewek.craftery.mcdata
 
-/*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import com.google.gson.Gson
+import com.google.gson.JsonElement
+import com.google.gson.JsonObject
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.jetbrains.skija.Image
+import java.io.ByteArrayInputStream
+import java.util.concurrent.CountDownLatch
+import java.util.regex.Pattern
+
+
 object Models {
+    private val GSON = Gson()
     private val modelMap = mutableMapOf<String, ModelData>()
     private val textures = mutableMapOf<String, Image>()
-    val compileState = SimpleBooleanProperty(false)
+    var compileState by mutableStateOf(false)
+        private set
     private val matchModel = Pattern.compile("^assets/[a-z]+/models/.*\\.json$")
     private val matchTex = Pattern.compile("^assets/[a-z]+/textures/.*\\.png$")
 
-    fun compile(): TaskFunc {
-        return {
-            updateMessage("Compiling resources")
-            val latch = CountDownLatch(2)
-            val mt = task(func = compileModels(latch))
-            val tt = task(func = compileTextures(latch))
-            TaskManager.addTask(mt)
-            TaskManager.addTask(tt)
-            latch.await()
-            Platform.runLater { compileState.set(true) }
-            updateMessage("All compiled!")
+    fun compile() {
+        println("Compiling resources")
+        val latch = CountDownLatch(2)
+        with (GlobalScope) {
+            launch { compileTextures(latch) }
+            launch { compileModels(latch) }
         }
-
+        latch.await()
+        compileState = true
+        println("All compiled!")
     }
 
-    private fun compileModels(latch: CountDownLatch): TaskFunc = {
+    private fun compileModels(latch: CountDownLatch) {
         val allModels = MinecraftData.filesFromJar.filterKeys { matchModel.matcher(it).find() }
         for ((n, mb) in allModels) {
             val input = ByteArrayInputStream(mb)
-            val jr = Json.createReader(input)
+            val jr = GSON.newJsonReader(input.reader())
             jr.runCatching { use {
-                val o = readObject()
-                val p = o.getString("parent")
-                val t = if (o.containsKey("textures")) o.getJsonObject("textures").mapNotNull { (k, v) ->
-                    if (v is JsonString) k to v.string else null
+                val o = GSON.fromJson(this, JsonObject::class.java) as JsonObject
+                val p = o["parent"].asString
+                val t = if (o.has("textures")) o.getAsJsonObject("textures").entrySet().mapNotNull { (k, v) ->
+                    val s = checkTextures(v)
+                    if (s != null) k to s else null
                 }.toMap() else emptyMap()
                 if (p != null) {
                     modelMap[n] = ModelData(p, t)
@@ -42,17 +55,26 @@ object Models {
         latch.countDown()
     }
 
-    private fun compileTextures(latch: CountDownLatch): TaskFunc = {
+    private fun checkTextures(v: JsonElement): String? {
+        if (v.isJsonPrimitive) {
+            val pr = v.asJsonPrimitive
+            if (pr.isString)
+                return pr.asString
+        }
+        return null
+    }
+
+    private fun compileTextures(latch: CountDownLatch) {
         val allTex = MinecraftData.filesFromJar.filterKeys { matchTex.matcher(it).find() }
         for ((n, tb) in allTex) {
             val input = ByteArrayInputStream(tb)
-            val img = Image(input)
-            textures[n] = scale(img, 2)
+            val img = Image.makeFromEncoded(input.readAllBytes())
+            textures[n] = img // scale(img, 2)
         }
         latch.countDown()
     }
 
-    private fun scale(img: Image, scale: Int): Image {
+    /* private fun scale(img: Image, scale: Int): Image {
         val w = img.width.toInt()
         val h = img.height.toInt()
         if (w == 0 && h == 0 || scale == 1) {
@@ -72,10 +94,10 @@ object Models {
             }
         }
         return wimg
-    }
+    } */
 
     fun getImageOf(name: String): Image? {
-        if (!compileState.get()) return null
+        if (!compileState) return null
         if (name == "") return null
         val (ns, item) = decodeName(name)
         val m = "assets/$ns/models/$item.json"
@@ -106,11 +128,11 @@ object Models {
     }
 
     private fun decodeNameToImage(name: String): Image? {
-        if (!compileState.get()) return null
+        if (!compileState) return null
         val (ns, dir) = decodeName(name)
         val tf = "assets/$ns/textures/$dir.png"
         return textures[tf]
     }
 
     class ModelData(val parent: String?, val textures: Map<String, String>)
-}*/
+}

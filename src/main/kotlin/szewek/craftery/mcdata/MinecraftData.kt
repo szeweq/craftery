@@ -2,6 +2,7 @@ package szewek.craftery.mcdata
 
 import com.github.kittinunf.fuel.core.ProgressCallback
 import szewek.craftery.util.Downloader
+import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream
 
@@ -96,22 +97,20 @@ object MinecraftData {
         return ZipInputStream(input)
     }
 
-    /*fun loadAllFilesFromJar(v: String?): TaskFunc {
-        return {
-            updateMessage("Getting Minecraft client...")
-            val z = getMinecraftClientJar(v, ::updateProgress)
-            val out = ByteArrayOutputStream(DEFAULT_BUFFER_SIZE)
-            updateMessage("Unpacking Minecraft client...")
-            z?.eachEntry {
-                if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
-                    updateMessage("Unzipping file ${it.name}...")
-                    out.reset()
-                    z.copyTo(out)
-                    filesFromJar[it.name] = out.toByteArray()
-                }
+    fun loadAllFilesFromJar(v: String?) {
+        println("Getting Minecraft client...")
+        val z = getMinecraftClientJar(v) { _, _ -> }
+        val out = ByteArrayOutputStream(DEFAULT_BUFFER_SIZE)
+        println("Unpacking Minecraft client...")
+        z?.eachEntry {
+            if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
+                println("Unzipping file ${it.name}...")
+                out.reset()
+                z.copyTo(out)
+                filesFromJar[it.name] = out.toByteArray()
             }
         }
-    }*/
+    }
 
     class Manifest(val latest: Map<String, String>, val versions: List<Version>)
 
