@@ -30,6 +30,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.layout.View
 import szewek.craftery.layout.defaultScrollbarOnDark
+import szewek.craftery.layout.hover
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -65,13 +66,7 @@ class LanguageEditor: View("Language Editor") {
             val onHover = MaterialTheme.colors.onSurface.copy(0.2f)
             LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
                 items(lang) {
-                    val hoverBg = remember { mutableStateOf(Color.Transparent) }
-                    Box(Modifier.fillMaxWidth()
-                        .background(hoverBg.value, MaterialTheme.shapes.medium)
-                        .pointerMoveFilter(
-                            onEnter = {hoverBg.value = onHover; false},
-                            onExit = {hoverBg.value = Color.Transparent; false}
-                        )
+                    Box(Modifier.fillMaxWidth().hover(onHover, MaterialTheme.shapes.medium)
                     ) {
                         Column {
                             Text(it.key, Modifier.padding(2.dp))

@@ -21,10 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.AddonSearch
 import szewek.craftery.cfapi.CurseforgeAPI
-import szewek.craftery.layout.ComboBox
-import szewek.craftery.layout.View
-import szewek.craftery.layout.ViewManager
-import szewek.craftery.layout.defaultScrollbarOnDark
+import szewek.craftery.layout.*
 
 class ModSearch: View("Search mods") {
     private val search = mutableStateOf("")
@@ -44,14 +41,9 @@ class ModSearch: View("Search mods") {
             val onHover = MaterialTheme.colors.onSurface.copy(0.2f)
             LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
                 itemsIndexed(modlist) { _, item ->
-                    val hoverBg = remember { mutableStateOf(Color.Transparent) }
                     Box(Modifier
                         .clickable { ViewManager.open(AddonInfo(item)) }
-                        .background(hoverBg.value, MaterialTheme.shapes.medium)
-                        .pointerMoveFilter(
-                            onEnter = {hoverBg.value = onHover; false},
-                            onExit = {hoverBg.value = Color.Transparent; false}
-                        )
+                        .hover(onHover, shape = MaterialTheme.shapes.medium)
                     ) {
                         Column(Modifier.padding(4.dp)) {
                             Row {

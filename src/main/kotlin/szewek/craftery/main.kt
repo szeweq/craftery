@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import szewek.craftery.layout.CenteredColumn
 import szewek.craftery.layout.TabsView
 import szewek.craftery.layout.ViewManager
+import szewek.craftery.layout.hover
 import szewek.craftery.views.About
 import szewek.craftery.views.LanguageEditor
 import szewek.craftery.views.MappingViewer
@@ -62,8 +63,9 @@ fun main() = Window(title = "Craftery") {
 
 @Composable
 fun menuContent(dismiss: () -> Unit) {
+    val hoverColor = MaterialTheme.colors.onSurface.copy(0.2f)
     for (action in menuActions) {
-        DropdownMenuItem({ action.fn(); dismiss() }) { Text(action.text) }
+        DropdownMenuItem({ action.fn(); dismiss() }, Modifier.hover(hoverColor)) { Text(action.text) }
     }
 }
 

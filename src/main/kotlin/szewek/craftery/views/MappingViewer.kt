@@ -28,6 +28,7 @@ import kotlinx.coroutines.launch
 import szewek.craftery.layout.ComboBox
 import szewek.craftery.layout.View
 import szewek.craftery.layout.defaultScrollbarOnDark
+import szewek.craftery.layout.hover
 import szewek.craftery.util.Downloader
 
 class MappingViewer: View("Mapping viewer (WIP)") {
@@ -62,14 +63,7 @@ class MappingViewer: View("Mapping viewer (WIP)") {
                 ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
                     LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
                         itemsIndexed(mappingList) { _, item ->
-                            val hoverBg = remember { mutableStateOf(Color.Transparent) }
-                            Box(Modifier
-                                .background(hoverBg.value, MaterialTheme.shapes.medium)
-                                .pointerMoveFilter(
-                                    onEnter = {hoverBg.value = onHover; false},
-                                    onExit = {hoverBg.value = Color.Transparent; false}
-                                )
-                            ) {
+                            Box(Modifier.hover(onHover, MaterialTheme.shapes.medium)) {
                                 Column(Modifier.padding(4.dp)) {
                                     Text(item.name, fontWeight = FontWeight.Bold)
                                     Text("Class: ${item.cl}")
