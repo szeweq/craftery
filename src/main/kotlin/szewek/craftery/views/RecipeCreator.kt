@@ -1,55 +1,57 @@
 package szewek.craftery.views
 
-// UNUSED
-
-/*
-import javafx.beans.property.SimpleStringProperty
-import javafx.collections.FXCollections
-import javafx.geometry.Pos
-import javafx.scene.control.ComboBox
-import javafx.scene.control.ScrollPane
-import javafx.scene.layout.*
-import szewek.mctool.app.recipe.CraftingView
-import szewek.mctool.app.recipe.SlotView
-import szewek.mctool.app.task.createTaskQueue
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.GridCells
+import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import szewek.craftery.layout.CraftingGrid
+import szewek.craftery.layout.ItemSlot
+import szewek.craftery.layout.View
 import szewek.craftery.mcdata.MinecraftData
 import szewek.craftery.mcdata.Models
-import tornadofx.View
-import tornadofx.bind
 
 class RecipeCreator: View("Create recipes") {
-    override val root = GridPane()
-    private val recipeType = SimpleStringProperty("")
-    private val allRecipes = FXCollections.observableArrayList<String>()
 
     init {
-        val pct50 = root.widthProperty().divide(2)
+        GlobalScope.launch {
+            MinecraftData.loadAllFilesFromJar(null)
+            Models.compile()
+        }
+    }
 
-        root.addRow(0, HBox().children {
-            + ComboBox(allRecipes).apply { bind(recipeType) }
-        })
-        root.addRow(
-                1,
-                VBox(CraftingView()).apply { prefWidthProperty().bind(pct50) },
-                ScrollPane(TilePane().apply {
-                    alignment = Pos.TOP_LEFT
-                }.children { for (i in 0..26) { + SlotView() } }).apply {
-                    prefWidthProperty().bind(pct50)
-                    isFitToWidth = true
-                    isFitToHeight = true
+    @OptIn(ExperimentalFoundationApi::class)
+    @Composable
+    override fun content() {
+        if (Models.compileState) {
+            Row {
+                val mod = Modifier.padding(8.dp)
+                Column(mod) { CraftingGrid() }
+                Column(mod) {
+                    LazyVerticalGrid(GridCells.Adaptive(56.dp)) {
+                        items(15) {
+                            Column {
+                                ItemSlot()
+                                Text("Golden shovel")
+                            }
+                        }
+                    }
                 }
-        )
-        root.rowConstraints.addAll(
-                RowConstraints(), RowConstraints().apply { vgrow = Priority.ALWAYS }
-        )
+            }
 
-        runTasks()
+        } else Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                val mod = Modifier.padding(2.dp)
+                CircularProgressIndicator(mod)
+                Text("Please wait...", mod)
+            }
+        }
     }
-
-    private fun runTasks() {
-        createTaskQueue(
-                MinecraftData.loadAllFilesFromJar(null),
-                Models.compile()
-        )
-    }
-} */
+}

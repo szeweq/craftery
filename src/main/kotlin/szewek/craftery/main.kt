@@ -20,10 +20,7 @@ import szewek.craftery.layout.CenteredColumn
 import szewek.craftery.layout.TabsView
 import szewek.craftery.layout.ViewManager
 import szewek.craftery.layout.hover
-import szewek.craftery.views.About
-import szewek.craftery.views.LanguageEditor
-import szewek.craftery.views.MappingViewer
-import szewek.craftery.views.ModSearch
+import szewek.craftery.views.*
 
 internal val colorsDark = darkColors(
     primary = Color(0xff394739),
@@ -74,6 +71,7 @@ val menuActions = arrayOf(
     MenuAction("Mod Search") { ViewManager.selectOrOpen<ModSearch>() },
     MenuAction("Language editor") { ViewManager.selectOrOpen<LanguageEditor>() },
     MenuAction("Mappings viewer (WIP)") { ViewManager.selectOrOpen<MappingViewer>() },
+    MenuAction("Recipe Creator (WIP)") { ViewManager.selectOrOpen<RecipeCreator>() },
     MenuAction("About") { ViewManager.selectOrOpen<About>() }
 )
 
