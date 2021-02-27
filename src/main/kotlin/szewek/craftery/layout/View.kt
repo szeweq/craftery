@@ -17,20 +17,4 @@ abstract class View(val title: String) {
 
     @Composable
     abstract fun content()
-
-    class ProgressState {
-        var value by mutableStateOf(Float.MAX_VALUE)
-
-        fun setIndeterminate() {
-            value = -1f
-        }
-
-        fun setFinished() {
-            value = Float.MAX_VALUE
-        }
-
-        fun setFraction(a: Long, b: Long) {
-            value = a.toFloat() / b
-        }
-    }
 }

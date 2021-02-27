@@ -50,12 +50,6 @@ fun ViewTab(v: View, shape: Shape) {
                 }
             }
         }
-        if (v.progress.value < 1f) {
-            val modifier = Modifier.matchParentSize().padding(top = 24.dp)
-            if (v.progress.value == -1f) {
-                LinearProgressIndicator(modifier)
-            }
-            LinearProgressIndicator(v.progress.value, modifier)
-        }
+        if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize().padding(top = 24.dp))
     }
 }
