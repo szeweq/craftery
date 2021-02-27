@@ -2,7 +2,6 @@ package szewek.craftery
 
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.desktop.Window
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -62,7 +61,7 @@ fun main() = Window(title = "Craftery") {
 fun menuContent(dismiss: () -> Unit) {
     val hoverColor = MaterialTheme.colors.onSurface.copy(0.2f)
     for (action in menuActions) {
-        DropdownMenuItem({ action.fn(); dismiss() }, Modifier.hover(hoverColor)) { Text(action.text) }
+        DropdownMenuItem({ action.fn(); dismiss() }, Modifier.hover(hoverColor)) { Text(action.text, fontSize = 14.sp) }
     }
 }
 
