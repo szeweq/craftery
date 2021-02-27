@@ -3,16 +3,10 @@ package szewek.craftery.layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Icon
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
@@ -33,7 +27,9 @@ fun TabsView(views: SnapshotStateList<View>) = Row(Modifier.horizontalScroll(rem
 @Composable
 fun ViewTab(v: View, shape: Shape) {
     val hoverBg = MaterialTheme.colors.onSurface.copy(0.1f)
-    Box(Modifier.background(if(v.isActive) Color.Black else Color.Transparent, shape).clip(shape)
+    Box(
+        Modifier.background(if(v.isActive) Color.Black else Color.Transparent, shape).clip(shape),
+        propagateMinConstraints = true
     ) {
         Row(
             Modifier.clickable(onClick = v::activate).hover(hoverBg, shape).padding(4.dp),
@@ -53,6 +49,13 @@ fun ViewTab(v: View, shape: Shape) {
                     )
                 }
             }
+        }
+        if (v.progress.value < 1f) {
+            val modifier = Modifier.matchParentSize().padding(top = 24.dp)
+            if (v.progress.value == -1f) {
+                LinearProgressIndicator(modifier)
+            }
+            LinearProgressIndicator(v.progress.value, modifier)
         }
     }
 }
