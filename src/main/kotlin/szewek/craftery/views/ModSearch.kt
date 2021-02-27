@@ -3,6 +3,7 @@ package szewek.craftery.views
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.*
@@ -39,8 +40,11 @@ class ModSearch: View("Search mods") {
         Box {
             val state = rememberLazyListState()
             val onHover = MaterialTheme.colors.onSurface.copy(0.2f)
-            LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
-                itemsIndexed(modlist) { _, item ->
+            LazyColumn(Modifier.fillMaxSize().padding(horizontal = 12.dp), state = state) {
+                // Prevent displaying out-of-bounds item layouts
+                if (!modlist.isEmpty()) items(modlist.size, this@ModSearch::getSlugFromList) {
+                    if (it >= modlist.size) return@items
+                    val item = modlist[it]
                     Box(Modifier
                         .clickable { ViewManager.open(AddonInfo(item)) }
                         .hover(onHover, shape = MaterialTheme.shapes.medium)
@@ -54,6 +58,8 @@ class ModSearch: View("Search mods") {
                             Text(item.summary)
                         }
                     }
+                } else {
+                    item { Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) { Text(if (progress.isActive()) "Searching..." else "Empty") } }
                 }
             }
             VerticalScrollbar(
@@ -63,6 +69,8 @@ class ModSearch: View("Search mods") {
             )
         }
     }
+
+    private fun getSlugFromList(i: Int): Any = if (i < modlist.size) modlist[i].slug else Unit
 
     @Composable
     private fun topBar() = Row(Modifier.padding(start = 2.dp, end = 2.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -79,12 +87,14 @@ class ModSearch: View("Search mods") {
         if (search.value.isEmpty()) {
             return
         }
+        progress.setIndeterminate()
         val s = search.value
         val tid = typeId.value
         GlobalScope.launch {
-            val a = CurseforgeAPI.findAddons(s, tid)
             modlist.clear()
+            val a = CurseforgeAPI.findAddons(s, tid)
             modlist.addAll(a)
+            progress.setFinished()
         }
     }
 }

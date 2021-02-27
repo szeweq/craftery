@@ -19,10 +19,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
+import com.github.kittinunf.fuel.core.ProgressCallback
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.CurseforgeAPI
 import szewek.craftery.layout.CenteredColumn
+import szewek.craftery.layout.LinearIndicator
 import szewek.craftery.layout.View
 import szewek.craftery.util.Downloader
 import szewek.craftery.util.FileLoader
@@ -36,7 +38,6 @@ class FileLookup(
     private val loader: FileLoader,
     private val modpack: Boolean = false
 ): View("Lookup: $name") {
-    private val loadingState = mutableStateOf(0f)
     private val message = mutableStateOf("")
     private val lookups: List<ModLookup<*>> = listOf(
         ListResourceData(),
@@ -53,10 +54,10 @@ class FileLookup(
 
     @Composable
     override fun content() {
-        if (loadingState.value != -1f) {
+        if (progress.isActive()) {
             CenteredColumn(Modifier.fillMaxSize()) {
                 Text(message.value)
-                LinearProgressIndicator(loadingState.value)
+                LinearIndicator(progress)
             }
         } else {
             Row {
@@ -97,41 +98,38 @@ class FileLookup(
         }
     }
 
-    private fun updateProgress(a: Long, max: Long) {
-        loadingState.value = a.toFloat() / max
-    }
-
     private fun updateMessage(msg: String) {
         message.value = msg
     }
 
     private fun processLookups() {
         val si = ScanInfo()
+        val updateProgress: ProgressCallback = progress::setFraction
         if (modpack) {
             updateMessage("Downloading modpack...")
-            updateProgress(0, 1)
-            val fi = loader.load(::updateProgress)
+            progress.setIndeterminate()
+            val fi = loader.load(updateProgress)
             updateMessage("Reading manifest...")
-            updateProgress(0, 1)
+            progress.setIndeterminate()
             val files = Modpack.readManifest(ZipInputStream(fi))
             val l = files.size
             files.forEachIndexed { i, (pid, fid) ->
                 updateMessage("Getting file URL [$i / $l]...")
-                updateProgress(0, 1)
+                progress.setIndeterminate()
                 val murl = CurseforgeAPI.downloadURL(pid, fid)
                 if (!murl.endsWith(".jar")) { return@forEachIndexed }
                 val mname = murl.substringAfterLast('/')
                 updateMessage("Downloading $mname...")
-                val mf = Downloader.downloadFile(murl, ::updateProgress)
+                val mf = Downloader.downloadFile(murl, updateProgress)
                 updateMessage("Scanning $mname...")
                 si.scanArchive(ZipInputStream(mf))
             }
         } else {
             updateMessage("Downloading file...")
-            updateProgress(0, 1)
-            val fi = loader.load(::updateProgress)
+            progress.setIndeterminate()
+            val fi = loader.load(updateProgress)
             updateMessage("Scanning classes...")
-            updateProgress(0, 1)
+            progress.setIndeterminate()
             si.scanArchive(ZipInputStream(fi))
         }
 
@@ -140,6 +138,6 @@ class FileLookup(
         for (l in lookups) {
             l.lazyGather(si)
         }
-        updateProgress(-3, 3)
+        progress.setFinished()
     }
 }
