@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.key.*
 import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -73,14 +74,25 @@ class ModSearch: View("Search mods") {
     private fun getSlugFromList(i: Int): Any = if (i < modlist.size) modlist[i].slug else Unit
 
     @Composable
-    private fun topBar() = Row(Modifier.padding(start = 2.dp, end = 2.dp, bottom = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+    private fun topBar() {
         val (text, setText) = search
-        OutlinedTextField(text, setText, Modifier.padding(start = 2.dp, end = 2.dp, bottom = 4.dp).weight(1f, true), placeholder = { Text("Search...") }, singleLine = true)
-        ComboBox(typeName.value, typeId, "Mod" to 6, "Modpack" to 4471)
-        Button(::findMods) {
-            Text("Search")
-            Icon(Icons.Default.Search, "Search")
-        }
+        OutlinedTextField(
+            text, setText,
+            Modifier
+                .padding(start = 8.dp, end = 8.dp, bottom = 4.dp)
+                .fillMaxWidth()
+                .onKeyEvent { if (it.key == Key.Enter && it.type == KeyEventType.KeyUp) findMods(); false },
+            placeholder = { Text("Search...") },
+            leadingIcon = {
+                ComboBox(typeName.value, typeId, "Mod" to 6, "Modpack" to 4471)
+            },
+            trailingIcon = {
+                IconButton(::findMods, enabled = search.value.isNotEmpty()) {
+                    Icon(Icons.Default.Search, "Search")
+                }
+            },
+            singleLine = true
+        )
     }
 
     private fun findMods() {
