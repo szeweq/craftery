@@ -9,18 +9,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun <T> ComboBox(name: String, current: MutableState<T>, vararg pairs: Pair<String, T>) = ComboBoxLayout(name) { dismiss ->
+    val hoverColor = MaterialTheme.colors.onSurface.copy(0.2f)
     for ((txt, value) in pairs) {
-        DropdownMenuItem({ current.value = value; dismiss() }) { Text(txt) }
+        DropdownMenuItem({ current.value = value; dismiss() }, Modifier.hover(hoverColor)) { Text(txt, fontSize = 14.sp) }
     }
 }
 
 @Composable
 fun ComboBox(name: String, current: MutableState<String>, values: Iterable<String>) = ComboBoxLayout(name) { dismiss ->
+    val hoverColor = MaterialTheme.colors.onSurface.copy(0.2f)
     for (txt in values) {
-        DropdownMenuItem({ current.value = txt; dismiss() }) { Text(txt) }
+        DropdownMenuItem({ current.value = txt; dismiss() }, Modifier.hover(hoverColor)) { Text(txt, fontSize = 14.sp) }
     }
 }
 
