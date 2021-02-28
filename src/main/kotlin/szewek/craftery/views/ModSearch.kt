@@ -23,6 +23,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.AddonSearch
 import szewek.craftery.cfapi.CurseforgeAPI
+import szewek.craftery.cfapi.default
 import szewek.craftery.layout.*
 
 class ModSearch: View("Search mods") {
@@ -46,19 +47,7 @@ class ModSearch: View("Search mods") {
                 if (!modlist.isEmpty()) items(modlist.size, this@ModSearch::getSlugFromList) {
                     if (it >= modlist.size) return@items
                     val item = modlist[it]
-                    Box(Modifier
-                        .clickable { ViewManager.open(AddonInfo(item)) }
-                        .hover(onHover, shape = MaterialTheme.shapes.medium)
-                    ) {
-                        Column(Modifier.padding(4.dp)) {
-                            Row {
-                                Text(item.name, Modifier.weight(1f, true), fontWeight = FontWeight.Bold)
-                                Text("Downloads: ${item.downloadCount}", fontSize = 12.sp)
-                            }
-                            Text(item.slug, fontSize = 12.sp)
-                            Text(item.summary)
-                        }
-                    }
+                    itemBox(item, onHover)
                 } else {
                     item { Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) { Text(if (progress.isActive()) "Searching..." else "Empty") } }
                 }
@@ -72,6 +61,29 @@ class ModSearch: View("Search mods") {
     }
 
     private fun getSlugFromList(i: Int): Any = if (i < modlist.size) modlist[i].slug else Unit
+
+    @Composable
+    private fun itemBox(item: AddonSearch, hoverBg: Color) {
+        Box(Modifier
+            .clickable { ViewManager.open(AddonInfo(item)) }
+            .hover(hoverBg, shape = MaterialTheme.shapes.medium)
+            .padding(4.dp)
+        ) {
+            Row {
+                val attachment = remember(item) { item.attachments.default() }
+                if (attachment != null) ImageURL(attachment.thumbnailUrl, item.name, Modifier.size(60.dp).padding(end = 4.dp))
+                Column {
+                    Row {
+                        Text(item.name, Modifier.weight(1f, true), fontWeight = FontWeight.Bold)
+                        Text("Downloads: ${item.downloadCount}", fontSize = 12.sp)
+                    }
+                    Text(item.slug, fontSize = 12.sp)
+                    Text(item.summary)
+                }
+            }
+
+        }
+    }
 
     @Composable
     private fun topBar() {
