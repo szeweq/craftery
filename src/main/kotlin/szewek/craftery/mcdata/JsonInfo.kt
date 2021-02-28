@@ -1,6 +1,6 @@
 package szewek.craftery.mcdata
 
-import javax.json.JsonObject
+import com.google.gson.JsonObject
 
 class JsonInfo(val name: String, val namespace: String, val type: DataResourceType) {
     val details = mutableMapOf<String, String>()
@@ -8,7 +8,10 @@ class JsonInfo(val name: String, val namespace: String, val type: DataResourceTy
     fun gatherDetails(obj: JsonObject) {
         when (type) {
             DataResourceType.RECIPE -> {
-                obj.getString("type", null)?.apply { details["Type"] = this }
+                val s = obj["type"]?.asString
+                if (s != null) {
+                    details["Type"] = s
+                }
             }
             else -> {}
         }

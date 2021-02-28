@@ -1,6 +1,7 @@
 package szewek.craftery.mcdata
 
 import com.electronwill.nightconfig.core.Config
+import com.google.gson.JsonObject
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
@@ -10,6 +11,7 @@ import szewek.craftery.util.ClassNodeMap
 import szewek.craftery.util.KtUtil
 import java.io.InputStream
 import java.util.stream.Stream
+import java.util.stream.StreamSupport
 import java.util.zip.ZipInputStream
 import javax.json.JsonString
 
@@ -69,14 +71,13 @@ class ScanInfo {
             return
         }
         val (kind, namespace, rest) = path
-        val jr = Scanner.JSON.createReader(data, Charsets.UTF_8)
-        runCatching { jr.readObject() }.onSuccess {
+        runCatching { Scanner.GSON.fromJson(data.reader(), JsonObject::class.java) }.onSuccess {
             val drt = DataResourceType.detect(kind, rest)
             if (drt.isTagType) {
                 val loc = Scanner.pathToLocation(name)
-                val cs = it.getJsonArray("values").stream()
-                        .map { jv -> if (jv is JsonString) jv.string else null }
-                        .filterNotNull()
+                val cs = StreamSupport.stream(it.getAsJsonArray("values").spliterator(), false)
+                    .map { jv -> if (jv is JsonString) jv.string else null }
+                    .filterNotNull()
                 val ts = tags[loc]
                 if (ts == null) {
                     tags[loc] = cs.toMutableSet()
