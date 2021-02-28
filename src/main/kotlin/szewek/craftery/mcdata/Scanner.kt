@@ -2,13 +2,10 @@ package szewek.craftery.mcdata
 
 import com.electronwill.nightconfig.toml.TomlParser
 import com.google.gson.Gson
-import javax.json.Json
-import javax.json.JsonReaderFactory
 
 object Scanner {
     val TOML = TomlParser()
     val GSON = Gson()
-    val JSON: JsonReaderFactory = Json.createReaderFactory(null)
 
     fun genericFromSignature(sig: String) = sig.substringAfter('<').substringBeforeLast('>')
 

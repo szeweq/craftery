@@ -40,9 +40,7 @@ compose.desktop {
 dependencies {
     implementation(compose.desktop.currentOs)
 
-    // Two JSON libraries
     implementation("com.google.code.gson:gson:2.8.6")
-    implementation("javax.json:javax.json-api:1.1.4")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.30")

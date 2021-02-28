@@ -2,6 +2,7 @@ package szewek.craftery.mcdata
 
 import com.electronwill.nightconfig.core.Config
 import com.google.gson.JsonObject
+import com.google.gson.JsonPrimitive
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
@@ -13,7 +14,6 @@ import java.io.InputStream
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 import java.util.zip.ZipInputStream
-import javax.json.JsonString
 
 class ScanInfo {
     val map = ClassNodeMap()
@@ -76,7 +76,7 @@ class ScanInfo {
             if (drt.isTagType) {
                 val loc = Scanner.pathToLocation(name)
                 val cs = StreamSupport.stream(it.getAsJsonArray("values").spliterator(), false)
-                    .map { jv -> if (jv is JsonString) jv.string else null }
+                    .map { jv -> if (jv is JsonPrimitive && jv.isString) jv.asString else null }
                     .filterNotNull()
                 val ts = tags[loc]
                 if (ts == null) {
