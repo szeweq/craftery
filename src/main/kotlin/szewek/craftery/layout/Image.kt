@@ -9,11 +9,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import szewek.craftery.util.Downloader
+import szewek.craftery.util.ImageCache
 import java.awt.image.BufferedImage
 import java.awt.image.BufferedImage.TYPE_INT_ARGB
 import java.io.ByteArrayOutputStream
@@ -30,12 +30,12 @@ fun ImageURL(
     colorFilter: ColorFilter? = null
 ) {
     val scope = rememberCoroutineScope()
-    val imgBytes = remember { mutableStateOf(emptyImageBytes) }
+    val img = remember(url) { mutableStateOf(emptyBitmap) }
     scope.launch {
-        val stream = Downloader.downloadFile(url) { _, _ -> }
-        imgBytes.value = stream.readBytes()
+        val imgCached = ImageCache.fromURL(url)
+        img.value = imgCached.asImageBitmap()
     }
-    Image(org.jetbrains.skija.Image.makeFromEncoded(imgBytes.value).asImageBitmap(), contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
+    Image(img.value, contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
 }
 
 val emptyImageBytes: ByteArray = ByteArrayOutputStream().also {
@@ -43,3 +43,5 @@ val emptyImageBytes: ByteArray = ByteArrayOutputStream().also {
 }.toByteArray()
 
 val emptySkijaImage: org.jetbrains.skija.Image = org.jetbrains.skija.Image.makeFromEncoded(emptyImageBytes)
+
+val emptyBitmap = ImageBitmap(1, 1)
