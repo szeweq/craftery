@@ -2,7 +2,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.4.31"
 
     id("org.jetbrains.compose") version "0.3.0"
 }
@@ -10,7 +10,7 @@ group = "szewek.craftery"
 
 val ktorVersion = "1.4.0"
 val fuelVersion = "2.3.1"
-val asmVersion = "9.0"
+val asmVersion = "9.1"
 
 //val compileKotlin: KotlinCompile by tasks
 //val compileJava: JavaCompile by tasks
