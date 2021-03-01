@@ -71,7 +71,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
 
     @Composable
     private fun infoRow(name: String, value: String) = Row {
-        Text(name, Modifier.requiredWidth(120.dp))
+        Text(name, Modifier.requiredWidth(120.dp), fontWeight = FontWeight.Bold)
         Text(value)
     }
 
@@ -81,8 +81,6 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             append(url)
             addStringAnnotation("URL", url, 0, url.length)
         }.toAnnotatedString()
-        //val uriHandler = LocalUriHandler.current
-        //ClickableText(text) { uriHandler.openUri(url) }
         Text(text)
     }
 }
