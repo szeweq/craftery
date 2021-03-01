@@ -5,3 +5,13 @@ A creative tool for exploring and creating Minecraft resources, managing servers
 This is meant to replace [MCPM](https://github.com/Szewek/mcpm), a mod "package manager" which is no longer being developed.
 
 Most features haven't been implemented yet. **More new ideas are welcome.**
+
+### Things already implemented
+- Mod(pack) search
+- Mod(pack) details
+- File lookup (scanned Java classes)
+- Language editor
+
+### Things to be completed (or abandoned)
+- Mappings viewer (for MCP)
+- Recipe creator

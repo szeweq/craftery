@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -77,7 +78,7 @@ val menuActions = arrayOf(
 @Composable
 fun welcome() {
     CenteredColumn(Modifier.fillMaxSize(1.0f)) {
-        Text("What would you like to do?", Modifier.padding(8.dp), fontSize = 24.sp)
+        Text("What would you like to do?", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
         val mod = Modifier.padding(2.dp)
         Button({ ViewManager.selectOrOpen<ModSearch>() }, mod) { Text("Search for mods/modpacks") }
         Button({ ViewManager.selectOrOpen<LanguageEditor>() }, mod) { Text("Open language editor") }
