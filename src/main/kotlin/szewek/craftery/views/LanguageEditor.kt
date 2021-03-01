@@ -87,14 +87,15 @@ class LanguageEditor: View("Language Editor") {
         Modifier.padding(start = 2.dp, end = 2.dp, bottom = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
+        val mod = Modifier.padding(4.dp)
         Button({
             val f = chooseJSON()
             if (f != null) GlobalScope.launch(Dispatchers.IO) { loadFile(f) }
-        }) { Text("Load original file") }
+        }, mod) { Text("Load original file") }
         Button({
             val f = chooseJSON(true)
             if (f != null) GlobalScope.launch(Dispatchers.IO) { saveTranslation(f) }
-        }) { Text("Save translations") }
+        }, mod) { Text("Save translations") }
     }
 
     private fun chooseJSON(save: Boolean = false) = with(chooser) {
