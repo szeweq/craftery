@@ -31,7 +31,7 @@ compose.desktop {
     application {
         mainClass = "szewek.craftery.MainKt"
         nativeDistributions {
-            targetFormats(TargetFormat.AppImage, TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
+            targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "craftery"
         }
     }
