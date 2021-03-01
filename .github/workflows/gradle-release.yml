@@ -6,9 +6,8 @@ on:
       - 'v*'
 
 jobs:
-  build:
-    name: 'Build'
-    needs: [release]
+  publish:
+    name: 'Publish'
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
