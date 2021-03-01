@@ -21,39 +21,49 @@ import szewek.craftery.layout.TabsView
 import szewek.craftery.layout.ViewManager
 import szewek.craftery.layout.hover
 import szewek.craftery.views.*
+import javax.swing.UIManager
 
 internal val colorsDark = darkColors(
     primary = Color(0xff394739),
     onPrimary = Color.White
 )
 
-fun main() = Window(title = "Craftery") {
-    DesktopMaterialTheme(
-        colors = colorsDark
-    ) {
-        Scaffold(
-            topBar = {
-                TopAppBar(Modifier.height(40.dp)) {
-                    Row(Modifier.fillMaxHeight().weight(1f), verticalAlignment = Alignment.CenterVertically) {
-                        TabsView(ViewManager.views)
-                    }
-                    Box(Modifier.fillMaxHeight().requiredWidth(28.dp).padding(vertical = 6.dp)) {
-                        val menuToggle = remember { mutableStateOf(false) }
-                        val iconSize = 28.dp
-                        val dismiss = { menuToggle.value = false }
+fun main() {
+    try {
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
+    } catch (e: Exception) {
+        println("Unable to set system Look and Feel")
+        e.printStackTrace()
+    }
 
-                        IconButton({ menuToggle.value = true }) {
-                            Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
+    Window(title = "Craftery") {
+        DesktopMaterialTheme(
+            colors = colorsDark
+        ) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(Modifier.height(40.dp)) {
+                        Row(Modifier.fillMaxHeight().weight(1f), verticalAlignment = Alignment.CenterVertically) {
+                            TabsView(ViewManager.views)
                         }
-                        DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
-                            menuContent(dismiss)
+                        Box(Modifier.fillMaxHeight().requiredWidth(28.dp).padding(vertical = 6.dp)) {
+                            val menuToggle = remember { mutableStateOf(false) }
+                            val iconSize = 28.dp
+                            val dismiss = { menuToggle.value = false }
+
+                            IconButton({ menuToggle.value = true }) {
+                                Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
+                            }
+                            DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
+                                menuContent(dismiss)
+                            }
                         }
                     }
                 }
+            ) {
+                val v = ViewManager.active
+                if (v == null) welcome() else v.content()
             }
-        ) {
-            val v = ViewManager.active
-            if (v == null) welcome() else v.content()
         }
     }
 }
