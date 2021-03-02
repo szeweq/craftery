@@ -123,7 +123,7 @@ object Models {
                 val img = ImageAlternatives.getImage(name)
                 return if (img != null) Model.Custom(img) else null
             }
-            if (path.startsWith("item")) {
+            if (path.startsWith("item") && model.textures.isNotEmpty()) {
                 val t = model.textures["layer0"] ?: model.textures.values.first()
                 return Model.Item(t)
             }
@@ -135,7 +135,6 @@ object Models {
             val up = findTextureFor("up", texRoutes, searched)
             val north = findTextureFor("north", texRoutes, searched)
             val west = findTextureFor("west", texRoutes, searched)
-            println("UP = $up; NORTH = $north; WEST = $west")
             return Model.Block(up, north, west)
         }
         return Model.Empty
@@ -157,7 +156,6 @@ object Models {
         var current = sub
         for (s in searched) {
             val k = "$s#$current"
-            println("Finding route $k...")
             val tr = texRoutes[k]
             if (tr != null) {
                 if (!tr.startsWith('@')) return tr
