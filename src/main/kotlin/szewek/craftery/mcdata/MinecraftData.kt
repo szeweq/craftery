@@ -104,7 +104,7 @@ object MinecraftData {
         println("Unpacking Minecraft client...")
         z?.eachEntry {
             if (!it.isDirectory && (it.name.startsWith("data/") || it.name.startsWith("assets/"))) {
-                println("Unzipping file ${it.name}...")
+                //println("Unzipping file ${it.name}...")
                 out.reset()
                 z.copyTo(out)
                 filesFromJar[it.name] = out.toByteArray()

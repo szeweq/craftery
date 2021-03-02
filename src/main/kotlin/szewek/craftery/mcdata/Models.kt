@@ -74,34 +74,17 @@ object Models {
         latch.countDown()
     }
 
-    /* private fun scale(img: Image, scale: Int): Image {
-        val w = img.width.toInt()
-        val h = img.height.toInt()
-        if (w == 0 && h == 0 || scale == 1) {
-            return img
-        }
-        val wimg = WritableImage(w * scale, h * scale)
-        val pr = img.pixelReader
-        val pw = wimg.pixelWriter
-        for (y in 0 until h) {
-            for (x in 0 until w) {
-                val argb = pr.getArgb(x, y)
-                for (dx in 0 until scale) {
-                    for (dy in 0 until scale) {
-                        pw.setArgb(scale * x + dx, scale * y + dy, argb)
-                    }
-                }
-            }
-        }
-        return wimg
-    } */
+    fun modelDataOf(name: String): ModelData? {
+        val (ns, item) = decodeName(name)
+        val m = "assets/$ns/models/$item.json"
+        return modelMap[m]
+    }
 
     fun getImageOf(name: String): Image? {
         if (!compileState) return null
         if (name == "") return null
-        val (ns, item) = decodeName(name)
-        val m = "assets/$ns/models/$item.json"
-        val model = modelMap[m]
+        buildModelOf(name)
+        val model = modelDataOf(name)
         if (model != null) {
             if (model.textures.isEmpty()) {
                 if (model.parent != null) {
@@ -118,6 +101,58 @@ object Models {
         }
         return null
     }
+
+    fun buildModelOf(name: String): Model {
+        if (!compileState) return Model.Failed
+        if (name == "") return Model.Failed
+        val model = modelDataOf(name)
+        if (model != null) {
+            val (_, path) = decodeName(name)
+            if (path.startsWith("item")) {
+                val t = model.textures["layer0"] ?: model.textures.values.first()
+                return Model.Item(t)
+            }
+            val texRoutes = mutableMapOf<String, String>()
+            val searched = mutableListOf<String>()
+            collectTextures(name, model, texRoutes, searched)
+            texRoutes.forEach { (k, v) -> println("$name - tex $k :: $v") }
+            searched.reverse()
+            val up = findTextureFor("up", texRoutes, searched)
+            val north = findTextureFor("north", texRoutes, searched)
+            val west = findTextureFor("west", texRoutes, searched)
+            println("UP = $up; NORTH = $north; WEST = $west")
+            return Model.Block(up, north, west)
+        }
+        return Model.Empty
+    }
+
+    private fun collectTextures(name: String, model: ModelData, texRoutes: MutableMap<String, String>, searched: MutableList<String>) {
+        if (name in searched) return
+        searched.add(name)
+        for ((n, tx) in model.textures) {
+            texRoutes["${name}#$n"] = if (tx.startsWith('#')) "@${model.parent}$tx" else tx
+        }
+        if (model.parent != null && model.parent != "") {
+            val pmodel = modelDataOf(model.parent)
+            if (pmodel != null) collectTextures(model.parent, pmodel, texRoutes, searched)
+        }
+    }
+
+    private fun findTextureFor(sub: String, texRoutes: MutableMap<String, String>, searched: MutableList<String>): String {
+        var current = sub
+        for (s in searched) {
+            val k = "$s#$current"
+            println("Finding route $k...")
+            val tr = texRoutes[k]
+            if (tr != null) {
+                if (!tr.startsWith('@')) return tr
+                current = tr.substringAfterLast('#')
+            }
+        }
+        return ""
+    }
+
+    fun lazyImageOf(name: String) = lazy { decodeNameToImage(name) }
 
     private fun decodeName(name: String): Pair<String, String> {
         if (name.indexOf(':') != -1) {
