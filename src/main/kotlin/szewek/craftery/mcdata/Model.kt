@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.graphics.nativeCanvas
+import org.jetbrains.skija.Image
 import org.jetbrains.skija.Rect
 
 abstract class Model {
@@ -21,6 +22,13 @@ abstract class Model {
             scope.drawCircle(Color.Red, 6f)
         }
 
+    }
+
+    class Custom(private val img: Image): Model() {
+        override fun draw(scope: DrawScope) {
+            val size = scope.size
+            scope.drawIntoCanvas { it.nativeCanvas.drawImageRect(img, Rect.makeWH(size.width, size.height)) }
+        }
     }
 
     class Item(tex: String): Model() {

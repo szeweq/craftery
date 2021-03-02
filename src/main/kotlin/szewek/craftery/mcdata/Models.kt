@@ -16,7 +16,8 @@ import java.util.regex.Pattern
 
 object Models {
     private val GSON = Gson()
-    private val modelMap = mutableMapOf<String, ModelData>()
+    private val modelDataMap = mutableMapOf<String, ModelData>()
+    private val modelsMap = mutableMapOf<String, Model>()
     private val textures = mutableMapOf<String, Image>()
     var compileState by mutableStateOf(false)
         private set
@@ -48,7 +49,7 @@ object Models {
                     if (s != null) k to s else null
                 }.toMap() else emptyMap()
                 if (p != null) {
-                    modelMap[n] = ModelData(p, t)
+                    modelDataMap[n] = ModelData(p, t)
                 }
             } }
         }
@@ -77,7 +78,7 @@ object Models {
     fun modelDataOf(name: String): ModelData? {
         val (ns, item) = decodeName(name)
         val m = "assets/$ns/models/$item.json"
-        return modelMap[m]
+        return modelDataMap[m]
     }
 
     fun getImageOf(name: String): Image? {
@@ -102,12 +103,26 @@ object Models {
         return null
     }
 
-    fun buildModelOf(name: String): Model {
-        if (!compileState) return Model.Failed
+    fun getModelOf(name: String): Model {
+        if (!compileState) return Model.Empty
         if (name == "") return Model.Failed
+        if (name in modelsMap) return modelsMap[name]!!
+        val m = buildModelOf(name)
+        if (m != null) {
+            modelsMap[name] = m
+            return m
+        }
+        return Model.Failed
+    }
+
+    fun buildModelOf(name: String): Model? {
         val model = modelDataOf(name)
         if (model != null) {
             val (_, path) = decodeName(name)
+            if (name in ImageAlternatives.mapIds) {
+                val img = ImageAlternatives.getImage(name)
+                return if (img != null) Model.Custom(img) else null
+            }
             if (path.startsWith("item")) {
                 val t = model.textures["layer0"] ?: model.textures.values.first()
                 return Model.Item(t)

@@ -19,7 +19,7 @@ fun ItemSlot(name: String = "minecraft:item/golden_shovel", count: Int = 0) {
     val scope = rememberCoroutineScope()
     val model = remember(name) {
         val x = mutableStateOf<Model>(Model.Empty)
-        scope.launch { Models.buildModelOf(name).let { x.value = it } }
+        scope.launch { Models.getModelOf(name).let { x.value = it } }
         x
     }
 
@@ -33,6 +33,6 @@ fun ItemSlot(name: String = "minecraft:item/golden_shovel", count: Int = 0) {
 @Composable
 fun CraftingGrid() = Column {
     for (i in 0 until 3) Row {
-        for (j in 0 until 3) ItemSlot("minecraft:block/cobblestone")
+        for (j in 0 until 3) ItemSlot("minecraft:item/chest")
     }
 }
