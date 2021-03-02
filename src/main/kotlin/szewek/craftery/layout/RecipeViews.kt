@@ -23,8 +23,8 @@ fun ItemSlot(name: String = "minecraft:item/golden_shovel", count: Int = 0) {
         x
     }
 
-    Box(Modifier.border(2.dp, MaterialTheme.colors.primary)) {
-        Canvas(Modifier.size(48.dp).padding(4.dp)) {
+    Box(Modifier.size(48.dp)) {
+        Canvas(Modifier.size(48.dp).padding(4.dp).border(2.dp, MaterialTheme.colors.primary)) {
             model.value.draw(this)
         }
     }
