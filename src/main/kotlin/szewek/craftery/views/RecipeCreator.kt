@@ -4,23 +4,31 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Divider
-import androidx.compose.material.Slider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import szewek.craftery.layout.*
+import szewek.craftery.layout.CraftingGrid
+import szewek.craftery.layout.ItemSlot
+import szewek.craftery.layout.View
 import szewek.craftery.mcdata.MinecraftData
 import szewek.craftery.mcdata.Models
 
 class RecipeCreator: View("Create recipes") {
+    val exampleVanillaItems = arrayOf(
+        "cobblestone",
+        "dirt",
+        "oak_log",
+        "diamond_pickaxe",
+        "netherite_sword",
+        "ender_pearl",
+        "furnace"
+    ).map { "minecraft:item/$it" }
 
     init {
         GlobalScope.launch {
@@ -39,12 +47,9 @@ class RecipeCreator: View("Create recipes") {
                     CraftingGrid()
                 }
                 Column(mod) {
-                    LazyVerticalGrid(GridCells.Adaptive(56.dp)) {
-                        items(15) {
-                            Column {
-                                ItemSlot()
-                                Text("Golden shovel")
-                            }
+                    LazyVerticalGrid(GridCells.Adaptive(52.dp)) {
+                        items(exampleVanillaItems) {
+                            ItemSlot(it)
                         }
                     }
                 }
