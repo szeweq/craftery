@@ -97,6 +97,7 @@ abstract class Model {
             m.rotateX(-90f)
             dt.transform(m)
         }
+        @Suppress("UNUSED_PARAMETER")
         private fun transformY(dt: DrawTransform) {}
         private fun transformZ(dt: DrawTransform) {
             val m = Matrix()
