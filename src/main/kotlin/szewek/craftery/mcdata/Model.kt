@@ -4,7 +4,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Matrix
 import androidx.compose.ui.graphics.drawscope.*
 import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
+import org.jetbrains.skija.BlendMode
 import org.jetbrains.skija.Image
+import org.jetbrains.skija.Paint
 import org.jetbrains.skija.Rect
 
 abstract class Model {
@@ -60,26 +63,38 @@ abstract class Model {
                 transform(matrix)
                 translate(size.width * -0.5f, size.height * -1.625f)
             }) {
+                val r = Rect.makeWH(size.width, size.height)
+                val p = Paint()
+                p.color = 0xFF000000.toInt()
                 val north = northTex
                 if (north != null) withTransform(::transformX) {
-                    drawIntoCanvas { it.nativeCanvas.drawImageRect(north, Rect.makeWH(size.width, size.height)) }
+                    p.alphaf = 0.2f
+                    drawIntoCanvas { it.nativeCanvas.apply {
+                        drawImageRect(north, r)
+                        drawRect(r, p)
+                    } }
                 }
 
                 val up = upTex
                 if (up != null) withTransform(::transformY) {
-                    drawIntoCanvas { it.nativeCanvas.drawImageRect(up, Rect.makeWH(size.width, size.height)) }
+                    drawIntoCanvas { it.nativeCanvas.drawImageRect(up, r) }
                 }
 
                 val west = westTex
                 if (west != null) withTransform(::transformZ) {
-                    drawIntoCanvas { it.nativeCanvas.drawImageRect(west, Rect.makeWH(size.width, size.height)) }
+                    p.alphaf = 0.4f
+                    drawIntoCanvas { it.nativeCanvas.apply {
+                        drawImageRect(west, r)
+                        drawRect(r, p)
+                    } }
                 }
             }
         }
 
         private fun transformX(dt: DrawTransform) {
             val m = Matrix()
-            m.rotateY(90f)
+            m.rotateY(-90f)
+            m.rotateX(-90f)
             dt.transform(m)
         }
         private fun transformY(dt: DrawTransform) {}
