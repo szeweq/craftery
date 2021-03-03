@@ -15,7 +15,7 @@ import szewek.craftery.mcdata.Model
 import szewek.craftery.mcdata.Models
 
 @Composable
-fun ItemSlot(name: String = "minecraft:item/golden_shovel", count: Int = 0) {
+fun ItemSlot(name: String = "minecraft:item/golden_shovel", count: Int = 0, modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
     val model = remember(name) {
         val x = mutableStateOf<Model>(Model.Empty)
@@ -23,7 +23,7 @@ fun ItemSlot(name: String = "minecraft:item/golden_shovel", count: Int = 0) {
         x
     }
 
-    Box(Modifier.size(48.dp)) {
+    Box(modifier.size(48.dp)) {
         Canvas(Modifier.size(48.dp).padding(4.dp).border(2.dp, MaterialTheme.colors.primary)) {
             model.value.draw(this)
         }

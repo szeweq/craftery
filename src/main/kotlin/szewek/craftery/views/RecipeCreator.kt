@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.CircularProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import szewek.craftery.layout.CraftingGrid
 import szewek.craftery.layout.ItemSlot
 import szewek.craftery.layout.View
+import szewek.craftery.layout.hover
 import szewek.craftery.mcdata.MinecraftData
 import szewek.craftery.mcdata.Models
 
@@ -41,20 +43,22 @@ class RecipeCreator: View("Create recipes") {
     @Composable
     override fun content() {
         if (Models.compileState) {
-            Row {
-                val mod = Modifier.padding(8.dp)
-                Column(mod) {
-                    CraftingGrid()
-                }
-                Column(mod) {
-                    LazyVerticalGrid(GridCells.Adaptive(52.dp)) {
-                        items(exampleVanillaItems) {
-                            ItemSlot(it)
+            Box {
+                Row(Modifier.fillMaxSize()) {
+                    val mod = Modifier.padding(8.dp)
+                    Column(mod) {
+                        CraftingGrid()
+                    }
+                    Column(mod) {
+                        val hoverBg = MaterialTheme.colors.onSurface.copy(0.2f)
+                        LazyVerticalGrid(GridCells.Adaptive(52.dp)) {
+                            items(exampleVanillaItems) {
+                                Box { ItemSlot(it, modifier = Modifier.hover(hoverBg)) }
+                            }
                         }
                     }
                 }
             }
-
         } else Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 val mod = Modifier.padding(2.dp)
