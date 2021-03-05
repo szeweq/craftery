@@ -32,8 +32,7 @@ fun ImageURL(
     val scope = rememberCoroutineScope()
     val img = remember(url) { mutableStateOf(emptyBitmap) }
     scope.launch {
-        val imgCached = ImageCache.fromURL(url)
-        img.value = imgCached.asImageBitmap()
+        img.value = ImageCache.bitmapFromURL(url)
     }
     Image(img.value, contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
 }
