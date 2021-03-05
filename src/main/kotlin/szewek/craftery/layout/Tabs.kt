@@ -20,7 +20,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun TabsView(views: SnapshotStateList<View>) = Row(Modifier.horizontalScroll(rememberScrollState())) {
+fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) = Row(
+    modifier.horizontalScroll(rememberScrollState()),
+    verticalAlignment = Alignment.CenterVertically
+) {
     for (v in views) ViewTab(v, MaterialTheme.shapes.small)
 }
 

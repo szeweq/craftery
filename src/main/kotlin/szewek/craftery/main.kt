@@ -31,9 +31,7 @@ fun main() {
             Scaffold(
                 topBar = {
                     TopAppBar(Modifier.height(40.dp)) {
-                        Row(Modifier.fillMaxHeight().weight(1f), verticalAlignment = Alignment.CenterVertically) {
-                            TabsView(ViewManager.views)
-                        }
+                        TabsView(Modifier.fillMaxHeight().weight(1f), ViewManager.views)
                         Box(Modifier.fillMaxHeight().requiredWidth(28.dp).padding(vertical = 6.dp)) {
                             val menuToggle = remember { mutableStateOf(false) }
                             val iconSize = 28.dp
