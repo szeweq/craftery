@@ -38,18 +38,23 @@ fun ViewTab(v: View, shape: Shape) {
             Text(v.title, color = LocalContentColor.current, fontSize = 14.sp, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
             val close = v.close
             if (close != null) {
-                Box(
-                    Modifier.hover(hoverBg, CircleShape).clip(CircleShape)
-                ) {
-                    Icon(
-                        Icons.Default.Close,
-                        "Close",
-                        Modifier.size(16.dp).clickable(onClick = close).padding(2.dp),
-                        tint = LocalContentColor.current
-                    )
-                }
+                CloseButton(hoverBg, close)
             }
         }
         if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize().padding(top = 24.dp))
+    }
+}
+
+@Composable
+private fun CloseButton(hoverBg: Color, action: () -> Unit) {
+    Box(
+        Modifier.hover(hoverBg, CircleShape).clip(CircleShape)
+    ) {
+        Icon(
+            Icons.Default.Close,
+            "Close",
+            Modifier.size(16.dp).clickable(onClick = action).padding(2.dp),
+            tint = LocalContentColor.current
+        )
     }
 }
