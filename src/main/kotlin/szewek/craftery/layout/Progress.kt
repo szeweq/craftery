@@ -32,6 +32,6 @@ fun LinearIndicator(progressState: ProgressState, modifier: Modifier = Modifier)
     if (progressState.isIndeterminate()) {
         LinearProgressIndicator(modifier)
     } else {
-        LinearProgressIndicator(progressState.value)
+        LinearProgressIndicator(progressState.value, modifier)
     }
 }
