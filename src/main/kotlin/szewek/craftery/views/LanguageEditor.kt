@@ -72,8 +72,7 @@ class LanguageEditor: View("Language Editor") {
             }
             VerticalScrollbar(
                 rememberScrollbarAdapter(state, lang.size, 72.dp),
-                Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                defaultScrollbarOnDark
+                Modifier.align(Alignment.CenterEnd).fillMaxHeight()
             )
         }
     }

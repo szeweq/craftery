@@ -11,13 +11,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import szewek.craftery.layout.defaultScrollbarOnDark
 import szewek.craftery.mcdata.ScanInfo
 
 abstract class ModLookup<T>(val title: String) {
@@ -41,8 +39,7 @@ abstract class ModLookup<T>(val title: String) {
             }
             VerticalScrollbar(
                 rememberScrollbarAdapter(state, list.size, itemHeight),
-                Modifier.align(Alignment.CenterEnd).fillMaxHeight(),
-                defaultScrollbarOnDark
+                Modifier.align(Alignment.CenterEnd).fillMaxHeight()
             )
         }
     }

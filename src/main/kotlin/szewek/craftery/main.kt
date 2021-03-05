@@ -1,6 +1,5 @@
 package szewek.craftery
 
-import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.desktop.Window
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -11,7 +10,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -19,11 +17,6 @@ import androidx.compose.ui.unit.sp
 import szewek.craftery.layout.*
 import szewek.craftery.views.*
 import javax.swing.UIManager
-
-internal val colorsDark = darkColors(
-    primary = Color(0xff394739),
-    onPrimary = Color.White
-)
 
 fun main() {
     try {
@@ -72,12 +65,14 @@ fun menuContent(dismiss: () -> Unit) {
 
 class MenuAction(val text: String, val fn: () -> Unit)
 val menuActions = arrayOf(
-    MenuAction("Mod Search") { ViewManager.selectOrOpen<ModSearch>() },
-    MenuAction("Language editor") { ViewManager.selectOrOpen<LanguageEditor>() },
-    MenuAction("Mappings viewer (WIP)") { ViewManager.selectOrOpen<MappingViewer>() },
-    MenuAction("Recipe Creator (WIP)") { ViewManager.selectOrOpen<RecipeCreator>() },
-    MenuAction("About") { ViewManager.selectOrOpen<About>() }
+    "Mod search" { ViewManager.selectOrOpen<ModSearch>() },
+    "Language editor" { ViewManager.selectOrOpen<LanguageEditor>() },
+    "Mappings viewer (WIP)" { ViewManager.selectOrOpen<MappingViewer>() },
+    "Recipe Creator (WIP)" { ViewManager.selectOrOpen<RecipeCreator>() },
+    "About" { ViewManager.selectOrOpen<About>() }
 )
+
+private operator fun String.invoke(fn: () -> Unit) = MenuAction(this, fn)
 
 @Composable
 fun welcome() {
