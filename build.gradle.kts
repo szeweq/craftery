@@ -8,13 +8,8 @@ plugins {
 }
 group = "szewek.craftery"
 
-val ktorVersion = "1.4.0"
 val fuelVersion = "2.3.1"
 val asmVersion = "9.1"
-
-//val compileKotlin: KotlinCompile by tasks
-//val compileJava: JavaCompile by tasks
-//compileJava.destinationDir = compileKotlin.destinationDir
 
 repositories {
     jcenter()
@@ -59,19 +54,3 @@ tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "14"
     kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
 }
-
-/* jlink {
-    options.addAll("--strip-debug", "--compress", "2", "--no-header-files", "--no-man-pages")
-    launcher {
-        name = "mctool"
-        jvmArgs.addAll(application.applicationDefaultJvmArgs)
-        jvmArgs.addAll(listOf(
-                "--add-opens", "javafx.controls/javafx.scene.control=szewek.mctool.merged.module",
-                "--add-opens", "javafx.graphics/javafx.scene=szewek.mctool.merged.module",
-                "--add-exports", "javafx.graphics/com.sun.javafx.tk=szewek.mctool.merged.module"
-        ))
-        noConsole = true
-    }
-    addExtraDependencies("javafx")
-    imageZip.set(project.file("${project.buildDir}/image-zip/mctool-img.zip"))
-} */
