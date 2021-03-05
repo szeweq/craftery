@@ -16,10 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import szewek.craftery.layout.CenteredColumn
-import szewek.craftery.layout.TabsView
-import szewek.craftery.layout.ViewManager
-import szewek.craftery.layout.hover
+import szewek.craftery.layout.*
 import szewek.craftery.views.*
 import javax.swing.UIManager
 
@@ -37,9 +34,7 @@ fun main() {
     }
 
     Window(title = "Craftery") {
-        DesktopMaterialTheme(
-            colors = colorsDark
-        ) {
+        AppTheme {
             Scaffold(
                 topBar = {
                     TopAppBar(Modifier.height(40.dp)) {
@@ -70,9 +65,8 @@ fun main() {
 
 @Composable
 fun menuContent(dismiss: () -> Unit) {
-    val hoverColor = MaterialTheme.colors.onSurface.copy(0.2f)
     for (action in menuActions) {
-        DropdownMenuItem({ action.fn(); dismiss() }, Modifier.hover(hoverColor)) { Text(action.text, fontSize = 14.sp) }
+        DropdownMenuItem({ action.fn(); dismiss() }, Modifier.hover(LocalHoverColor.current)) { Text(action.text, fontSize = 14.sp) }
     }
 }
 

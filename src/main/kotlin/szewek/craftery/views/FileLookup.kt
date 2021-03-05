@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.CurseforgeAPI
 import szewek.craftery.layout.CenteredColumn
 import szewek.craftery.layout.LinearIndicator
+import szewek.craftery.layout.LocalHoverColor
 import szewek.craftery.layout.View
 import szewek.craftery.util.Downloader
 import szewek.craftery.util.FileLoader
@@ -64,7 +65,7 @@ class FileLookup(
                 Column(Modifier.width(200.dp)) {
                     val bgBase = MaterialTheme.colors.onSurface
                     val bgSelected = bgBase.copy(0.25f)
-                    val bgHover = bgBase.copy(0.2f)
+                    val bgHover = LocalHoverColor.current
                     val bgSelectedHover = bgBase.copy(0.4f)
                     lookups.forEachIndexed { i, l ->
                         val hover = remember { mutableStateOf(false) }

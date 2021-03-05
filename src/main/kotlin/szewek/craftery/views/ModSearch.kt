@@ -41,13 +41,12 @@ class ModSearch: View("Search mods") {
     ) {
         Box {
             val state = rememberLazyListState()
-            val onHover = MaterialTheme.colors.onSurface.copy(0.2f)
             LazyColumn(Modifier.fillMaxSize().padding(horizontal = 12.dp), state = state) {
                 // Prevent displaying out-of-bounds item layouts
                 if (!modlist.isEmpty()) items(modlist.size, this@ModSearch::getSlugFromList) {
                     if (it >= modlist.size) return@items
                     val item = modlist[it]
-                    itemBox(item, onHover)
+                    itemBox(item)
                 } else {
                     item { Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) { Text(if (progress.isActive()) "Searching..." else "Empty") } }
                 }
@@ -63,10 +62,10 @@ class ModSearch: View("Search mods") {
     private fun getSlugFromList(i: Int): Any = if (i < modlist.size) modlist[i].slug else Unit
 
     @Composable
-    private fun itemBox(item: AddonSearch, hoverBg: Color) {
+    private fun itemBox(item: AddonSearch) {
         Box(Modifier
             .clickable { ViewManager.open(AddonInfo(item)) }
-            .hover(hoverBg, shape = MaterialTheme.shapes.medium)
+            .hover(LocalHoverColor.current, shape = MaterialTheme.shapes.medium)
             .padding(4.dp)
         ) {
             Row {

@@ -20,10 +20,7 @@ import com.google.gson.GsonBuilder
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import szewek.craftery.layout.SimpleTextField
-import szewek.craftery.layout.View
-import szewek.craftery.layout.defaultScrollbarOnDark
-import szewek.craftery.layout.hover
+import szewek.craftery.layout.*
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -45,10 +42,9 @@ class LanguageEditor: View("Language Editor") {
     override fun content() = Scaffold(topBar = { topBar() }) {
         Box {
             val state = rememberLazyListState()
-            val onHover = MaterialTheme.colors.onSurface.copy(0.2f)
             LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
                 items(lang) {
-                    Box(Modifier.fillMaxWidth().hover(onHover, MaterialTheme.shapes.medium)
+                    Box(Modifier.fillMaxWidth().hover(LocalHoverColor.current, MaterialTheme.shapes.medium)
                     ) {
                         Column {
                             Text(it.key, Modifier.padding(2.dp))
@@ -65,7 +61,7 @@ class LanguageEditor: View("Language Editor") {
                                             it.trans,
                                             it::trans::set,
                                             Modifier.fillMaxWidth(),
-                                            background = onHover
+                                            background = LocalHoverColor.current
                                         )
                                     }
                                 }
