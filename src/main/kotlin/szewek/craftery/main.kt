@@ -56,21 +56,18 @@ fun main() {
 
 @Composable
 fun menuContent(dismiss: () -> Unit) {
-    for (action in menuActions) {
-        DropdownMenuItem({ action.fn(); dismiss() }, Modifier.hover(LocalHoverColor.current)) { Text(action.text, fontSize = 14.sp) }
+    for ((text, fn) in menuActions) {
+        DropdownMenuItem({ fn(); dismiss() }, Modifier.hover(LocalHoverColor.current)) { Text(text, fontSize = 14.sp) }
     }
 }
 
-class MenuAction(val text: String, val fn: () -> Unit)
-val menuActions = arrayOf(
-    "Mod search" { ViewManager.selectOrOpen<ModSearch>() },
-    "Language editor" { ViewManager.selectOrOpen<LanguageEditor>() },
-    "Mappings viewer (WIP)" { ViewManager.selectOrOpen<MappingViewer>() },
-    "Recipe Creator (WIP)" { ViewManager.selectOrOpen<RecipeCreator>() },
-    "About" { ViewManager.selectOrOpen<About>() }
+val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(
+    "Mod search" to { ViewManager.selectOrOpen<ModSearch>() },
+    "Language editor" to { ViewManager.selectOrOpen<LanguageEditor>() },
+    "Mappings viewer (WIP)" to { ViewManager.selectOrOpen<MappingViewer>() },
+    "Recipe Creator (WIP)" to { ViewManager.selectOrOpen<RecipeCreator>() },
+    "About" to { ViewManager.selectOrOpen<About>() }
 )
-
-private operator fun String.invoke(fn: () -> Unit) = MenuAction(this, fn)
 
 @Composable
 fun welcome() {
