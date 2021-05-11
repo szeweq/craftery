@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "1.4.30"
+    kotlin("jvm") version "1.4.32"
 
-    id("org.jetbrains.compose") version "0.3.1"
+    id("org.jetbrains.compose") version "0.4.0-build188"
 }
 group = "szewek.craftery"
 
@@ -38,7 +38,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.8.6")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.30")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
     implementation("com.github.kittinunf.result:result:3.1.0")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
