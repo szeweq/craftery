@@ -39,7 +39,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.4.32")
-    implementation("com.github.kittinunf.result:result:3.1.0")
+    implementation("com.github.kittinunf.result:result:4.0.0")
     implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
     implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
     implementation("com.electronwill.night-config:toml:3.6.3")
