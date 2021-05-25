@@ -29,8 +29,8 @@ abstract class ModLookup<T>(val title: String) {
 
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
-    fun content() = Box(Modifier.fillMaxWidth()) {
-        key(this) {
+    fun content() = key(this) {
+        Box(Modifier.fillMaxWidth()) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
                 items(list) { item -> decorate(item) }
