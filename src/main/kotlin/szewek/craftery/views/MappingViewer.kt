@@ -42,10 +42,10 @@ class MappingViewer: View("Mapping viewer (WIP)") {
             OutlinedTextField(url, setUrl, placeholder = { Text("Maven URL") }, singleLine = true)
             Button({ if (url.isNotEmpty()) listVersions() }) { Text("Update") }
 
-            val mcpMap = if (selectedMcp.value.isEmpty()) "MCP Mapping" else selectedMcp.value
+            val mcpMap = selectedMcp.value.ifEmpty { "MCP Mapping" }
             ComboBox(mcpMap, selectedMcp, mcpVersions)
 
-            val mapVer = if(selectedMapping.value.isEmpty()) "Mapping version" else selectedMapping.value
+            val mapVer = selectedMapping.value.ifEmpty { "Mapping version" }
             ComboBox(mapVer, selectedMapping, mappingVersions)
 
             val b = selectedMcp.value.isEmpty() or selectedMapping.value.isEmpty()
