@@ -89,6 +89,7 @@ class FileLookup(
         }
     }
 
+    @Composable
     private fun sideListItem(l: ModLookup<*>) {
         Row(Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center) {
             Text(l.title, Modifier.weight(1f))
