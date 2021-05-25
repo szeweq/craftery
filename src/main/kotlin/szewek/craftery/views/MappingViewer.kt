@@ -19,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.kittinunf.fuel.Fuel
 import com.github.kittinunf.fuel.core.ProgressCallback
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.layout.ComboBox
 import szewek.craftery.layout.View
@@ -78,7 +77,7 @@ class MappingViewer: View("Mapping viewer (WIP)") {
 
     private fun listVersions() {
         val murl = mavenURL.value
-        GlobalScope.launch {
+        viewScope.launch {
             mavenGet(murl, "mcp_config/maven-metadata.xml") // Response XML
             mavenGet(murl, "mcp_snapshot/maven-metadata.xml")
         }
@@ -87,7 +86,7 @@ class MappingViewer: View("Mapping viewer (WIP)") {
     private fun listMappings() {
         val murl = mavenURL.value
         val progress: ProgressCallback = { _, _ -> }
-        GlobalScope.launch {
+        viewScope.launch {
             mavenPkg(murl, "mcp_config", selectedMcp.value, "zip", progress) // Unzip
             mavenPkg(murl, "mcp_snapshot", selectedMapping.value, "zip", progress)
         }

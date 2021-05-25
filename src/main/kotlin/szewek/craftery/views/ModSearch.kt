@@ -1,9 +1,12 @@
 package szewek.craftery.views
 
-import androidx.compose.foundation.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.VerticalScrollbar
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollbarAdapter
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
@@ -14,7 +17,6 @@ import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.AddonSearch
 import szewek.craftery.cfapi.CurseforgeAPI
@@ -111,7 +113,7 @@ class ModSearch: View("Search mods") {
         progress.setIndeterminate()
         val s = search.value
         val tid = typeId.value
-        GlobalScope.launch {
+        viewScope.launch {
             modlist.clear()
             val a = CurseforgeAPI.findAddons(s, tid)
             modlist.addAll(a)

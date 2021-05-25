@@ -85,11 +85,11 @@ class LanguageEditor: View("Language Editor") {
         val mod = Modifier.padding(4.dp)
         Button({
             val f = chooseJSON()
-            if (f != null) GlobalScope.launch(Dispatchers.IO) { loadFile(f) }
+            if (f != null) viewScope.launch(Dispatchers.IO) { loadFile(f) }
         }, mod) { Text("Load original file") }
         Button({
             val f = chooseJSON(true)
-            if (f != null) GlobalScope.launch(Dispatchers.IO) { saveTranslation(f) }
+            if (f != null) viewScope.launch(Dispatchers.IO) { saveTranslation(f) }
         }, mod) { Text("Save translations") }
     }
 
