@@ -2,7 +2,8 @@ package szewek.craftery.layout
 
 import androidx.compose.runtime.*
 
-abstract class View(val title: String) {
+abstract class View(title: String) {
+    val title = mutableStateOf(title)
     val progress = ProgressState()
     lateinit var selection: SingleSelection
 

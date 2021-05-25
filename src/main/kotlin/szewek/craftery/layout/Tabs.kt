@@ -38,7 +38,7 @@ fun ViewTab(v: View, shape: Shape) {
             Modifier.clickable(onClick = v::activate).hover(hoverBg, shape).padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(v.title, color = LocalContentColor.current, fontSize = 14.sp, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
+            Text(v.title.value, color = LocalContentColor.current, fontSize = 14.sp, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
             val close = v.close
             if (close != null) {
                 CloseButton(hoverBg, close)
