@@ -13,7 +13,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerMoveFilter
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,10 +20,7 @@ import com.github.kittinunf.fuel.core.ProgressCallback
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.CurseforgeAPI
-import szewek.craftery.layout.CenteredColumn
-import szewek.craftery.layout.LinearIndicator
-import szewek.craftery.layout.LocalHoverColor
-import szewek.craftery.layout.View
+import szewek.craftery.layout.*
 import szewek.craftery.lookup.*
 import szewek.craftery.mcdata.Modpack
 import szewek.craftery.mcdata.ScanInfo
@@ -67,17 +63,18 @@ class FileLookup(
                     val bgHover = LocalHoverColor.current
                     val bgSelectedHover = bgBase.copy(0.4f)
                     lookups.forEachIndexed { i, l ->
-                        val hover = remember { mutableStateOf(false) }
+                        val (hover, setHover) = remember { mutableStateOf(false) }
                         val bg = remember { derivedStateOf {
                             if (index.value == i) {
-                                if (hover.value) bgSelectedHover else bgSelected
+                                if (hover) bgSelectedHover else bgSelected
                             } else {
-                                if (hover.value) bgHover else Color.Transparent
+                                if (hover) bgHover else Color.Transparent
                             }
                         } }
                         Box(Modifier.background(bg.value, MaterialTheme.shapes.medium)
                             .clickable(onClick = index.bindValue(i))
-                            .pointerMoveFilter(onEnter = { hover.value = true; false }, onExit = { hover.value = false; false })) {
+                            .hoverState(setHover)
+                        ) {
                             sideListItem(l)
                         }
                     }

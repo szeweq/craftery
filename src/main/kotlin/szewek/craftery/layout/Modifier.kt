@@ -14,10 +14,12 @@ fun Modifier.hover(
     color: Color,
     shape: Shape = RectangleShape
 ) = composed {
-    val hovered = remember { mutableStateOf(false) }
-    val mod = pointerMoveFilter(
-        onEnter = { hovered.value = true; false },
-        onExit = { hovered.value = false; false }
-    )
-    if (hovered.value) mod.background(color, shape) else mod
+    val (hover, setHover) = remember { mutableStateOf(false) }
+    val mod = hoverState(setHover)
+    if (hover) mod.background(color, shape) else mod
 }
+
+fun Modifier.hoverState(cb: (Boolean) -> Unit) = pointerMoveFilter(
+    onEnter = { cb(true); false },
+    onExit = { cb(false); false }
+)
