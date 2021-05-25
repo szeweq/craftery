@@ -22,7 +22,7 @@ import szewek.craftery.mcdata.MinecraftData
 import szewek.craftery.mcdata.Models
 
 class RecipeCreator: View("Create recipes") {
-    val exampleVanillaItems = arrayOf(
+    private val exampleVanillaItems = arrayOf(
         "cobblestone",
         "dirt",
         "oak_log",
