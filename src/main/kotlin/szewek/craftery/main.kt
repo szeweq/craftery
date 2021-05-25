@@ -29,26 +29,29 @@ fun main() {
     Window(title = "Craftery") {
         AppTheme {
             Scaffold(
-                topBar = {
-                    TopAppBar(Modifier.height(40.dp)) {
-                        TabsView(Modifier.fillMaxHeight().weight(1f), ViewManager.views)
-                        Box(Modifier.fillMaxHeight().requiredWidth(28.dp).padding(vertical = 6.dp)) {
-                            val menuToggle = remember { mutableStateOf(false) }
-                            val iconSize = 28.dp
-                            val dismiss = { menuToggle.value = false }
-
-                            IconButton({ menuToggle.value = true }) {
-                                Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
-                            }
-                            DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
-                                menuContent(dismiss)
-                            }
-                        }
-                    }
-                }
+                topBar = { topBar() }
             ) {
                 val v = ViewManager.active
                 if (v == null) welcome() else v.content()
+            }
+        }
+    }
+}
+
+@Composable
+fun topBar() {
+    TopAppBar(Modifier.height(40.dp)) {
+        TabsView(Modifier.fillMaxHeight().weight(1f), ViewManager.views)
+        Box(Modifier.fillMaxHeight().requiredWidth(28.dp).padding(vertical = 6.dp)) {
+            val menuToggle = remember { mutableStateOf(false) }
+            val iconSize = 28.dp
+            val dismiss = { menuToggle.value = false }
+
+            IconButton({ menuToggle.value = true }) {
+                Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
+            }
+            DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
+                menuContent(dismiss)
             }
         }
     }
