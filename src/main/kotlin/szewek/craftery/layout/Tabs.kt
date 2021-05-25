@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -24,7 +25,9 @@ fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) = Ro
     modifier.horizontalScroll(rememberScrollState()),
     verticalAlignment = Alignment.CenterVertically
 ) {
-    for (v in views) ViewTab(v, MaterialTheme.shapes.small)
+    ProvideTextStyle(TextStyle(fontSize = 14.sp)) {
+        for (v in views) ViewTab(v, MaterialTheme.shapes.small)
+    }
 }
 
 @Composable
@@ -38,7 +41,7 @@ fun ViewTab(v: View, shape: Shape) {
             Modifier.clickable(onClick = v::activate).hover(hoverBg, shape).padding(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(v.title.value, color = LocalContentColor.current, fontSize = 14.sp, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
+            Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
             val close = v.close
             if (close != null) {
                 CloseButton(hoverBg, close)
