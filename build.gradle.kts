@@ -4,7 +4,7 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     kotlin("jvm") version "1.4.32"
 
-    id("org.jetbrains.compose") version "0.4.0-build188"
+    id("org.jetbrains.compose") version "0.4.0-build210"
 }
 group = "szewek.craftery"
 
