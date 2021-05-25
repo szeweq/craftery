@@ -60,10 +60,8 @@ class FileLookup(
         } else {
             Row {
                 sideList()
-                Column(Modifier.fillMaxWidth()) {
-                    ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
-                        currentLookup.value.content()
-                    }
+                ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
+                    currentLookup.value.content()
                 }
             }
         }
