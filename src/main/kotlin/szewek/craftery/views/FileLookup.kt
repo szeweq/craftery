@@ -78,14 +78,7 @@ class FileLookup(
                         Box(Modifier.background(bg.value, MaterialTheme.shapes.medium)
                             .clickable(onClick = index.bindValue(i))
                             .pointerMoveFilter(onEnter = { hover.value = true; false }, onExit = { hover.value = false; false })) {
-                            Row(Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center) {
-                                Text(l.title, Modifier.weight(1f))
-                                Text(
-                                    l.list.size.toString(),
-                                    Modifier.background(MaterialTheme.colors.primary, CircleShape).padding(6.dp, 2.dp),
-                                    fontSize = 12.sp
-                                )
-                            }
+                            sideListItem(l)
                         }
                     }
                 }
@@ -95,6 +88,17 @@ class FileLookup(
                     }
                 }
             }
+        }
+    }
+
+    private fun sideListItem(l: ModLookup<*>) {
+        Row(Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center) {
+            Text(l.title, Modifier.weight(1f))
+            Text(
+                l.list.size.toString(),
+                Modifier.background(MaterialTheme.colors.primary, CircleShape).padding(6.dp, 2.dp),
+                fontSize = 12.sp
+            )
         }
     }
 
