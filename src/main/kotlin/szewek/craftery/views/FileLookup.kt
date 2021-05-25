@@ -30,6 +30,7 @@ import szewek.craftery.mcdata.Modpack
 import szewek.craftery.mcdata.ScanInfo
 import szewek.craftery.util.Downloader
 import szewek.craftery.util.FileLoader
+import szewek.craftery.util.bindValue
 import java.util.zip.ZipInputStream
 
 class FileLookup(
@@ -75,7 +76,7 @@ class FileLookup(
                             }
                         } }
                         Box(Modifier.background(bg.value, MaterialTheme.shapes.medium)
-                            .clickable { index.value = i }
+                            .clickable(onClick = index.bindValue(i))
                             .pointerMoveFilter(onEnter = { hover.value = true; false }, onExit = { hover.value = false; false })) {
                             Row(Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center) {
                                 Text(l.title, Modifier.weight(1f))
