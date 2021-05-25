@@ -44,6 +44,7 @@ class FileLookup(
         ListAllTags()
     )
     private val index = mutableStateOf(0)
+    private val currentLookup = derivedStateOf { lookups[index.value] }
 
     init {
         viewScope.launch { processLookups() }
@@ -58,33 +59,37 @@ class FileLookup(
             }
         } else {
             Row {
-                Column(Modifier.width(200.dp)) {
-                    val bgBase = MaterialTheme.colors.onSurface
-                    val bgSelected = bgBase.copy(0.25f)
-                    val bgHover = LocalHoverColor.current
-                    val bgSelectedHover = bgBase.copy(0.4f)
-                    lookups.forEachIndexed { i, l ->
-                        val (hover, setHover) = remember { mutableStateOf(false) }
-                        val bg = remember { derivedStateOf {
-                            if (index.value == i) {
-                                if (hover) bgSelectedHover else bgSelected
-                            } else {
-                                if (hover) bgHover else Color.Transparent
-                            }
-                        } }
-                        Box(Modifier.background(bg.value, MaterialTheme.shapes.medium)
-                            .clickable(onClick = index.bindValue(i))
-                            .hoverState(setHover)
-                        ) {
-                            sideListItem(l)
-                        }
-                    }
-                }
+                sideList()
                 Column(Modifier.fillMaxWidth()) {
                     ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
-                        lookups[index.value].content()
+                        currentLookup.value.content()
                     }
                 }
+            }
+        }
+    }
+
+    @Composable
+    private fun sideList() {
+        Column(Modifier.width(200.dp)) {
+            val bgBase = MaterialTheme.colors.onSurface
+            val bgSelected = bgBase.copy(0.25f)
+            val bgHover = LocalHoverColor.current
+            val bgSelectedHover = bgBase.copy(0.4f)
+            lookups.forEachIndexed { i, l ->
+                val (hover, setHover) = remember { mutableStateOf(false) }
+                val bg = remember(index.value, hover) { derivedStateOf {
+                    if (index.value == i) {
+                        if (hover) bgSelectedHover else bgSelected
+                    } else {
+                        if (hover) bgHover else Color.Transparent
+                    }
+                } }
+                Box(Modifier
+                    .hoverState(setHover)
+                    .background(bg.value, MaterialTheme.shapes.medium)
+                    .clickable(onClick = index.bindValue(i))
+                ) { sideListItem(l) }
             }
         }
     }
