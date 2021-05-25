@@ -33,7 +33,7 @@ class RecipeCreator: View("Create recipes") {
     ).map { "minecraft:item/$it" }
 
     init {
-        GlobalScope.launch {
+        viewScope.launch {
             MinecraftData.loadAllFilesFromJar(null)
             Models.compile()
         }

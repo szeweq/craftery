@@ -1,10 +1,15 @@
 package szewek.craftery.layout
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.cancel
 
 abstract class View(title: String) {
     val title = mutableStateOf(title)
     val progress = ProgressState()
+    val viewScope = CoroutineScope(Dispatchers.Default)
     lateinit var selection: SingleSelection
 
     val isActive: Boolean
@@ -15,6 +20,10 @@ abstract class View(title: String) {
     }
 
     var close: (() -> Unit)? = null
+
+    fun onClose() {
+        runCatching { viewScope.cancel() }
+    }
 
     @Composable
     abstract fun content()

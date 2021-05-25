@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.github.kittinunf.fuel.core.ProgressCallback
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.CurseforgeAPI
 import szewek.craftery.layout.*
@@ -45,7 +46,7 @@ class FileLookup(
     private val index = mutableStateOf(0)
 
     init {
-        GlobalScope.launch { processLookups() }
+        viewScope.launch { processLookups() }
     }
 
     @Composable

@@ -30,6 +30,7 @@ object ViewManager {
     inline fun <reified T: View> selectOrOpen() = selectOrOpen(T::class)
 
     private fun close(v: View) {
+        v.onClose()
         val index = views.indexOf(v)
         views.remove(v)
         if (v.isActive) {
