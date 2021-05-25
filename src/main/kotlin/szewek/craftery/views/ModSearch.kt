@@ -43,7 +43,11 @@ class ModSearch: View("Search mods") {
                     val item = modlist[it]
                     itemBox(item)
                 } else {
-                    item { Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) { Text(if (progress.isActive()) "Searching..." else "Empty") } }
+                    item {
+                        Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) {
+                            Text(if (progress.isActive()) "Searching..." else "Empty")
+                        }
+                    }
                 }
             }
             VerticalScrollbar(
