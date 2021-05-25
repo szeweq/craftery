@@ -6,6 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,7 +33,9 @@ fun main() {
                 topBar = { topBar() }
             ) {
                 val v = ViewManager.active
-                if (v == null) welcome() else v.content()
+                key(v) {
+                    if (v == null) welcome() else v.content()
+                }
             }
         }
     }
