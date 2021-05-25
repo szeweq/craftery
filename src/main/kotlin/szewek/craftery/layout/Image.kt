@@ -30,11 +30,9 @@ fun ImageURL(
     colorFilter: ColorFilter? = null
 ) {
     val scope = rememberCoroutineScope()
-    val img = remember(url) { mutableStateOf(emptyBitmap) }
-    scope.launch {
-        img.value = ImageCache.bitmapFromURL(url)
-    }
-    Image(img.value, contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
+    val (img, setImg) = remember(url) { mutableStateOf(emptyBitmap) }
+    scope.launch { ImageCache.lazyGet(url, setImg) }
+    Image(img, contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
 }
 
 val emptyImageBytes: ByteArray = ByteArrayOutputStream().also {
