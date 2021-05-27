@@ -36,7 +36,7 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.6")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0-native-mt")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
     implementation("com.electronwill.night-config:toml:3.6.3")
     implementation("org.ow2.asm:asm:$asmVersion")
