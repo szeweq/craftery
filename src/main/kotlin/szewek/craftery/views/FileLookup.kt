@@ -16,9 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.kittinunf.fuel.core.ProgressCallback
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import szewek.craftery.cfapi.CurseforgeAPI
 import szewek.craftery.layout.*
@@ -27,6 +24,7 @@ import szewek.craftery.mcdata.Modpack
 import szewek.craftery.mcdata.ScanInfo
 import szewek.craftery.util.Downloader
 import szewek.craftery.util.FileLoader
+import szewek.craftery.util.LongBiConsumer
 import szewek.craftery.util.bindValue
 import java.util.zip.ZipInputStream
 
@@ -110,7 +108,7 @@ class FileLookup(
 
     private fun processLookups() {
         val si = ScanInfo()
-        val updateProgress: ProgressCallback = progress::setFraction
+        val updateProgress: (Long, Long) -> Unit = progress::setFraction
         if (modpack) {
             updateMessage("Downloading modpack...")
             progress.setIndeterminate()

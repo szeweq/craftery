@@ -1,20 +1,17 @@
 package szewek.craftery.cfapi
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.gson.responseObject
+import com.google.gson.reflect.TypeToken
 
 object CurseforgeAPI {
-    private const val CF_API = "https://addons-ecs.forgesvc.net/api/v2/"
 
-    fun findAddons(query: String, type: Int): Array<AddonSearch> {
-        return Fuel.get(CF_API + "addon/search", listOf("gameId" to 432, "sectionId" to type, "searchFilter" to query))
-            .responseObject<Array<AddonSearch>>().third.get()
-    }
+    private inline fun <reified T> getJson(path: String, params: List<Pair<String, Any>> = listOf()) =
+        CFAPIClient.getJson(object : TypeToken<T>() {}, path, params)
 
-    fun getAddonFiles(addonId: Int): Array<AddonFile> {
-        return Fuel.get(CF_API + "addon/$addonId/files").responseObject<Array<AddonFile>>().third.get()
-    }
+    fun findAddons(query: String, type: Int) =
+        getJson<Array<AddonSearch>>("addon/search", listOf("gameId" to 432, "sectionId" to type, "searchFilter" to query))
 
-    fun downloadURL(addon: Int, file: Int): String = Fuel.get(CF_API + "addon/$addon/file/$file/download-url")
-            .responseString().third.get()
+    fun getAddonFiles(addonId: Int) = getJson<Array<AddonFile>>("addon/$addonId/files")
+
+    fun downloadURL(addon: Int, file: Int) = CFAPIClient.getString("addon/$addon/file/$file/download-url", listOf())
+
 }

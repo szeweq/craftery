@@ -8,7 +8,6 @@ plugins {
 }
 group = "szewek.craftery"
 
-val fuelVersion = "2.3.1"
 val asmVersion = "9.1"
 
 repositories {
@@ -39,9 +38,6 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.0")
-    implementation("com.github.kittinunf.result:result:4.0.0")
-    implementation("com.github.kittinunf.fuel:fuel:$fuelVersion")
-    implementation("com.github.kittinunf.fuel:fuel-gson:$fuelVersion")
     implementation("com.electronwill.night-config:toml:3.6.3")
     implementation("org.ow2.asm:asm:$asmVersion")
     implementation("org.ow2.asm:asm-tree:$asmVersion")

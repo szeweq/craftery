@@ -1,7 +1,7 @@
 package szewek.craftery.mcdata
 
-import com.github.kittinunf.fuel.core.ProgressCallback
 import szewek.craftery.util.Downloader
+import szewek.craftery.util.LongBiConsumer
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream
@@ -13,7 +13,7 @@ object MinecraftData {
     val assets = mutableMapOf<String, AssetMap>()
     val filesFromJar = mutableMapOf<String, ByteArray>()
 
-    fun updateManifest(progress: ProgressCallback) {
+    fun updateManifest(progress: LongBiConsumer) {
         val d = System.currentTimeMillis()
         if (d - updated >= 1000 * 3600) {
             println("Updating Minecraft manifest...")
@@ -25,7 +25,7 @@ object MinecraftData {
         }
     }
 
-    fun getPackage(v: String, progress: ProgressCallback): Package? {
+    fun getPackage(v: String, progress: LongBiConsumer): Package? {
         updateManifest(progress)
         println("PKG for $v")
         val p = packages[v]
@@ -44,7 +44,7 @@ object MinecraftData {
         return null
     }
 
-    fun getAssetMap(v: String, progress: ProgressCallback): AssetMap? {
+    fun getAssetMap(v: String, progress: LongBiConsumer): AssetMap? {
         updateManifest(progress)
         println("AM for $v")
         val am = getPackage(v, progress)
@@ -66,23 +66,23 @@ object MinecraftData {
         return null
     }
 
-    fun getAsset(p: String, progress: ProgressCallback) {
+    fun getAsset(p: String, progress: LongBiConsumer) {
         updateManifest(progress)
         val v = manifest.latest["release"] ?: return
         val ma = getAssetMap(v, progress) ?: return
         val mf = ma.objects[p]
     }
 
-    private fun getMinecraftClientJar(v: String?, progress: ProgressCallback): ZipInputStream? {
+    private fun getMinecraftClientJar(v: String?, progress: LongBiConsumer): ZipInputStream? {
         updateManifest(progress)
-        progress(0, 1)
+        progress.accept(0, 1)
         val z = v ?: manifest.latest["release"]
         if (z == null) {
             println("No Minecraft version selected!")
             return null
         }
         val p = getPackage(z, progress)
-        progress(0, 1)
+        progress.accept(0, 1)
         if (p == null) {
             println("No package found for $z!")
             return null

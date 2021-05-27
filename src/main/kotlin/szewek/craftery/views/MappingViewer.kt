@@ -17,13 +17,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.ProgressCallback
 import kotlinx.coroutines.launch
 import szewek.craftery.layout.ComboBox
 import szewek.craftery.layout.View
 import szewek.craftery.layout.hover
 import szewek.craftery.util.Downloader
+import szewek.craftery.util.LongBiConsumer
 
 class MappingViewer: View("Mapping viewer (WIP)") {
     private val mavenURL = mutableStateOf("")
@@ -77,15 +76,15 @@ class MappingViewer: View("Mapping viewer (WIP)") {
 
     private fun listVersions() {
         val murl = mavenURL.value
-        viewScope.launch {
+        /*viewScope.launch {
             mavenGet(murl, "mcp_config/maven-metadata.xml") // Response XML
             mavenGet(murl, "mcp_snapshot/maven-metadata.xml")
-        }
+        }*/
     }
 
     private fun listMappings() {
         val murl = mavenURL.value
-        val progress: ProgressCallback = { _, _ -> }
+        val progress = LongBiConsumer { _, _ -> }
         viewScope.launch {
             mavenPkg(murl, "mcp_config", selectedMcp.value, "zip", progress) // Unzip
             mavenPkg(murl, "mcp_snapshot", selectedMapping.value, "zip", progress)
@@ -95,8 +94,8 @@ class MappingViewer: View("Mapping viewer (WIP)") {
     class Mapping(val name: String, val cl: String, val mapped: String)
 
     companion object {
-        fun mavenGet(murl: String, path: String) = Fuel.get("$murl/de/oceanlabs/mcp/$path")
-        fun mavenPkg(murl: String, name: String, version: String, ext: String, progress: ProgressCallback)
+        //fun mavenGet(murl: String, path: String) = Fuel.get("$murl/de/oceanlabs/mcp/$path")
+        fun mavenPkg(murl: String, name: String, version: String, ext: String, progress: LongBiConsumer)
                 = Downloader.downloadFile("$murl/de/oceanlabs/mcp/$name/$version/$name-$version.$ext", progress)
     }
 }

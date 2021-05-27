@@ -1,27 +1,26 @@
 package szewek.craftery.util
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.core.ProgressCallback
-import com.github.kittinunf.fuel.core.responseUnit
-import com.github.kittinunf.fuel.gson.responseObject
-import com.github.kittinunf.result.getOrElse
+import com.google.gson.reflect.TypeToken
 import java.io.InputStream
+import java.net.URI
+import java.net.http.HttpClient
+import java.net.http.HttpRequest
+import java.net.http.HttpResponse
 
 object Downloader {
-    fun downloadFile(url: String, progress: ProgressCallback): InputStream = Fuel.get(url)
-            .responseProgress(progress)
-            .responseUnit().second.body().toStream()
+    private val cli = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
 
-    inline fun <reified T : Any> downloadJson(url: String) = Fuel.get(url)
+    private fun <T> get(url: String, progress: LongBiConsumer, bodyHandler: HttpResponse.BodyHandler<T>) =
+        cli.send(HttpRequest.newBuilder(URI.create(url)).build(), ProgressBodySubscriber.handler(bodyHandler, progress)).body()
+
+    fun downloadFile(url: String, progress: LongBiConsumer): InputStream =
+        get(url, progress, HttpResponse.BodyHandlers.ofInputStream())
+
+    /*inline fun <reified T : Any> downloadJson(url: String) = Fuel.get(url)
             .responseObject<T>().third.getOrElse {
                 println("Err $it")
                 null
-            }
-
-    inline fun <reified T : Any> downloadJson(url: String, noinline progress: ProgressCallback) = Fuel.get(url)
-            .responseProgress(progress)
-            .responseObject<T>().third.getOrElse {
-                println("Err $it")
-                null
-            }
+            }*/
+    fun <T> downloadJson(url: String, progress: LongBiConsumer): T? =
+        get(url, progress, GsonBodyHandler.handle(object : TypeToken<T>() {}))
 }
