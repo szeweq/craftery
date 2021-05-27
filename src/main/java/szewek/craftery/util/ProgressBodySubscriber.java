@@ -1,7 +1,6 @@
 package szewek.craftery.util;
 
 import java.net.http.HttpResponse;
-import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
