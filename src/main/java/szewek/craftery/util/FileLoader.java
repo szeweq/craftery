@@ -10,7 +10,7 @@ public interface FileLoader {
 
 	static FileLoader fromURL(final String url) {
 		Objects.requireNonNull(url);
-		return progress -> Downloader.INSTANCE.downloadFile(url, progress);
+		return progress -> Downloader.downloadFile(url, progress);
 	}
 
 	static FileLoader fromFile(final File file) {

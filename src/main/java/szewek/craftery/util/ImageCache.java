@@ -2,6 +2,10 @@ package szewek.craftery.util;
 
 import androidx.compose.ui.graphics.DesktopImageAsset_desktopKt;
 import androidx.compose.ui.graphics.ImageBitmap;
+import androidx.compose.ui.graphics.ImageBitmapConfig;
+import androidx.compose.ui.graphics.ImageBitmapKt;
+import androidx.compose.ui.graphics.colorspace.ColorSpace;
+import androidx.compose.ui.graphics.colorspace.ColorSpaces;
 import kotlin.Unit;
 import org.jetbrains.skija.Image;
 
@@ -25,6 +29,7 @@ public final class ImageCache {
     private static long lastRefresh = System.nanoTime();
     private static final Map<String, Image> map = new ConcurrentHashMap<>();
     private static final Map<String, ImageBitmap> mapBitmaps = new ConcurrentHashMap<>();
+    public static final ImageBitmap emptyBitmap = ImageBitmapKt.ImageBitmap(1, 1, ImageBitmapConfig.Argb8888, true, ColorSpaces.INSTANCE.getSrgb());
 
     public static void lazyGet(String url, Consumer<ImageBitmap> cb) {
         if (mapBitmaps.containsKey(url)) {
@@ -40,8 +45,11 @@ public final class ImageCache {
                 .thenApply(HttpResponse::body)
                 .thenApply(img -> {
                     final var ib = img == null ? null : DesktopImageAsset_desktopKt.asImageBitmap(img);
-                    if (ib != null) mapBitmaps.put(url, ib);
-                    return ib;
+                    if (ib != null) {
+                        mapBitmaps.put(url, ib);
+                        return ib;
+                    }
+                    return emptyBitmap;
                 }).thenAccept(cb);
     }
 
@@ -52,7 +60,7 @@ public final class ImageCache {
     public static Image fromURL(String url) {
         recycle();
         return map.computeIfAbsent(url, s -> {
-            var stream = Downloader.INSTANCE.downloadFile(s, (l1, l2) -> {});
+            var stream = Downloader.downloadFile(s, (l1, l2) -> {});
             Image img = null;
             try {
                 img = Image.makeFromEncoded(stream.readAllBytes());

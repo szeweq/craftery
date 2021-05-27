@@ -1,13 +1,10 @@
 package szewek.craftery.cfapi;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import kotlin.Pair;
 import szewek.craftery.util.GsonBodyHandler;
-import szewek.craftery.util.ProgressBodySubscriber;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -17,7 +14,6 @@ import java.util.List;
 final class CFAPIClient {
     private CFAPIClient() {}
 
-    private static final Gson GSON = new Gson();
     private static final HttpClient cli = HttpClient.newHttpClient();
     private static final URI CF_URI = URI.create("https://addons-ecs.forgesvc.net/api/v2/");
 

@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.Flow;
 
-public class ProgressBodySubscriber<T> implements HttpResponse.BodySubscriber<T> {
+public class ProgressSubscriber<T> implements HttpResponse.BodySubscriber<T> {
     private final long size;
     private long count = 0;
     private final LongBiConsumer progress;
     private final HttpResponse.BodySubscriber<T> child;
 
-    public ProgressBodySubscriber(LongBiConsumer progress, long size, HttpResponse.BodySubscriber<T> bodySubscriber) {
+    public ProgressSubscriber(LongBiConsumer progress, long size, HttpResponse.BodySubscriber<T> bodySubscriber) {
         this.progress = progress;
         this.size = size;
         child = bodySubscriber;
@@ -50,10 +50,10 @@ public class ProgressBodySubscriber<T> implements HttpResponse.BodySubscriber<T>
         child.onComplete();
     }
 
-    public static <T> HttpResponse.BodyHandler<T> handler(final HttpResponse.BodyHandler<T> bodyHandler, final LongBiConsumer progress) {
+    public static <T> HttpResponse.BodyHandler<T> handle(final HttpResponse.BodyHandler<T> bodyHandler, final LongBiConsumer progress) {
         return ri -> {
             var c = ri.headers().firstValue("Content-Length").map(Long::valueOf).orElse(-1L);
-            return new ProgressBodySubscriber<>(progress, c, bodyHandler.apply(ri));
+            return new ProgressSubscriber<>(progress, c, bodyHandler.apply(ri));
         };
     }
 }

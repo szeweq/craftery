@@ -30,7 +30,7 @@ fun ImageURL(
     colorFilter: ColorFilter? = null
 ) {
     val scope = rememberCoroutineScope()
-    val (img, setImg) = remember(url) { mutableStateOf(emptyBitmap) }
+    val (img, setImg) = remember(url) { mutableStateOf(ImageCache.emptyBitmap) }
     scope.launch { ImageCache.lazyGet(url, setImg) }
     Image(img, contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
 }
@@ -40,5 +40,3 @@ val emptyImageBytes: ByteArray = ByteArrayOutputStream().also {
 }.toByteArray()
 
 val emptySkijaImage: org.jetbrains.skija.Image = org.jetbrains.skija.Image.makeFromEncoded(emptyImageBytes)
-
-val emptyBitmap = ImageBitmap(1, 1)
