@@ -50,11 +50,11 @@ fun updateTitle(title: String?) {
 
 @Composable
 fun topBar() {
-    TopAppBar(Modifier.height(40.dp)) {
+    TopAppBar(Modifier.height(32.dp)) {
         TabsView(Modifier.fillMaxHeight().weight(1f), ViewManager.views)
-        Box(Modifier.fillMaxHeight().requiredWidth(28.dp).padding(vertical = 6.dp)) {
+        Box(Modifier.fillMaxHeight().requiredWidth(24.dp).padding(vertical = 6.dp)) {
             val menuToggle = remember { mutableStateOf(false) }
-            val iconSize = 28.dp
+            val iconSize = 24.dp
             val dismiss = { menuToggle.value = false }
 
             IconButton({ menuToggle.value = true }) {
