@@ -2,6 +2,7 @@ package szewek.craftery.mcdata
 
 import szewek.craftery.util.Downloader
 import szewek.craftery.util.LongBiConsumer
+import szewek.craftery.util.downloadJson
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream
@@ -17,7 +18,7 @@ object MinecraftData {
         val d = System.currentTimeMillis()
         if (d - updated >= 1000 * 3600) {
             println("Updating Minecraft manifest...")
-            val o = Downloader.downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json", progress)
+            val o = downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json", progress)
             if (o != null) {
                 manifest = o
                 updated = d
@@ -32,7 +33,7 @@ object MinecraftData {
         if (p == null) {
             val vu = manifest.versions.find { v == it.id }
             if (vu != null) {
-                val o = Downloader.downloadJson<Package>(vu.url, progress)
+                val o = downloadJson<Package>(vu.url, progress)
                 if (o != null) {
                     packages[v] = o
                     return o
@@ -54,7 +55,7 @@ object MinecraftData {
             val vu = am.assetIndex.url
             val ma = assets[vi]
             if (ma == null) {
-                val dl = Downloader.downloadJson<AssetMap>(vu, progress)
+                val dl = downloadJson<AssetMap>(vu, progress)
                 if (dl != null) {
                     assets[vi] = dl
                     return dl

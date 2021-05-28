@@ -6,6 +6,7 @@ import org.jetbrains.skija.Image
 import szewek.craftery.util.Downloader
 import szewek.craftery.util.ImageCache
 import szewek.craftery.util.LongBiConsumer
+import szewek.craftery.util.downloadJson
 
 object ImageAlternatives {
     val mapIds = mapOf(
@@ -17,7 +18,7 @@ object ImageAlternatives {
         if (name !in mapIds) return null
         if (name in images) return images[name]
         val fileId = mapIds[name]
-        val obj = Downloader.downloadJson<JsonObject>(
+        val obj = downloadJson<JsonObject>(
             Downloader.buildQuery(
                 "https://minecraft.gamepedia.com/api.php",
                 listOf(

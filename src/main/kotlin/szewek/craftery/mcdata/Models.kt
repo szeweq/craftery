@@ -6,7 +6,8 @@ import androidx.compose.runtime.setValue
 import com.google.gson.Gson
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.skija.Image
 import java.io.ByteArrayInputStream
@@ -24,19 +25,17 @@ object Models {
     private val matchModel = Pattern.compile("^assets/[a-z]+/models/.*\\.json$")
     private val matchTex = Pattern.compile("^assets/[a-z]+/textures/.*\\.png$")
 
-    fun compile() {
+    suspend fun compile() = coroutineScope {
         println("Compiling resources")
-        val latch = CountDownLatch(2)
-        with (GlobalScope) {
-            launch { compileTextures(latch) }
-            launch { compileModels(latch) }
-        }
-        latch.await()
+        val texTask = launch { compileTextures() }
+        val modelTask = launch { compileModels() }
+        texTask.join()
+        modelTask.join()
         compileState = true
         println("All compiled!")
     }
 
-    private fun compileModels(latch: CountDownLatch) {
+    private fun compileModels() {
         val allModels = MinecraftData.filesFromJar.filterKeys { matchModel.matcher(it).find() }
         for ((n, mb) in allModels) {
             val input = ByteArrayInputStream(mb)
@@ -53,7 +52,6 @@ object Models {
                 }
             } }
         }
-        latch.countDown()
     }
 
     private fun checkTextures(v: JsonElement): String? {
@@ -65,14 +63,13 @@ object Models {
         return null
     }
 
-    private fun compileTextures(latch: CountDownLatch) {
+    private fun compileTextures() {
         val allTex = MinecraftData.filesFromJar.filterKeys { matchTex.matcher(it).find() }
         for ((n, tb) in allTex) {
             val input = ByteArrayInputStream(tb)
             val img = Image.makeFromEncoded(input.readAllBytes())
             textures[n] = img // scale(img, 2)
         }
-        latch.countDown()
     }
 
     fun modelDataOf(name: String): ModelData? {

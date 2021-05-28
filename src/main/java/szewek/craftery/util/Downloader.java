@@ -32,6 +32,10 @@ public final class Downloader {
         return get(url, progress, GsonBodyHandler.handle(new TypeToken<T>() {}));
     }
 
+    public static <T> T downloadJson(String url, Class<T> cl, LongBiConsumer progress) {
+        return get(url, progress, GsonBodyHandler.handle(TypeToken.get(cl)));
+    }
+
     public static String buildQuery(String path, Collection<Pair<String, Object>> params) {
         if (params.isEmpty()) {
             return path;
