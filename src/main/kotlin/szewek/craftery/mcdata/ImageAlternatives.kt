@@ -31,7 +31,7 @@ object ImageAlternatives {
                 )
             ),
             LongBiConsumer.DUMMY
-        )
+        )!!
         val iinfo = traverse(obj, "query", "pages", fileId.toString(), "imageinfo")?.asJsonArray
         if (iinfo != null) {
             val url = iinfo[0]?.asJsonObject?.get("thumburl")?.asString ?: return null
