@@ -14,4 +14,6 @@ public interface LongBiConsumer {
 			after.accept(l,r);
 		};
 	}
+
+	LongBiConsumer DUMMY = (l, r) -> {};
 }
