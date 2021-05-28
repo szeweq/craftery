@@ -70,7 +70,6 @@ fun menuContent(dismiss: () -> Unit) {
 val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(
     "Mod search" to { ViewManager.selectOrOpen<ModSearch>() },
     "Language editor" to { ViewManager.selectOrOpen<LanguageEditor>() },
-    "Mappings viewer (WIP)" to { ViewManager.selectOrOpen<MappingViewer>() },
     "Recipe Creator (WIP)" to { ViewManager.selectOrOpen<RecipeCreator>() },
     "About" to { ViewManager.selectOrOpen<About>() }
 )
