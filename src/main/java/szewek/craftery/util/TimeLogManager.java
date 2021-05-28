@@ -32,7 +32,7 @@ public class TimeLogManager {
         return historyMap.entrySet()
                 .stream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue().avg()))
-                .sorted((l, r) -> (int) (l.getSecond() - r.getSecond()))
+                .sorted((l, r) -> (int) (r.getSecond() - l.getSecond()))
                 .collect(Collectors.toUnmodifiableList());
     }
 
