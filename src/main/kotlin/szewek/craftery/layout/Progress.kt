@@ -1,11 +1,13 @@
 package szewek.craftery.layout
 
 import androidx.compose.material.LinearProgressIndicator
+import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 class ProgressState {
     var value by mutableStateOf(Float.MAX_VALUE)
@@ -28,10 +30,14 @@ class ProgressState {
 }
 
 @Composable
-fun LinearIndicator(progressState: ProgressState, modifier: Modifier = Modifier) {
+fun LinearIndicator(
+    progressState: ProgressState,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colors.primary
+) {
     if (progressState.isIndeterminate()) {
-        LinearProgressIndicator(modifier)
+        LinearProgressIndicator(modifier, color)
     } else {
-        LinearProgressIndicator(progressState.value, modifier)
+        LinearProgressIndicator(progressState.value, modifier, color)
     }
 }

@@ -14,7 +14,9 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -24,15 +26,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 val tabShape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp)
+val LocalTabProgressColor = staticCompositionLocalOf { Color.White }
 
 @Composable
 fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) = Row(
     modifier.horizontalScroll(rememberScrollState()),
     verticalAlignment = Alignment.Bottom
 ) {
-    ProvideTextStyle(TextStyle(fontSize = 14.sp)) {
-        for (v in views) ViewTab(v)
-    }
+    CompositionLocalProvider(
+        LocalTextStyle provides TextStyle(fontSize = 14.sp),
+        LocalTabProgressColor provides MaterialTheme.colors.primary.copy(alpha = 0.5f)
+    ) { for (v in views) ViewTab(v) }
 }
 
 @Composable
@@ -42,6 +46,7 @@ fun ViewTab(v: View) {
         Modifier.background(if(v.isActive) MaterialTheme.colors.background else Color.Transparent, tabShape).clip(tabShape),
         propagateMinConstraints = true
     ) {
+        if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize(), LocalTabProgressColor.current)
         Row(
             Modifier.clickable(onClick = v::activate).hover(hoverBg, tabShape).padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -52,7 +57,6 @@ fun ViewTab(v: View) {
                 CloseButton(hoverBg, close)
             }
         }
-        if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize().padding(top = 24.dp))
     }
 }
 
