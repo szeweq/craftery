@@ -17,7 +17,6 @@ public class TimeLogManager {
     public static void logNano(String name, long nano) {
         var ll = System.nanoTime();
         var d = ll - nano;
-        System.out.println(name + ": took " + formatDuration(d));
         historyMap.computeIfAbsent(name, k -> new TimeHistory()).add(d);
         lastLog.setValue(ll);
     }
