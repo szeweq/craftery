@@ -15,8 +15,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,35 +26,37 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 val tabShape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp)
-val LocalTabProgressColor = staticCompositionLocalOf { Color.White }
+val LocalTabProgressColor = compositionLocalOf { Color.White }
+val LocalTabHoverColor = compositionLocalOf { Color.White }
 
 @Composable
 fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) = Row(
     modifier.horizontalScroll(rememberScrollState()),
     verticalAlignment = Alignment.Bottom
 ) {
+    LocalContentColor
     CompositionLocalProvider(
-        LocalTextStyle provides TextStyle(fontSize = 14.sp),
-        LocalTabProgressColor provides MaterialTheme.colors.primary.copy(alpha = 0.5f)
+        LocalTextStyle provides TextStyle(fontSize = 13.sp),
+        LocalTabProgressColor provides MaterialTheme.colors.primary.copy(0.5f),
+        LocalTabHoverColor provides MaterialTheme.colors.onSurface.copy(0.15f)
     ) { for (v in views) ViewTab(v) }
 }
 
 @Composable
 fun ViewTab(v: View) {
-    val hoverBg = MaterialTheme.colors.onSurface.copy(0.1f)
     Box(
         Modifier.background(if(v.isActive) MaterialTheme.colors.background else Color.Transparent, tabShape).clip(tabShape),
         propagateMinConstraints = true
     ) {
         if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize(), LocalTabProgressColor.current)
         Row(
-            Modifier.clickable(onClick = v::activate).hover(hoverBg, tabShape).padding(horizontal = 4.dp, vertical = 6.dp),
+            Modifier.clickable(onClick = v::activate).hover(LocalTabHoverColor.current, tabShape).padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
             val close = v.close
             if (close != null) {
-                CloseButton(hoverBg, close)
+                CloseButton(LocalTabHoverColor.current, close)
             }
         }
     }
