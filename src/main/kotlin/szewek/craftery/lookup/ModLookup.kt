@@ -36,7 +36,7 @@ abstract class ModLookup<T>(val title: String) {
                 items(list) { item -> decorate(item) }
             }
             VerticalScrollbar(
-                rememberScrollbarAdapter(state, list.size, itemHeight),
+                rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd).fillMaxHeight()
             )
         }
