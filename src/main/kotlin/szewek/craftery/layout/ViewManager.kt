@@ -27,6 +27,15 @@ object ViewManager {
         }
     }
 
+    fun <T: View> selectOrOpenInstance(obj: T) {
+        val b = views.contains(obj);
+        if (b) {
+            obj.activate()
+        } else {
+            open(obj)
+        }
+    }
+
     inline fun <reified T: View> selectOrOpen() = selectOrOpen(T::class)
 
     private fun close(v: View) {

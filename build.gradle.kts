@@ -23,7 +23,7 @@ java {
 
 compose.desktop {
     application {
-        mainClass = "szewek.craftery.MainKt"
+        mainClass = "szewek.craftery.Craftery"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "craftery"

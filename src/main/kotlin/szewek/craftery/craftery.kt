@@ -1,43 +1,50 @@
 package szewek.craftery
 
-import androidx.compose.desktop.Window
+import androidx.compose.desktop.AppWindow
+import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import szewek.craftery.layout.*
+import szewek.craftery.util.logTime
 import szewek.craftery.views.*
-import javax.swing.UIManager
 
-fun main() {
-    try {
-        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
-    } catch (e: Exception) {
-        println("Unable to set system Look and Feel")
-        e.printStackTrace()
-    }
+fun startApp() = logTime("App launch") {
+    val win = AppWindow(title = Craftery.APP_TITLE)
+    win.show(content = app)
+}
 
-    Window(title = "Craftery") {
-        AppTheme {
-            Scaffold(
-                topBar = { topBar() }
-            ) {
-                val v = ViewManager.active
-                key(v) {
-                    if (v == null) welcome() else v.content()
+private val app = @Composable {
+    AppTheme {
+        Scaffold(
+            topBar = { topBar() }
+        ) {
+            val v = ViewManager.active
+            key(v) {
+                updateTitle(v?.title?.value)
+                if (v == null) {
+                    welcome()
+                } else logTime("Update view [${v.javaClass.name}]") {
+                    v.content()
                 }
             }
         }
+    }
+}
+
+@Composable
+fun updateTitle(title: String?) {
+    val w = LocalAppWindow.current
+    SideEffect {
+        val t = if (title == null || title.isBlank()) Craftery.APP_TITLE else "$title - ${Craftery.APP_TITLE}"
+        w.setTitle(t)
     }
 }
 
@@ -71,7 +78,8 @@ val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(
     "Mod search" to { ViewManager.selectOrOpen<ModSearch>() },
     "Language editor" to { ViewManager.selectOrOpen<LanguageEditor>() },
     "Recipe Creator (WIP)" to { ViewManager.selectOrOpen<RecipeCreator>() },
-    "About" to { ViewManager.selectOrOpen<About>() }
+    "Time logs" to { ViewManager.selectOrOpenInstance(TimeLogViewer) },
+    "About" to { ViewManager.selectOrOpenInstance(About) }
 )
 
 @Composable

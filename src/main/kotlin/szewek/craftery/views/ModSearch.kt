@@ -53,7 +53,7 @@ class ModSearch: View("Search mods") {
                 }
             }
             VerticalScrollbar(
-                rememberScrollbarAdapter(state, modlist.size, 64.dp),
+                rememberScrollbarAdapter(state),
                 Modifier.align(Alignment.CenterEnd).fillMaxHeight()
             )
         }

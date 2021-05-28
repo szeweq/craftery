@@ -1,13 +1,9 @@
 package szewek.craftery.util;
 
 import androidx.compose.ui.graphics.*;
-import androidx.compose.ui.graphics.colorspace.ColorSpace;
-import androidx.compose.ui.graphics.colorspace.ColorSpaces;
-import kotlin.Unit;
 import org.jetbrains.skija.Image;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -26,7 +22,7 @@ public final class ImageCache {
     private static long lastRefresh = System.nanoTime();
     private static final Map<String, Image> map = new ConcurrentHashMap<>();
     private static final Map<String, ImageBitmap> mapBitmaps = new ConcurrentHashMap<>();
-    public static final ImageBitmap emptyBitmap = StateUtilsKt.getEmptyImage();
+    public static final ImageBitmap emptyBitmap = UtilsKt.getEmptyImage();
 
     public static void lazyGet(String url, Consumer<ImageBitmap> cb) {
         if (mapBitmaps.containsKey(url)) {
