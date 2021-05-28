@@ -1,6 +1,7 @@
 package szewek.craftery.util;
 
 import com.google.gson.reflect.TypeToken;
+import kotlin.Pair;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,6 +9,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.Collection;
 
 public final class Downloader {
     private Downloader() {}
@@ -28,5 +30,19 @@ public final class Downloader {
 
     public static <T> T downloadJson(String url, LongBiConsumer progress) {
         return get(url, progress, GsonBodyHandler.handle(new TypeToken<T>() {}));
+    }
+
+    public static String buildQuery(String path, Collection<Pair<String, Object>> params) {
+        if (params.isEmpty()) {
+            return path;
+        }
+        var sb = new StringBuilder();
+        sb.append(path).append('?');
+        var c = 0;
+        for (var p : params) {
+            if (c++ > 0) sb.append('&');
+            sb.append(p.getFirst()).append('=').append(p.getSecond().toString());
+        }
+        return sb.toString();
     }
 }

@@ -1,10 +1,10 @@
 package szewek.craftery.mcdata
 
-import com.github.kittinunf.fuel.core.ProgressCallback
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.InsnList
 import szewek.craftery.util.KtUtil
+import szewek.craftery.util.LongBiConsumer
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -35,14 +35,14 @@ inline fun ZipInputStream.eachEntry(fn: (ZipEntry) -> Unit) {
     }
 }
 
-fun InputStream.copyWithProgress(out: OutputStream, total: Long, progress: ProgressCallback): Long {
+fun InputStream.copyWithProgress(out: OutputStream, total: Long, progress: LongBiConsumer): Long {
     var bytesCopied: Long = 0
     val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
     var bytes = read(buffer)
     while (bytes >= 0) {
         out.write(buffer, 0, bytes)
         bytesCopied += bytes
-        progress(bytesCopied, total)
+        progress.accept(bytesCopied, total)
         bytes = read(buffer)
     }
     return bytesCopied

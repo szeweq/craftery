@@ -1,11 +1,11 @@
 package szewek.craftery.mcdata
 
-import com.github.kittinunf.fuel.Fuel
-import com.github.kittinunf.fuel.gson.responseObject
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import org.jetbrains.skija.Image
+import szewek.craftery.util.Downloader
 import szewek.craftery.util.ImageCache
+import szewek.craftery.util.LongBiConsumer
 
 object ImageAlternatives {
     val mapIds = mapOf(
@@ -17,17 +17,20 @@ object ImageAlternatives {
         if (name !in mapIds) return null
         if (name in images) return images[name]
         val fileId = mapIds[name]
-        val obj = Fuel.get(
-            "https://minecraft.gamepedia.com/api.php",
-            listOf(
-                "action" to "query",
-                "format" to "json",
-                "prop" to "imageinfo",
-                "iiprop" to "url",
-                "iiurlwidth" to 64,
-                "pageids" to fileId
-            )
-        ).responseObject<JsonObject>().third.get()
+        val obj = Downloader.downloadJson<JsonObject>(
+            Downloader.buildQuery(
+                "https://minecraft.gamepedia.com/api.php",
+                listOf(
+                    "action" to "query",
+                    "format" to "json",
+                    "prop" to "imageinfo",
+                    "iiprop" to "url",
+                    "iiurlwidth" to 64,
+                    "pageids" to fileId
+                )
+            ),
+            LongBiConsumer.DUMMY
+        )
         val iinfo = traverse(obj, "query", "pages", fileId.toString(), "imageinfo")?.asJsonArray
         if (iinfo != null) {
             val url = iinfo[0]?.asJsonObject?.get("thumburl")?.asString ?: return null
