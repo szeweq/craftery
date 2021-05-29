@@ -1,7 +1,6 @@
 package szewek.craftery.layout
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
@@ -10,6 +9,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -32,9 +32,9 @@ fun ComboBox(name: String, current: MutableState<String>, values: Iterable<Strin
 private fun ComboBoxLayout(name: String, content: @Composable ColumnScope.(() -> Unit) -> Unit) = Box {
     val menuToggle = remember { mutableStateOf(false) }
     val dismiss = { menuToggle.value = false }
-    Button({ menuToggle.value = true }) {
-        Text(name)
-        Icon(Icons.Default.ArrowDropDown, "Dropdown")
+    Button({ menuToggle.value = true }, Modifier.heightIn(24.dp), contentPadding = PaddingValues(8.dp, 4.dp)) {
+        Text(name, fontSize = 12.sp, letterSpacing = 0.5.sp)
+        Icon(Icons.Default.ArrowDropDown, "Dropdown", Modifier.size(16.dp))
     }
     DropdownMenu(menuToggle.value, dismiss) { content(dismiss) }
 }
