@@ -8,6 +8,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
@@ -69,17 +70,22 @@ fun topBar() {
 
 @Composable
 fun menuContent(dismiss: () -> Unit) {
+    val menuPadding = PaddingValues(horizontal = 8.dp)
     for ((text, fn) in menuActions) {
-        DropdownMenuItem({ fn(); dismiss() }, Modifier.hover(LocalHoverColor.current)) { Text(text, fontSize = 14.sp) }
+        DropdownMenuItem(
+            { fn(); dismiss() },
+            Modifier.hover(LocalHoverColor.current).heightIn(min = 32.dp, max = 32.dp),
+            contentPadding = menuPadding
+        ) { Text(text, fontSize = 13.sp) }
     }
 }
 
 val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(
-    "Mod search" to { ViewManager.selectOrOpen<ModSearch>() },
-    "Language editor" to { ViewManager.selectOrOpen<LanguageEditor>() },
-    "Recipe Creator (WIP)" to { ViewManager.selectOrOpen<RecipeCreator>() },
-    "Time logs" to { ViewManager.selectOrOpenInstance(TimeLogViewer) },
-    "About" to { ViewManager.selectOrOpenInstance(About) }
+    "Mod search" to ViewManager.selectOrOpenAction<ModSearch>(),
+    "Language editor" to ViewManager.selectOrOpenAction<LanguageEditor>(),
+    "Recipe Creator (WIP)" to ViewManager.selectOrOpenAction<RecipeCreator>(),
+    "Time logs" to ViewManager.selectOrOpenInstanceAction(TimeLogViewer),
+    "About" to ViewManager.selectOrOpenInstanceAction(About)
 )
 
 @Composable
@@ -87,7 +93,7 @@ fun welcome() {
     CenteredColumn(Modifier.fillMaxSize(1.0f)) {
         Text("What would you like to do?", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
         val mod = Modifier.padding(2.dp)
-        Button({ ViewManager.selectOrOpen<ModSearch>() }, mod) { Text("Search for mods/modpacks") }
-        Button({ ViewManager.selectOrOpen<LanguageEditor>() }, mod) { Text("Open language editor") }
+        Button(ViewManager.selectOrOpenAction<ModSearch>(), mod, content = ComposeText("Search for mods/modpacks"))
+        Button(ViewManager.selectOrOpenAction<LanguageEditor>(), mod, content = ComposeText("Open language editor"))
     }
 }
