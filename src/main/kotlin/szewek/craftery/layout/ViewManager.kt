@@ -36,7 +36,10 @@ object ViewManager {
         }
     }
 
-    inline fun <reified T: View> selectOrOpen() = selectOrOpen(T::class)
+    fun <T: View> selectOrOpenAction(kc: KClass<T>): () -> Unit = { selectOrOpen(kc) }
+    inline fun <reified T: View> selectOrOpenAction() = selectOrOpenAction(T::class)
+
+    fun <T: View> selectOrOpenInstanceAction(obj: T): () -> Unit = { selectOrOpenInstance(obj) }
 
     private fun close(v: View) {
         v.onClose()
