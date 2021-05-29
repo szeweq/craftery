@@ -2,6 +2,7 @@ package szewek.craftery.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.MaterialTheme
@@ -36,4 +37,8 @@ fun ThreeLinesItem(item: Triple<String, String, String>, second: String, third: 
         Text("$second: " + item.second)
         Text("$third: " + item.third)
     }
+}
+
+fun ComposeText(text: String): @Composable RowScope.() -> Unit = {
+    Text(text)
 }
