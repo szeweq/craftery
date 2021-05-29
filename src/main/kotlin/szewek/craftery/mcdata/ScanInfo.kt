@@ -43,24 +43,28 @@ class ScanInfo {
         when {
             name == "META-INF/mods.toml" -> {
                 // Assuming this is a Forge mod
-                val cfg = Scanner.TOML.parse(data)
-                val mods = cfg.getList<Config?>("mods")
-                for (m in mods) {
-                    if (m == null) continue
-                    val modId = m.get<String>("modId") ?: continue
-                    val modDeps = m.getList<Config?>(listOf("dependencies", modId))
-                    for (md in modDeps) {
-                        if (md == null) continue
-                        val s = md.get<String>("modId") ?: continue
-                        if (s != "forge" && s != "minecraft") deps += s
-                    }
-                }
+                scanModsTomlFile(data)
             }
             name.endsWith(".json") -> {
                 if (!name.endsWith("sounds.json")) scanJsonFile(name, data)
             }
             name.endsWith(".class") -> {
                 if (!(name.startsWith("kotlin") || name.startsWith("scala"))) scanClassFile(name, data)
+            }
+        }
+    }
+
+    private fun scanModsTomlFile(data: InputStream) {
+        val cfg = Scanner.TOML.parse(data)
+        val mods = cfg.getList<Config?>("mods")
+        for (m in mods) {
+            if (m == null) continue
+            val modId = m.get<String>("modId") ?: continue
+            val modDeps = m.getList<Config?>(listOf("dependencies", modId))
+            for (md in modDeps) {
+                if (md == null) continue
+                val s = md.get<String>("modId") ?: continue
+                if (s != "forge" && s != "minecraft") deps += s
             }
         }
     }
