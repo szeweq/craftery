@@ -13,9 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.runtime.*
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -26,20 +24,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 val tabShape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp)
-val LocalTabProgressColor = compositionLocalOf { Color.White }
-val LocalTabHoverColor = compositionLocalOf { Color.White }
 
 @Composable
 fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) = Row(
     modifier.horizontalScroll(rememberScrollState()),
     verticalAlignment = Alignment.Bottom
 ) {
-    LocalContentColor
-    CompositionLocalProvider(
-        LocalTextStyle provides TextStyle(fontSize = 13.sp),
-        LocalTabProgressColor provides MaterialTheme.colors.primary.copy(0.5f),
-        LocalTabHoverColor provides MaterialTheme.colors.onSurface.copy(0.15f)
-    ) { for (v in views) ViewTab(v) }
+    withProviders(LocalTextStyle provides TextStyle(fontSize = 13.sp)) {
+        for (v in views) ViewTab(v)
+    }
 }
 
 @Composable

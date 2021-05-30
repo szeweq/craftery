@@ -90,7 +90,7 @@ class ModSearch: View("Search mods") {
         val (text, setText) = search
         Card(Modifier.padding(12.dp, 4.dp)) {
             Row(Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                CompositionLocalProvider(LocalTextStyle provides TextStyle(fontSize = 12.sp)) {
+                withProviders(LocalTextStyle provides TextStyle(fontSize = 12.sp)) {
                     ComboBox(typeName.value, typeId, "Mod" to 6, "Modpack" to 4471)
                 }
                 SimpleTextField(

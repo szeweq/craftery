@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import szewek.craftery.layout.LocalHoverColor
 import szewek.craftery.layout.View
 import szewek.craftery.layout.hover
+import szewek.craftery.layout.withProviders
 import szewek.craftery.util.TimeLogManager
 
 object TimeLogViewer : View("Time logs") {
@@ -29,7 +30,7 @@ object TimeLogViewer : View("Time logs") {
         Box {
             val state = rememberLazyListState()
             key(TimeLogManager.lastLog.value) {
-                CompositionLocalProvider(
+                withProviders(
                     LocalTextStyle provides TextStyle(fontSize = 12.sp)
                 ) {
                     LazyColumn(Modifier.fillMaxSize().padding(horizontal = 12.dp), state = state) {
