@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import szewek.craftery.cfapi.AddonSearch
 import szewek.craftery.cfapi.default
 import szewek.craftery.cfapi.latest
+import szewek.craftery.layout.ComposeText
 import szewek.craftery.layout.View
 import szewek.craftery.layout.ViewManager
 import szewek.craftery.util.FileLoader
@@ -43,7 +44,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
                     lookupText.value = "No files found"
                     enableLookup.value = false
                 }
-            }) { Text(lookupText.value) }
+            }, content = ComposeText(lookupText.value))
         }
         ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
             infoRow("Authors", addon.authors.joinToString { it.name })
