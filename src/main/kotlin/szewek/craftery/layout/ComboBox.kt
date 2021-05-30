@@ -11,28 +11,37 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import szewek.craftery.util.bindValue
 
 @Composable
 fun <T> ComboBox(name: String, current: MutableState<T>, vararg pairs: Pair<String, T>) = ComboBoxLayout(name) { dismiss ->
-    val hoverColor = MaterialTheme.colors.onSurface.copy(0.2f)
+    val mod = Modifier.hover(LocalHoverColor.current)
     for ((txt, value) in pairs) {
-        DropdownMenuItem({ current.value = value; dismiss() }, Modifier.hover(hoverColor)) { Text(txt, fontSize = 14.sp) }
+        ComboBoxItem(txt, { current.value = value; dismiss() }, mod)
     }
 }
 
 @Composable
 fun ComboBox(name: String, current: MutableState<String>, values: Iterable<String>) = ComboBoxLayout(name) { dismiss ->
-    val hoverColor = MaterialTheme.colors.onSurface.copy(0.2f)
+    val mod = Modifier.hover(LocalHoverColor.current)
     for (txt in values) {
-        DropdownMenuItem({ current.value = txt; dismiss() }, Modifier.hover(hoverColor)) { Text(txt, fontSize = 14.sp) }
+        ComboBoxItem(txt, { current.value = txt; dismiss() }, mod)
     }
 }
 
 @Composable
+fun ComboBoxItem(
+    text: String,
+    onClick: () -> Unit,
+    modifier: Modifier,
+    contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp)
+) = DropdownMenuItem(onClick, modifier.heightIn(min = 32.dp, max = 32.dp), contentPadding = contentPadding) { Text(text, fontSize = 13.sp) }
+
+@Composable
 private fun ComboBoxLayout(name: String, content: @Composable ColumnScope.(() -> Unit) -> Unit) = Box {
     val menuToggle = remember { mutableStateOf(false) }
-    val dismiss = { menuToggle.value = false }
-    Button({ menuToggle.value = true }, Modifier.heightIn(24.dp), contentPadding = PaddingValues(8.dp, 4.dp)) {
+    val dismiss = menuToggle.bindValue(false)
+    Button(menuToggle.bindValue(true), Modifier.heightIn(24.dp), contentPadding = PaddingValues(8.dp, 4.dp)) {
         Text(name, fontSize = 12.sp, letterSpacing = 0.5.sp)
         Icon(Icons.Default.ArrowDropDown, "Dropdown", Modifier.size(16.dp))
     }
