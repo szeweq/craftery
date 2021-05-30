@@ -8,12 +8,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import szewek.craftery.layout.*
+import szewek.craftery.util.bindValue
 import szewek.craftery.util.logTime
 import szewek.craftery.views.*
 
@@ -56,9 +56,9 @@ fun topBar() {
         Box(Modifier.fillMaxHeight().requiredWidth(24.dp).padding(vertical = 6.dp)) {
             val menuToggle = remember { mutableStateOf(false) }
             val iconSize = 24.dp
-            val dismiss = { menuToggle.value = false }
+            val dismiss = menuToggle.bindValue(false)
 
-            IconButton({ menuToggle.value = true }) {
+            IconButton(menuToggle.bindValue(true)) {
                 Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
             }
             DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
