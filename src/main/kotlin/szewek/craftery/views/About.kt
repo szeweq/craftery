@@ -12,6 +12,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import szewek.craftery.layout.CenteredColumn
+import szewek.craftery.layout.ComposeText
 import szewek.craftery.layout.View
 
 object About: View("About") {
@@ -26,7 +27,7 @@ object About: View("About") {
             val uriHandler = LocalUriHandler.current
             Button(onClick = {
                 uriHandler.openUri("https://github.com/Szewek/craftery")
-            }) { Text("Github") }
+            }, content = ComposeText("Github"))
         }
     }
 }
