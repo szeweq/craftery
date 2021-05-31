@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +44,11 @@ fun ViewTab(v: View) {
     ) {
         if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize(), LocalTabProgressColor.current)
         Row(
-            Modifier.clickable(onClick = v::activate).hover(LocalTabHoverColor.current, tabShape).padding(horizontal = 4.dp, vertical = 6.dp),
+            Modifier
+                .clickable(onClick = v::activate)
+                .clickableNumbered(2, v::tryClose)
+                .hover(LocalTabHoverColor.current, tabShape)
+                .padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))

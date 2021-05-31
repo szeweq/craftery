@@ -21,6 +21,10 @@ abstract class View(title: String) {
 
     var close: (() -> Unit)? = null
 
+    fun tryClose() {
+        close?.invoke()
+    }
+
     fun onClose() {
         runCatching { viewScope.cancel() }
     }
