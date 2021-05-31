@@ -87,7 +87,7 @@ class ScanInfo {
                 } else {
                     cs.forEach(ts::add)
                 }
-            } else {
+            } else if (it != null) {
                 val ji = JsonInfo(rest, namespace, drt)
                 ji.gatherDetails(it)
                 res[name] = ji
