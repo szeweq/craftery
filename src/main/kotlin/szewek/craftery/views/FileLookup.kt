@@ -24,7 +24,6 @@ import szewek.craftery.mcdata.Modpack
 import szewek.craftery.mcdata.ScanInfo
 import szewek.craftery.util.Downloader
 import szewek.craftery.util.FileLoader
-import szewek.craftery.util.LongBiConsumer
 import szewek.craftery.util.bindValue
 import java.util.zip.ZipInputStream
 
@@ -123,10 +122,12 @@ class FileLookup(
                 val murl = CurseforgeAPI.downloadURL(pid, fid)
                 if (!murl.endsWith(".jar")) { return@forEachIndexed }
                 val mname = murl.substringAfterLast('/')
-                updateMessage("Downloading $mname...")
+                updateMessage("Downloading [$i / $l] $mname...")
                 val mf = Downloader.downloadFile(murl.replace(" ", "%20"), updateProgress)
-                updateMessage("Scanning $mname...")
-                si.scanArchive(ZipInputStream(mf))
+                updateMessage("Scanning [$i / $l] $mname...")
+                val zip = ZipInputStream(mf)
+                si.scanArchive(zip)
+                zip.close()
             }
         } else {
             updateMessage("Downloading file...")
