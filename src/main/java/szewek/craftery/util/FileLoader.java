@@ -3,6 +3,8 @@ package szewek.craftery.util;
 import kotlin.Unit;
 
 import java.io.*;
+import java.net.URI;
+import java.net.URLEncoder;
 import java.util.Objects;
 
 public interface FileLoader {
@@ -10,7 +12,8 @@ public interface FileLoader {
 
 	static FileLoader fromURL(final String url) {
 		Objects.requireNonNull(url);
-		return progress -> Downloader.downloadFile(url, progress);
+		final String urlFixed = url.replace(" ", "%20");
+		return progress -> Downloader.downloadFile(urlFixed, progress);
 	}
 
 	static FileLoader fromFile(final File file) {

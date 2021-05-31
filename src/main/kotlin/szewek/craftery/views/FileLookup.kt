@@ -124,7 +124,7 @@ class FileLookup(
                 if (!murl.endsWith(".jar")) { return@forEachIndexed }
                 val mname = murl.substringAfterLast('/')
                 updateMessage("Downloading $mname...")
-                val mf = Downloader.downloadFile(murl, updateProgress)
+                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), updateProgress)
                 updateMessage("Scanning $mname...")
                 si.scanArchive(ZipInputStream(mf))
             }
