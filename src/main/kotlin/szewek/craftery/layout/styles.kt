@@ -2,9 +2,13 @@ package szewek.craftery.layout
 
 import androidx.compose.desktop.DesktopMaterialTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Typography
 import androidx.compose.material.darkColors
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
 val colorsDark = darkColors(
     primary = Color(0xff394739),
@@ -14,15 +18,23 @@ val LocalHoverColor = compositionLocalOf { Color.Black.copy(0.12f) }
 val LocalTabProgressColor = compositionLocalOf { Color.White }
 val LocalTabHoverColor = compositionLocalOf { Color.White }
 
+val appTypography = Typography(
+    body1 = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp),
+    body2 = TextStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp),
+    button = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp, letterSpacing = 0.5.sp)
+)
+
 @Composable
 fun AppTheme(content: @Composable () -> Unit) = DesktopMaterialTheme(
-    colors = colorsDark
+    colors = colorsDark,
+    typography = appTypography
 ) {
     withProviders(
         LocalHoverColor provides MaterialTheme.colors.onSurface.copy(0.12f),
         LocalTabProgressColor provides MaterialTheme.colors.primary.copy(0.5f),
-        LocalTabHoverColor provides MaterialTheme.colors.onSurface.copy(0.15f)
-    ) { content() }
+        LocalTabHoverColor provides MaterialTheme.colors.onSurface.copy(0.15f),
+        fn = content
+    )
 }
 
 @OptIn(InternalComposeApi::class)
