@@ -135,7 +135,9 @@ class FileLookup(
             val fi = loader.load(updateProgress)
             updateMessage("Scanning classes...")
             progress.setIndeterminate()
-            si.scanArchive(ZipInputStream(fi))
+            val zip = ZipInputStream(fi)
+            si.scanArchive(zip)
+            zip.close()
         }
 
         updateMessage("Gathering results...")
