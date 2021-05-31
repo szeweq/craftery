@@ -23,7 +23,7 @@ abstract class ModLookup<T>(val title: String) {
     abstract val itemHeight: Dp
 
     @Composable
-    abstract fun decorate(item: T)
+    abstract fun ColumnScope.decorate(item: T)
 
     abstract fun gatherItems(si: ScanInfo): List<T>
 
@@ -33,7 +33,7 @@ abstract class ModLookup<T>(val title: String) {
         Box(Modifier.fillMaxWidth()) {
             val state = rememberLazyListState()
             LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
-                items(list) { item -> decorate(item) }
+                items(list) { item -> Column(Modifier.padding(2.dp)) { decorate(item) } }
             }
             VerticalScrollbar(
                 rememberScrollbarAdapter(state),

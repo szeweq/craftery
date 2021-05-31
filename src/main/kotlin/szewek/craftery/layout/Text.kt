@@ -32,11 +32,9 @@ fun SimpleTextField(
 
 @Composable
 fun ThreeLinesItem(item: Triple<String, String, String>, second: String, third: String) {
-    Column(Modifier.padding(2.dp)) {
-        Text(item.first, fontWeight = FontWeight.Bold)
-        Text("$second: " + item.second)
-        Text("$third: " + item.third)
-    }
+    Text(item.first, fontWeight = FontWeight.Bold)
+    Text("$second: " + item.second)
+    Text("$third: " + item.third)
 }
 
 fun ComposeText(text: String): @Composable RowScope.() -> Unit = {

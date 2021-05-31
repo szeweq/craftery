@@ -1,10 +1,8 @@
 package szewek.craftery.lookup
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import szewek.craftery.mcdata.DataResourceType
@@ -17,13 +15,11 @@ class ListResourceData: ModLookup<ListResourceData.DataFields>("Resources") {
     override val itemHeight = 48.dp
 
     @Composable
-    override fun decorate(item: DataFields) {
-        Column(Modifier.padding(2.dp)) {
-            Text(item.name, fontWeight = FontWeight.Bold)
-            Text("Type: " + item.drtype)
-            Text("Namespace: " + item.namespace)
-            Text("Info: " + item.info)
-        }
+    override fun ColumnScope.decorate(item: DataFields) {
+        Text(item.name, fontWeight = FontWeight.Bold)
+        Text("Type: " + item.drtype)
+        Text("Namespace: " + item.namespace)
+        Text("Info: " + item.info)
     }
 
     override fun gatherItems(si: ScanInfo): List<DataFields> {

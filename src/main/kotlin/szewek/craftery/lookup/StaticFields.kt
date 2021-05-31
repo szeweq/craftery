@@ -1,17 +1,14 @@
 package szewek.craftery.lookup
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import szewek.craftery.mcdata.ResourceType
 import szewek.craftery.mcdata.ScanInfo
 import szewek.craftery.mcdata.Scanner
 import szewek.craftery.mcdata.fixedDesc
-import kotlin.streams.toList
 
 class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {
     class FieldData(val name: String, val rtype: ResourceType, val from: String, val info: String)
@@ -20,13 +17,11 @@ class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {
     override val itemHeight = 48.dp
 
     @Composable
-    override fun decorate(item: FieldData) {
-        Column(Modifier.padding(2.dp)) {
-            Text(item.name, fontWeight = FontWeight.Bold)
-            Text("Resource type: " + item.rtype)
-            Text("From: " + item.from)
-            Text("Info:" + item.info)
-        }
+    override fun ColumnScope.decorate(item: FieldData) {
+        Text(item.name, fontWeight = FontWeight.Bold)
+        Text("Resource type: " + item.rtype)
+        Text("From: " + item.from)
+        Text("Info:" + item.info)
     }
 
     override fun gatherItems(si: ScanInfo): List<FieldData> {
