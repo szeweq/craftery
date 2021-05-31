@@ -25,7 +25,7 @@ public final class Downloader {
     }
 
     public static InputStream downloadFile(String url, LongBiConsumer progress) {
-        return get(url, progress, HttpResponse.BodyHandlers.ofInputStream());
+        return get(url, progress, HttpResponse.BodyHandlers.buffering(HttpResponse.BodyHandlers.ofInputStream(), 4096));
     }
 
     public static <T> T downloadJson(String url, LongBiConsumer progress) {
