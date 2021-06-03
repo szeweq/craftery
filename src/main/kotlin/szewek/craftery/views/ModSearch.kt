@@ -19,9 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import szewek.craftery.cfapi.AddonSearch
 import szewek.craftery.cfapi.CurseforgeAPI
-import szewek.craftery.cfapi.default
 import szewek.craftery.layout.*
 
 class ModSearch: View("Search mods") {

@@ -12,8 +12,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import szewek.craftery.cfapi.AddonSearch
-import szewek.craftery.cfapi.default
-import szewek.craftery.cfapi.latest
 import szewek.craftery.layout.*
 import szewek.craftery.util.FileLoader
 import szewek.craftery.util.KtUtil
@@ -23,7 +21,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
     @Composable
     override fun content() = Column(Modifier.padding(4.dp).fillMaxSize()) {
         Row {
-            val img = addon.attachments.default()
+            val img = addon.defaultAttachment()
             if (img != null) {
                 ImageURL(img.thumbnailUrl, "Icon", Modifier.size(64.dp).padding(end = 4.dp))
             }
@@ -34,7 +32,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             val lookupText = remember { mutableStateOf("Lookup") }
             val enableLookup = remember { mutableStateOf(true) }
             Button({
-                val lf = addon.latestFiles.latest()
+                val lf = addon.latestFile()
                 if (lf != null) {
                     ViewManager.open(FileLookup(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
                 } else {
