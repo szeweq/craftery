@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
+import szewek.craftery.cfapi.AddonSearch
 import szewek.craftery.cfapi.CurseforgeAPI
 import szewek.craftery.layout.*
 
@@ -68,7 +69,7 @@ class ModSearch: View("Search mods") {
             .padding(4.dp)
         ) {
             Row {
-                val attachment = remember(item) { item.attachments.default() }
+                val attachment = remember(item) { item.defaultAttachment() }
                 if (attachment != null) ImageURL(attachment.thumbnailUrl, item.name, Modifier.size(60.dp).padding(end = 4.dp))
                 Column {
                     Row {
