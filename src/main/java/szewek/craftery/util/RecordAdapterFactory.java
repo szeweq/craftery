@@ -65,7 +65,7 @@ public final class RecordAdapterFactory implements TypeAdapterFactory {
                         constructor.setAccessible(true);
                         return constructor.newInstance(args);
                     } catch (NoSuchMethodException | InstantiationException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException("Exception while reading record " + cl, e);
                     }
                 }
             }
