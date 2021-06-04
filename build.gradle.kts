@@ -11,7 +11,6 @@ group = "szewek.craftery"
 val asmVersion = "9.1"
 
 repositories {
-    jcenter()
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
