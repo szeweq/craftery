@@ -2,13 +2,11 @@ package szewek.craftery.lookup
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import szewek.craftery.layout.ThreeLinesItem
 import szewek.craftery.scan.ScanInfo
 
 class SusLazyOptionals: ModLookup<Triple<String, String, String>>("Suspicious LazyOptionals") {
     override val explain = "Craftery detected LazyOptional objects that are not being invalidated properly (it may be done somewhere else)"
-    override val itemHeight = 48.dp
 
     @Composable
     override fun ColumnScope.decorate(item: Triple<String, String, String>) =

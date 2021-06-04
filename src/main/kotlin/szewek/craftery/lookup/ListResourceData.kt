@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import szewek.craftery.mcdata.DataResourceType
 import szewek.craftery.scan.ScanInfo
 
@@ -12,7 +11,6 @@ class ListResourceData: ModLookup<ListResourceData.DataFields>("Resources") {
     class DataFields(val name: String, val drtype: DataResourceType, val namespace: String, val info: String)
 
     override val explain: String? = null
-    override val itemHeight = 48.dp
 
     @Composable
     override fun ColumnScope.decorate(item: DataFields) {

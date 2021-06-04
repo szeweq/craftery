@@ -2,13 +2,11 @@ package szewek.craftery.lookup
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.unit.dp
 import szewek.craftery.layout.ThreeLinesItem
 import szewek.craftery.scan.ScanInfo
 
 class DetectCapabilities: ModLookup<Triple<String, String, String>>("Capabilities") {
     override val explain = "List of detected capabilities used by this mod"
-    override val itemHeight = 48.dp
 
     @Composable
     override fun ColumnScope.decorate(item: Triple<String, String, String>) =

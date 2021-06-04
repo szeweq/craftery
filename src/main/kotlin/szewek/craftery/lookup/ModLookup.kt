@@ -20,7 +20,6 @@ abstract class ModLookup<T>(val title: String) {
     val list = mutableStateListOf<T>()
 
     abstract val explain: String?
-    abstract val itemHeight: Dp
 
     @Composable
     abstract fun ColumnScope.decorate(item: T)
