@@ -46,18 +46,19 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             infoRow("Summary", addon.summary)
             infoRow("Download count", addon.downloadCount.toString())
             Row {
-                Text("Website URL", Modifier.requiredWidth(120.dp))
+                Text("Website URL", Modifier.requiredWidth(120.dp), fontWeight = FontWeight.Bold)
                 urlText(addon.websiteUrl)
             }
-            Divider(thickness = 1.dp)
-            Column(Modifier.fillMaxSize().padding(2.dp)) {
-                for (f in addon.latestFiles) {
-                    Box {
-                        Column(Modifier.padding(2.dp)) {
-                            Text(f.fileName, fontWeight = FontWeight.Bold)
-                            infoRow("Date", f.fileDate.toString())
-                            infoRow("Size", KtUtil.lengthInBytes(f.fileLength.toLong()))
-                            infoRow("Versions", f.gameVersion.joinToString())
+            Card(Modifier.fillMaxSize().padding(2.dp)) {
+                Column {
+                    for (f in addon.latestFiles) {
+                        Box {
+                            Column(Modifier.padding(2.dp)) {
+                                Text(f.fileName, fontWeight = FontWeight.Bold)
+                                infoRow("Date", f.fileDate.toString())
+                                infoRow("Size", KtUtil.lengthInBytes(f.fileLength.toLong()))
+                                infoRow("Versions", f.gameVersion.joinToString())
+                            }
                         }
                     }
                 }
