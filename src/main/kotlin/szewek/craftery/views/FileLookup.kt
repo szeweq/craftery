@@ -21,7 +21,7 @@ import szewek.craftery.cfapi.CurseforgeAPI
 import szewek.craftery.layout.*
 import szewek.craftery.lookup.*
 import szewek.craftery.mcdata.Modpack
-import szewek.craftery.mcdata.ScanInfo
+import szewek.craftery.scan.ScanInfo
 import szewek.craftery.net.Downloader
 import szewek.craftery.util.FileLoader
 import szewek.craftery.util.bindValue

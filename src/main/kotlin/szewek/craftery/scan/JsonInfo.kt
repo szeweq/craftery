@@ -1,6 +1,7 @@
-package szewek.craftery.mcdata
+package szewek.craftery.scan
 
 import com.google.gson.JsonObject
+import szewek.craftery.mcdata.DataResourceType
 
 class JsonInfo(val name: String, val namespace: String, val type: DataResourceType) {
     val details = mutableMapOf<String, String>()

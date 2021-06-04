@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import szewek.craftery.mcdata.ScanInfo
+import szewek.craftery.scan.ScanInfo
 
 abstract class ModLookup<T>(val title: String) {
     val list = mutableStateListOf<T>()

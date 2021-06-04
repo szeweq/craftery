@@ -1,4 +1,4 @@
-package szewek.craftery.mcdata
+package szewek.craftery.scan
 
 import com.electronwill.nightconfig.toml.TomlParser
 import com.google.gson.Gson

@@ -1,4 +1,4 @@
-package szewek.craftery.mcdata
+package szewek.craftery.scan
 
 internal object TypeNames {
     internal val CAPABILITY = "Lnet/minecraftforge/common/capabilities/Capability;"

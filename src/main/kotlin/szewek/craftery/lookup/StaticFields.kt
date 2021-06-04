@@ -6,8 +6,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import szewek.craftery.mcdata.ResourceType
-import szewek.craftery.mcdata.ScanInfo
-import szewek.craftery.mcdata.Scanner
+import szewek.craftery.scan.ScanInfo
+import szewek.craftery.scan.Scanner
 import szewek.craftery.mcdata.fixedDesc
 
 class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {

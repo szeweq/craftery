@@ -1,4 +1,4 @@
-package szewek.craftery.mcdata
+package szewek.craftery.scan
 
 import com.electronwill.nightconfig.core.Config
 import com.google.gson.JsonObject
@@ -7,6 +7,7 @@ import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
+import szewek.craftery.mcdata.*
 import szewek.craftery.util.ClassNodeMap
 import szewek.craftery.util.KtUtil
 import java.io.InputStream
