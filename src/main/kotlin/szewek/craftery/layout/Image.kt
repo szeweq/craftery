@@ -26,12 +26,11 @@ fun ImageURL(
     modifier: Modifier = Modifier,
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
-    alpha: Float = DefaultAlpha,
-    colorFilter: ColorFilter? = null
+    alpha: Float = DefaultAlpha
 ) {
     val scope = rememberCoroutineScope()
     val (img, setImg) = remember(url) { mutableStateOf(ImageCache.emptyBitmap) }
     scope.launch { ImageCache.lazyGet(url, setImg) }
-    Image(img, contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
+    Image(img, contentDescription, modifier, alignment, contentScale, alpha)
 }
 
