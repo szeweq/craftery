@@ -27,7 +27,7 @@ fun Modifier.hoverState(cb: (Boolean) -> Unit) = pointerMoveFilter(
     onExit = { cb(false); false }
 )
 
-fun Modifier.clickableNumbered(button: Int, onClick: () -> Unit) = pointerInput(Unit) {
+fun Modifier.clickableNumbered(vararg buttons: Int, onClick: (Int) -> Unit) = pointerInput(Unit) {
     forEachGesture {
         awaitPointerEventScope {
             var event: PointerEvent
@@ -35,11 +35,12 @@ fun Modifier.clickableNumbered(button: Int, onClick: () -> Unit) = pointerInput(
                 event = awaitPointerEvent()
             } while (!event.changes.all { it.changedToDown() })
             event.changes.forEach { it.consumeDownChange() }
-            if (event.mouseEvent?.button == button) {
+            val bn = event.mouseEvent?.button ?: 0
+            if (bn > 0 && bn in buttons) {
                 val up = waitForUpOrCancellation()
                 if (up != null) {
                     up.consumeDownChange()
-                    onClick()
+                    onClick(bn)
                 }
             }
         }

@@ -45,8 +45,10 @@ fun ViewTab(v: View) {
         if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize(), LocalTabProgressColor.current)
         Row(
             Modifier
-                .clickable(onClick = v::activate)
-                .clickableNumbered(2, v::tryClose)
+                .clickableNumbered(1, 2) {
+                    if (it == 2) v.tryClose()
+                    v.activate()
+                }
                 .hover(LocalTabHoverColor.current, tabShape)
                 .padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
