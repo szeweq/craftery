@@ -1,7 +1,10 @@
-package szewek.craftery.util;
+package szewek.craftery.net;
 
 import com.google.gson.reflect.TypeToken;
 import kotlin.Pair;
+import szewek.craftery.net.GsonBodyHandler;
+import szewek.craftery.net.ProgressSubscriber;
+import szewek.craftery.util.LongBiConsumer;
 
 import java.io.IOException;
 import java.io.InputStream;

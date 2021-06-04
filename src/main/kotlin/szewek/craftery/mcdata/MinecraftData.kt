@@ -1,6 +1,6 @@
 package szewek.craftery.mcdata
 
-import szewek.craftery.util.Downloader
+import szewek.craftery.net.Downloader
 import szewek.craftery.util.LongBiConsumer
 import szewek.craftery.util.downloadJson
 import java.io.ByteArrayOutputStream

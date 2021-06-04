@@ -3,7 +3,7 @@ package szewek.craftery.mcdata
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import org.jetbrains.skija.Image
-import szewek.craftery.util.Downloader
+import szewek.craftery.net.Downloader
 import szewek.craftery.util.ImageCache
 import szewek.craftery.util.LongBiConsumer
 import szewek.craftery.util.downloadJson

@@ -2,8 +2,8 @@ package szewek.craftery.cfapi;
 
 import com.google.gson.reflect.TypeToken;
 import kotlin.Pair;
-import szewek.craftery.util.Downloader;
-import szewek.craftery.util.GsonBodyHandler;
+import szewek.craftery.net.Downloader;
+import szewek.craftery.net.GsonBodyHandler;
 
 import java.io.IOException;
 import java.net.URI;

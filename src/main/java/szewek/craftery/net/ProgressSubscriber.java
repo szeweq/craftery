@@ -1,4 +1,6 @@
-package szewek.craftery.util;
+package szewek.craftery.net;
+
+import szewek.craftery.util.LongBiConsumer;
 
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;

@@ -2,6 +2,7 @@ package szewek.craftery.util;
 
 import androidx.compose.ui.graphics.*;
 import org.jetbrains.skija.Image;
+import szewek.craftery.net.Downloader;
 
 import java.io.IOException;
 import java.net.URI;

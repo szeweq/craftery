@@ -1,10 +1,8 @@
 package szewek.craftery.util;
 
-import kotlin.Unit;
+import szewek.craftery.net.Downloader;
 
 import java.io.*;
-import java.net.URI;
-import java.net.URLEncoder;
 import java.util.Objects;
 
 public interface FileLoader {
