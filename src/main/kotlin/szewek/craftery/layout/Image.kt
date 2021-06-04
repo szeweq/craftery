@@ -35,8 +35,3 @@ fun ImageURL(
     Image(img, contentDescription, modifier, alignment, contentScale, alpha, colorFilter)
 }
 
-val emptyImageBytes: ByteArray = ByteArrayOutputStream().also {
-    ImageIO.write(BufferedImage(1, 1, TYPE_INT_ARGB), "png", it)
-}.toByteArray()
-
-val emptySkijaImage: org.jetbrains.skija.Image = org.jetbrains.skija.Image.makeFromEncoded(emptyImageBytes)
