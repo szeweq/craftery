@@ -54,7 +54,7 @@ public final class ImageCache {
     public static Image fromURL(String url) {
         recycle();
         return map.computeIfAbsent(url, s -> {
-            var stream = Downloader.downloadFile(s, (l1, l2) -> {});
+            var stream = Downloader.downloadFile(s, LongBiConsumer.DUMMY);
             Image img = null;
             try {
                 img = Image.makeFromEncoded(stream.readAllBytes());
