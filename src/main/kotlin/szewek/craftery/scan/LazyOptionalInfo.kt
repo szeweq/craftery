@@ -4,8 +4,8 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.MethodInsnNode
-import szewek.craftery.mcdata.fixedDesc
-import szewek.craftery.mcdata.toSet
+import szewek.craftery.util.fixedDesc
+import szewek.craftery.util.toSet
 import szewek.craftery.util.ClassNodeMap
 
 class LazyOptionalInfo(classes: ClassNodeMap, classNode: ClassNode, fields: List<FieldNode>) {

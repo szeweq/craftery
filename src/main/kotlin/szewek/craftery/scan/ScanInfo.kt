@@ -8,8 +8,7 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
 import szewek.craftery.mcdata.*
-import szewek.craftery.util.ClassNodeMap
-import szewek.craftery.util.KtUtil
+import szewek.craftery.util.*
 import java.io.InputStream
 import java.util.stream.Stream
 import java.util.stream.StreamSupport

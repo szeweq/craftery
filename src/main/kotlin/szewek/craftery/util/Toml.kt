@@ -1,4 +1,4 @@
-package szewek.craftery.mcdata
+package szewek.craftery.util
 
 import com.electronwill.nightconfig.core.Config
 

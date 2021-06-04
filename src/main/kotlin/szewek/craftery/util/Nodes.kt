@@ -1,10 +1,8 @@
-package szewek.craftery.mcdata
+package szewek.craftery.util
 
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.InsnList
-import szewek.craftery.util.KtUtil
-import szewek.craftery.util.LongBiConsumer
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*

@@ -3,9 +3,9 @@ package szewek.craftery.scan
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.MethodInsnNode
-import szewek.craftery.mcdata.filterIsInstance
-import szewek.craftery.mcdata.stream
-import szewek.craftery.mcdata.toSet
+import szewek.craftery.util.filterIsInstance
+import szewek.craftery.util.stream
+import szewek.craftery.util.toSet
 
 class CapabilitiesInfo(val name: String, instructions: InsnList) {
     var supclasses: Set<String> = instructions.stream()

@@ -3,6 +3,7 @@ package szewek.craftery.mcdata
 import szewek.craftery.net.Downloader
 import szewek.craftery.util.LongBiConsumer
 import szewek.craftery.util.downloadJson
+import szewek.craftery.util.eachEntry
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream

@@ -8,7 +8,7 @@ import androidx.compose.ui.unit.dp
 import szewek.craftery.mcdata.ResourceType
 import szewek.craftery.scan.ScanInfo
 import szewek.craftery.scan.Scanner
-import szewek.craftery.mcdata.fixedDesc
+import szewek.craftery.util.fixedDesc
 
 class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {
     class FieldData(val name: String, val rtype: ResourceType, val from: String, val info: String)
