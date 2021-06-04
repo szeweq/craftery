@@ -1,6 +1,5 @@
 package szewek.craftery.lookup
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -12,7 +11,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import szewek.craftery.scan.ScanInfo
 
@@ -26,7 +24,6 @@ abstract class ModLookup<T>(val title: String) {
 
     abstract fun gatherItems(si: ScanInfo): List<T>
 
-    @OptIn(ExperimentalFoundationApi::class)
     @Composable
     fun content() = key(this) {
         Box(Modifier.fillMaxWidth()) {
