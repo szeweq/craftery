@@ -1,10 +1,14 @@
 package szewek.craftery.views
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -51,10 +55,11 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             }
             Card(Modifier.fillMaxSize().padding(2.dp)) {
                 Column {
+                    val mod = Modifier.fillMaxWidth().hover(LocalHoverColor.current)
                     for (f in addon.latestFiles) {
-                        Box {
+                        Box(mod, contentAlignment = Alignment.CenterStart) {
                             Column(Modifier.padding(2.dp)) {
-                                Text(f.fileName, fontWeight = FontWeight.Bold)
+                                Text(f.fileName, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                                 infoRow("Date", f.fileDate.toString())
                                 infoRow("Size", KtUtil.lengthInBytes(f.fileLength.toLong()))
                                 infoRow("Versions", f.gameVersion.joinToString())
