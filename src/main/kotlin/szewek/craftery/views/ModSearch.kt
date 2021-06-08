@@ -68,19 +68,16 @@ class ModSearch: View("Search mods") {
             .hover(LocalHoverColor.current, shape = MaterialTheme.shapes.medium)
             .padding(4.dp)
         ) {
-            Row {
-                val attachment = remember(item) { item.defaultAttachment() }
-                if (attachment != null) ImageURL(attachment.thumbnailUrl, item.name, Modifier.size(60.dp).padding(end = 4.dp))
-                Column {
-                    Row {
-                        Text(item.name, Modifier.weight(1f, true), fontWeight = FontWeight.Bold)
-                        Text("Downloads: ${item.downloadCount}", fontSize = 12.sp)
-                    }
-                    Text(item.slug, fontSize = 12.sp)
-                    Text(item.summary)
+            val attachment = remember(item) { item.defaultAttachment() }
+            if (attachment != null) ImageURL(attachment.thumbnailUrl, item.name, Modifier.size(60.dp))
+            Column(Modifier.padding(start = 64.dp)) {
+                Row {
+                    Text(item.name, Modifier.weight(1f, true), fontWeight = FontWeight.Bold)
+                    Text("Downloads: ${item.downloadCount}", fontSize = 12.sp)
                 }
+                Text(item.slug, fontSize = 12.sp)
+                Text(item.summary)
             }
-
         }
     }
 
