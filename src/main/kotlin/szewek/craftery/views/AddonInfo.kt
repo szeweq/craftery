@@ -33,17 +33,12 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
                 Text(addon.name, fontWeight = FontWeight.Bold)
                 Text(addon.slug, fontSize = 12.sp)
             }
-            val lookupText = remember { mutableStateOf("Lookup") }
-            val enableLookup = remember { mutableStateOf(true) }
-            Button({
-                val lf = addon.latestFile()
-                if (lf != null) {
+            val lf = addon.latestFile()
+            if (lf != null) {
+                Button({
                     ViewManager.open(FileLookup(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
-                } else {
-                    lookupText.value = "No files found"
-                    enableLookup.value = false
-                }
-            }, content = ComposeText(lookupText.value))
+                }, content = ComposeText("Lookup"))
+            }
         }
         withProviders(LocalTextStyle provides TextStyle(fontSize = 12.sp)) {
             infoRow("Authors", addon.authors.joinToString { it.name })
