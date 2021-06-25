@@ -11,6 +11,9 @@ import org.jetbrains.skija.Image
 import org.jetbrains.skija.Paint
 import org.jetbrains.skija.Rect
 
+/**
+ * Abstract class for drawing Minecraft items and blocks in a slot.
+ */
 abstract class Model {
 
     abstract fun draw(scope: DrawScope)

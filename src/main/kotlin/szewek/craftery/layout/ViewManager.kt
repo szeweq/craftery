@@ -3,6 +3,9 @@ package szewek.craftery.layout
 import androidx.compose.runtime.mutableStateListOf
 import kotlin.reflect.KClass
 
+/**
+ * Manages active views displayed in an app.
+ */
 object ViewManager {
     private val selection = SingleSelection()
 

@@ -37,6 +37,10 @@ fun ThreeLinesItem(item: Triple<String, String, String>, second: String, third: 
     Text("$third: " + item.third)
 }
 
+/**
+ * Returns a simple text component that only uses [text] parameter.
+ * It saves a lot of bytecode size if used inside another component (like a button).
+ */
 fun ComposeText(text: String): @Composable RowScope.() -> Unit = {
     Text(text)
 }

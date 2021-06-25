@@ -19,6 +19,9 @@ import java.awt.image.BufferedImage.TYPE_INT_ARGB
 import java.io.ByteArrayOutputStream
 import javax.imageio.ImageIO
 
+/**
+ * An image displayed after downloading it using URL.
+ */
 @Composable
 fun ImageURL(
     url: String,

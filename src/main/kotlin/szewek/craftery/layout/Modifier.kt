@@ -13,6 +13,9 @@ import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.*
 import java.awt.event.MouseEvent
 
+/**
+ * Uses [hoverState] to draw a [shape] with [color].
+ */
 fun Modifier.hover(
     color: Color,
     shape: Shape = RectangleShape
@@ -22,11 +25,17 @@ fun Modifier.hover(
     if (hover) mod.background(color, shape) else mod
 }
 
+/**
+ * Updates hover state when pointer enters or exits the component.
+ */
 fun Modifier.hoverState(cb: (Boolean) -> Unit) = pointerMoveFilter(
     onEnter = { cb(true); false },
     onExit = { cb(false); false }
 )
 
+/**
+ * Checks which mouse button was pressed while filtering pointer input events.
+ */
 fun Modifier.clickableNumbered(vararg buttons: Int, onClick: (Int) -> Unit) = pointerInput(Unit) {
     forEachGesture {
         awaitPointerEventScope {

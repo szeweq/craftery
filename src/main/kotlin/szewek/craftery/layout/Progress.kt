@@ -9,6 +9,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 
+/**
+ * A state object for displaying and updating values in process-related tasks (like downloading a file).
+ */
 class ProgressState {
     var value by mutableStateOf(Float.MAX_VALUE)
 
