@@ -17,10 +17,10 @@ import szewek.craftery.util.bindValue
  * A combo box with custom values and labels.
  */
 @Composable
-fun <T> ComboBox(name: String, current: MutableState<T>, vararg pairs: Pair<String, T>) = ComboBoxLayout(name) { dismiss ->
+fun <T> ComboBox(name: String, setValue: (T) -> Unit, vararg pairs: Pair<String, T>) = ComboBoxLayout(name) { dismiss ->
     val mod = Modifier.hover(LocalHoverColor.current)
     for ((txt, value) in pairs) {
-        ComboBoxItem(txt, { current.value = value; dismiss() }, mod)
+        ComboBoxItem(txt, { setValue(value); dismiss() }, mod)
     }
 }
 
@@ -28,10 +28,10 @@ fun <T> ComboBox(name: String, current: MutableState<T>, vararg pairs: Pair<Stri
  * A combo box with specified values (also used as labels).
  */
 @Composable
-fun ComboBox(name: String, current: MutableState<String>, values: Iterable<String>) = ComboBoxLayout(name) { dismiss ->
+fun ComboBox(name: String, setValue: (String) -> Unit, values: Iterable<String>) = ComboBoxLayout(name) { dismiss ->
     val mod = Modifier.hover(LocalHoverColor.current)
     for (txt in values) {
-        ComboBoxItem(txt, { current.value = txt; dismiss() }, mod)
+        ComboBoxItem(txt, { setValue(txt); dismiss() }, mod)
     }
 }
 
