@@ -7,6 +7,9 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+/**
+ * Various utility methods for making Kotlin code development easier
+ */
 public class KtUtil {
 
 	@NotNull
