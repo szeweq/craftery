@@ -22,6 +22,9 @@ fun startApp() = logTime("App launch") {
     win.show(content = app)
 }
 
+/**
+ * Main composable function for an app. It saves bytecode size this way (Kotlin generates objects for functions).
+ */
 private val app = @Composable {
     AppTheme {
         Scaffold(
@@ -40,6 +43,9 @@ private val app = @Composable {
     }
 }
 
+/**
+ * Updates window title.
+ */
 @Composable
 fun updateTitle(title: String?) {
     val w = LocalAppWindow.current

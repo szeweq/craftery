@@ -25,6 +25,9 @@ inline fun <reified R> Stream<*>.filterIsInstance(): Stream<R> = filter { it is 
 @Suppress("UNCHECKED_CAST")
 fun <T> Stream<T?>.filterNotNull() = filter(Objects::nonNull) as Stream<T>
 
+/**
+ * Iterates over each entry found in ZIP input stream.
+ */
 inline fun ZipInputStream.eachEntry(fn: (ZipEntry) -> Unit) {
     var ze = nextEntry
     while (ze != null) {

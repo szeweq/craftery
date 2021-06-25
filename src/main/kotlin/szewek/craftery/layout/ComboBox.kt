@@ -13,6 +13,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import szewek.craftery.util.bindValue
 
+/**
+ * A combo box with custom values and labels.
+ */
 @Composable
 fun <T> ComboBox(name: String, current: MutableState<T>, vararg pairs: Pair<String, T>) = ComboBoxLayout(name) { dismiss ->
     val mod = Modifier.hover(LocalHoverColor.current)
@@ -21,6 +24,9 @@ fun <T> ComboBox(name: String, current: MutableState<T>, vararg pairs: Pair<Stri
     }
 }
 
+/**
+ * A combo box with specified values (also used as labels).
+ */
 @Composable
 fun ComboBox(name: String, current: MutableState<String>, values: Iterable<String>) = ComboBoxLayout(name) { dismiss ->
     val mod = Modifier.hover(LocalHoverColor.current)
