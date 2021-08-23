@@ -15,10 +15,7 @@ repositories {
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_16
-    targetCompatibility = JavaVersion.VERSION_16
-}
+java.toolchain.languageVersion.set(JavaLanguageVersion.of(16))
 
 compose.desktop {
     application {
