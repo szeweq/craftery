@@ -33,7 +33,7 @@ compose.desktop {
 dependencies {
     implementation(compose.desktop.currentOs)
 
-    implementation("com.google.code.gson:gson:2.8.7")
+    implementation("com.google.code.gson:gson:2.8.8")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
