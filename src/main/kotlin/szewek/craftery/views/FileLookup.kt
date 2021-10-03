@@ -96,6 +96,7 @@ class FileLookup(
             Text(
                 l.list.size.toString(),
                 Modifier.background(MaterialTheme.colors.primary, CircleShape).padding(6.dp, 2.dp),
+                color = MaterialTheme.colors.onPrimary,
                 fontSize = 12.sp
             )
         }

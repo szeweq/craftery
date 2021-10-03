@@ -13,8 +13,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 val colorsDark = darkColors(
-    primary = Color(0xff394739),
-    onPrimary = Color.White
+    primary = Color(0xff388e3c),
+    onPrimary = Color(0xff002200)
 )
 val LocalHoverColor = compositionLocalOf { Color.Black.copy(0.12f) }
 val LocalTabProgressColor = compositionLocalOf { Color.White }
