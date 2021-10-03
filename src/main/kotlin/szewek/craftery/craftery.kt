@@ -21,7 +21,6 @@ import szewek.craftery.util.logTime
 import szewek.craftery.views.*
 
 fun startApp() = logTime("App launch") {
-    println("LAUNCHING APP...")
     singleWindowApplication(visible = true, title = Craftery.APP_TITLE, content = app)
 }
 
@@ -81,7 +80,7 @@ val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(
     "Mod search" to ViewManager.selectOrOpenAction<ModSearch>(),
     "Language editor" to ViewManager.selectOrOpenAction<LanguageEditor>(),
     "Recipe Creator (WIP)" to ViewManager.selectOrOpenAction<RecipeCreator>(),
-    "Time logs" to ViewManager.selectOrOpenInstanceAction(TimeLogViewer),
+    "Performance" to ViewManager.selectOrOpenInstanceAction(PerformanceView),
     "About" to ViewManager.selectOrOpenInstanceAction(About)
 )
 
