@@ -57,7 +57,9 @@ public final class ImageCache {
             var stream = Downloader.downloadFile(s, LongBiConsumer.DUMMY);
             Image img = null;
             try {
-                img = Image.Companion.makeFromEncoded(stream.readAllBytes());
+                byte[] b = stream.readAllBytes();
+                stream.close();
+                img = Image.Companion.makeFromEncoded(b);
             } catch (IOException e) {
                 e.printStackTrace();
             }
