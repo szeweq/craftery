@@ -7,9 +7,9 @@ import androidx.compose.ui.graphics.drawscope.DrawTransform
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.nativeCanvas
-import org.jetbrains.skija.Image
-import org.jetbrains.skija.Paint
-import org.jetbrains.skija.Rect
+import org.jetbrains.skia.Image
+import org.jetbrains.skia.Paint
+import org.jetbrains.skia.Rect
 
 /**
  * Abstract class for drawing Minecraft items and blocks in a slot.
@@ -72,7 +72,7 @@ abstract class Model {
                 p.color = 0xFF000000.toInt()
                 val north = northTex
                 if (north != null) withTransform(::transformX) {
-                    p.alphaf = 0.2f
+                    p.setAlphaf(0.2f)
                     drawIntoCanvas { it.nativeCanvas.apply {
                         drawImageRect(north, r)
                         drawRect(r, p)
@@ -86,7 +86,7 @@ abstract class Model {
 
                 val west = westTex
                 if (west != null) withTransform(::transformZ) {
-                    p.alphaf = 0.4f
+                    p.setAlphaf(0.4f)
                     drawIntoCanvas { it.nativeCanvas.apply {
                         drawImageRect(west, r)
                         drawRect(r, p)

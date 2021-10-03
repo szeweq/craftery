@@ -1,38 +1,41 @@
 package szewek.craftery
 
-import androidx.compose.desktop.AppWindow
-import androidx.compose.desktop.LocalAppWindow
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.FrameWindowScope
+import androidx.compose.ui.window.singleWindowApplication
 import szewek.craftery.layout.*
 import szewek.craftery.util.bindValue
 import szewek.craftery.util.logTime
 import szewek.craftery.views.*
 
 fun startApp() = logTime("App launch") {
-    val win = AppWindow(title = Craftery.APP_TITLE)
-    win.show(content = app)
+    println("LAUNCHING APP...")
+    singleWindowApplication(visible = true, title = Craftery.APP_TITLE, content = app)
 }
 
 /**
  * Main composable function for an app. It saves bytecode size this way (Kotlin generates objects for functions).
  */
-private val app = @Composable {
+private val app: @Composable FrameWindowScope.() -> Unit = {
     AppTheme {
         Scaffold(
             topBar = { topBar() }
         ) {
             val v = ViewManager.active
             key(v) {
-                updateTitle(v?.title?.value)
+                window.title = v?.title?.value
                 if (v == null) {
                     welcome()
                 } else logTime("Update view [${v.javaClass.name}]") {
@@ -40,18 +43,6 @@ private val app = @Composable {
                 }
             }
         }
-    }
-}
-
-/**
- * Updates window title.
- */
-@Composable
-fun updateTitle(title: String?) {
-    val w = LocalAppWindow.current
-    SideEffect {
-        val t = if (title == null || title.isBlank()) Craftery.APP_TITLE else "$title - ${Craftery.APP_TITLE}"
-        w.setTitle(t)
     }
 }
 

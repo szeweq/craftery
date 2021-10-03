@@ -12,6 +12,6 @@ public final class Craftery {
             System.out.println("Unable to set system Look and Feel");
             e.printStackTrace();
         }
-        SwingUtilities.invokeLater(CrafteryKt::startApp);
+        CrafteryKt.startApp();
     }
 }

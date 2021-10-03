@@ -1,7 +1,7 @@
 package szewek.craftery.util;
 
 import androidx.compose.ui.graphics.*;
-import org.jetbrains.skija.Image;
+import org.jetbrains.skia.Image;
 import szewek.craftery.net.Downloader;
 
 import java.io.IOException;
@@ -48,7 +48,7 @@ public final class ImageCache {
     }
 
     private static HttpResponse.BodySubscriber<Image> bodyHandlerOfImage(HttpResponse.ResponseInfo ri) {
-        return HttpResponse.BodySubscribers.mapping(HttpResponse.BodySubscribers.ofByteArray(), Image::makeFromEncoded);
+        return HttpResponse.BodySubscribers.mapping(HttpResponse.BodySubscribers.ofByteArray(), Image.Companion::makeFromEncoded);
     }
 
     public static Image fromURL(String url) {
@@ -57,7 +57,7 @@ public final class ImageCache {
             var stream = Downloader.downloadFile(s, LongBiConsumer.DUMMY);
             Image img = null;
             try {
-                img = Image.makeFromEncoded(stream.readAllBytes());
+                img = Image.Companion.makeFromEncoded(stream.readAllBytes());
             } catch (IOException e) {
                 e.printStackTrace();
             }

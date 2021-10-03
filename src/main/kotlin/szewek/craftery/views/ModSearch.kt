@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.*
 import androidx.compose.ui.text.TextStyle
@@ -81,6 +82,7 @@ class ModSearch: View("Search mods") {
         }
     }
 
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     private fun topBar() {
         val (text, setText) = search

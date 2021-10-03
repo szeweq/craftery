@@ -2,9 +2,9 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 
 plugins {
-    kotlin("jvm") version "1.5.10"
+    kotlin("jvm") version "1.5.31"
 
-    id("org.jetbrains.compose") version "0.4.0"
+    id("org.jetbrains.compose") version "1.0.0-alpha4-build366"
 }
 group = "szewek.craftery"
 
@@ -13,6 +13,7 @@ val asmVersion = "9.1"
 repositories {
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
+    google()
 }
 
 java.toolchain.languageVersion.set(JavaLanguageVersion.of(16))
