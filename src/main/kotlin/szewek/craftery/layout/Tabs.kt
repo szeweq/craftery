@@ -65,13 +65,8 @@ fun ViewTab(v: View) {
 @Composable
 private fun CloseButton(hoverBg: Color, action: () -> Unit) {
     Box(
-        Modifier.hover(hoverBg, CircleShape).clip(CircleShape)
+        Modifier.hover(hoverBg, CircleShape).clip(CircleShape).clickable(onClick = action)
     ) {
-        Icon(
-            Icons.Default.Close,
-            "Close",
-            Modifier.size(16.dp).clickable(onClick = action).padding(2.dp),
-            tint = LocalContentColor.current
-        )
+        Icon(Icons.Default.Close, "Close", Modifier.size(16.dp).padding(2.dp))
     }
 }
