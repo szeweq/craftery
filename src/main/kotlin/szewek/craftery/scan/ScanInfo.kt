@@ -9,6 +9,7 @@ import org.objectweb.asm.tree.FieldNode
 import szewek.craftery.mcdata.DataResourceType
 import szewek.craftery.mcdata.ResourceType
 import szewek.craftery.util.*
+import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
@@ -33,7 +34,8 @@ class ScanInfo {
     fun scanArchive(input: ZipInputStream) {
         input.eachEntry {
             if (!it.isDirectory) {
-                scanFile(it.name, input)
+                val bais = ByteArrayInputStream(input.readAllBytes())
+                scanFile(it.name, bais)
             }
         }
     }
@@ -74,7 +76,7 @@ class ScanInfo {
             return
         }
         val (kind, namespace, rest) = path
-        runCatching { JsonUtil.mapper.readTree(data) }.onSuccess {
+        runCatching { JsonUtil.mapper.readTree(data.reader()) }.onSuccess {
             val drt = DataResourceType.detect(kind, rest)
             if (drt.isTagType) {
                 val loc = Scanner.pathToLocation(name)
@@ -92,6 +94,8 @@ class ScanInfo {
                 ji.gatherDetails(it)
                 res[name] = ji
             }
+        }.onFailure {
+            it.printStackTrace()
         }
     }
 

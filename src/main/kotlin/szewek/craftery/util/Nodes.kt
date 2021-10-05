@@ -3,6 +3,7 @@ package szewek.craftery.util
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.InsnList
+import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.*
@@ -29,11 +30,19 @@ fun <T> Stream<T?>.filterNotNull() = filter(Objects::nonNull) as Stream<T>
  * Iterates over each entry found in ZIP input stream.
  */
 inline fun ZipInputStream.eachEntry(fn: (ZipEntry) -> Unit) {
-    var ze = nextEntry
-    while (ze != null) {
-        fn(ze)
-        ze = nextEntry
+    var lastEntry = "(none)"
+    try {
+        var ze = nextEntry
+        while (ze != null) {
+            lastEntry = ze.name
+            fn(ze)
+            ze = nextEntry
+        }
+    } catch (ex: IOException) {
+        print("Error occured while reading entry: $lastEntry")
+        ex.printStackTrace()
     }
+
 }
 
 fun InputStream.copyWithProgress(out: OutputStream, total: Long, progress: LongBiConsumer): Long {
