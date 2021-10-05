@@ -7,7 +7,6 @@ import kotlin.Pair;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class TimeLogManager {
     private static final Map<String, TimeHistory> historyMap = new ConcurrentHashMap<>();
@@ -32,7 +31,7 @@ public class TimeLogManager {
                 .stream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue().avg()))
                 .sorted((l, r) -> (int) (r.getSecond() - l.getSecond()))
-                .collect(Collectors.toUnmodifiableList());
+                .toList();
     }
 
     public static final class TimeHistory {
