@@ -1,9 +1,9 @@
 package szewek.craftery.cfapi;
 
-import com.google.gson.reflect.TypeToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import kotlin.Pair;
 import szewek.craftery.net.Downloader;
-import szewek.craftery.net.GsonBodyHandler;
+import szewek.craftery.net.JsonBodyHandler;
 
 import java.io.IOException;
 import java.net.URI;
@@ -27,8 +27,8 @@ final class CFAPIClient {
         return cli.send(HttpRequest.newBuilder(canonizeURI(path, params)).build(), bodyHandler);
     }
 
-    static <T> T getJson(TypeToken<T> token, String path, List<Pair<String, Object>> params) throws IOException, InterruptedException {
-        return get(path, params, GsonBodyHandler.handle(token)).body();
+    static <T> T getJson(TypeReference<T> tref, String path, List<Pair<String, Object>> params) throws IOException, InterruptedException {
+        return get(path, params, JsonBodyHandler.handle(tref)).body();
     }
 
     static String getString(String path, List<Pair<String, Object>> params) throws IOException, InterruptedException {

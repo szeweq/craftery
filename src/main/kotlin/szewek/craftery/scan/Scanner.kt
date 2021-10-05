@@ -1,11 +1,9 @@
 package szewek.craftery.scan
 
 import com.electronwill.nightconfig.toml.TomlParser
-import com.google.gson.Gson
 
 object Scanner {
     val TOML = TomlParser()
-    val GSON = Gson()
 
     fun genericFromSignature(sig: String) = sig.substringAfter('<').substringBeforeLast('>')
 

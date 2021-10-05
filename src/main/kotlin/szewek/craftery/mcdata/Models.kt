@@ -3,18 +3,18 @@ package szewek.craftery.mcdata
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.google.gson.Gson
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ObjectNode
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import org.jetbrains.skia.Image
+import szewek.craftery.util.JsonUtil
 import java.io.ByteArrayInputStream
 import java.util.regex.Pattern
 
 
 object Models {
-    private val GSON = Gson()
+    //private val GSON = Gson()
     private val modelDataMap = mutableMapOf<String, ModelData>()
     private val modelsMap = mutableMapOf<String, Model>()
     private val textures = mutableMapOf<String, Image>()
@@ -37,28 +37,26 @@ object Models {
         val allModels = MinecraftData.filesFromJar.filterKeys { matchModel.matcher(it).find() }
         for ((n, mb) in allModels) {
             val input = ByteArrayInputStream(mb)
-            val jr = GSON.newJsonReader(input.reader())
-            jr.runCatching { use {
-                val o = GSON.fromJson(this, JsonObject::class.java) as JsonObject
-                val p = o["parent"].asString
-                val t = if (o.has("textures")) o.getAsJsonObject("textures").entrySet().mapNotNull { (k, v) ->
-                    val s = checkTextures(v)
-                    if (s != null) k to s else null
-                }.toMap() else emptyMap()
+            val jr = JsonUtil.mapper.readTree(input)
+            //val jr = GSON.newJsonReader(input.reader())
+            jr.runCatching {
+                val p = get("parent").asText()
+                val t = if (has("textures")) (with("textures") as ObjectNode)
+                    .fields().asSequence()
+                    .mapNotNull { (k, v) ->
+                        val s = checkTextures(v)
+                        if (s != null) k to s else null
+                    }
+                    .toMap() else emptyMap()
                 if (p != null) {
                     modelDataMap[n] = ModelData(p, t)
                 }
-            } }
+            }
         }
     }
 
-    private fun checkTextures(v: JsonElement): String? {
-        if (v.isJsonPrimitive) {
-            val pr = v.asJsonPrimitive
-            if (pr.isString)
-                return pr.asString
-        }
-        return null
+    private fun checkTextures(v: JsonNode): String? {
+        return v.asText()
     }
 
     private fun compileTextures() {

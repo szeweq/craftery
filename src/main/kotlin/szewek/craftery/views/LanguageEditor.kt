@@ -15,12 +15,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.fasterxml.jackson.databind.ObjectWriter
+import com.fasterxml.jackson.databind.node.ObjectNode
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import szewek.craftery.layout.*
+import szewek.craftery.util.JsonUtil
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.filechooser.FileNameExtensionFilter
@@ -103,14 +103,10 @@ class LanguageEditor: View("Language Editor") {
     private fun loadFile(f: File) {
         f.reader().use {
             val l = mutableListOf<TranslationKeyValue>()
-            val o = GSON.newJsonReader(it)
-            o.beginObject()
-            while (o.hasNext()) {
-                val k = o.nextName()
-                val v = o.nextString()
-                l += TranslationKeyValue(k, v)
+            val o = JsonUtil.mapper.readTree(it) as ObjectNode
+            for ((k, v) in o.fields()) {
+                l += TranslationKeyValue(k, v.asText())
             }
-            o.endObject()
             lang.clear()
             lang.addAll(l)
         }
@@ -119,16 +115,16 @@ class LanguageEditor: View("Language Editor") {
     private fun saveTranslation(f: File) {
         try {
             f.writer().use { w ->
-                val jw = GSON.newJsonWriter(w)
-                jw.beginObject()
+                val jg = writer.createGenerator(w)
+                jg.writeStartObject()
                 val l = lang.sortedBy { it.key }
                 for (t in l) {
                     val trans = t.trans
                     if (trans.isNotEmpty()) {
-                        jw.name(t.key).value(trans)
+                        jg.writeStringField(t.key, trans)
                     }
                 }
-                jw.endObject()
+                jg.writeEndObject()
             }
         } catch (e: Exception) {
             println("ERROR WHILE SAVING!")
@@ -138,6 +134,6 @@ class LanguageEditor: View("Language Editor") {
     }
 
     companion object {
-        val GSON: Gson = GsonBuilder().setPrettyPrinting().create()
+        val writer: ObjectWriter = JsonUtil.mapper.writerWithDefaultPrettyPrinter()
     }
 }

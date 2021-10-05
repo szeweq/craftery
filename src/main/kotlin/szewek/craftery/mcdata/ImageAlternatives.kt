@@ -1,7 +1,7 @@
 package szewek.craftery.mcdata
 
-import com.google.gson.JsonElement
-import com.google.gson.JsonObject
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.node.ArrayNode
 import org.jetbrains.skia.Image
 import szewek.craftery.net.Downloader
 import szewek.craftery.util.ImageCache
@@ -18,7 +18,7 @@ object ImageAlternatives {
         if (name !in mapIds) return null
         if (name in images) return images[name]
         val fileId = mapIds[name]
-        val obj = downloadJson<JsonObject>(
+        val obj = downloadJson<JsonNode>(
             Downloader.buildQuery(
                 "https://minecraft.gamepedia.com/api.php",
                 listOf(
@@ -32,23 +32,17 @@ object ImageAlternatives {
             ),
             LongBiConsumer.DUMMY
         )!!
-        val iinfo = traverse(obj, "query", "pages", fileId.toString(), "imageinfo")?.asJsonArray
+        val iinfo: ArrayNode? = obj
+            .path("query")
+            .path("pages")
+            .path(fileId.toString())
+            .withArray("imageinfo")
         if (iinfo != null) {
-            val url = iinfo[0]?.asJsonObject?.get("thumburl")?.asString ?: return null
+            val url = iinfo.path(0)?.get("thumburl")?.asText() ?: return null
             val img = ImageCache.fromURL(url)
             images[name] = img
             return img
         }
         return null
-    }
-
-    private fun traverse(o: JsonObject, vararg paths: String): JsonElement? {
-        val names = paths.dropLast(1)
-        val last = paths.last()
-        var current = o
-        for (n in names) {
-            current = current[n].asJsonObject
-        }
-        return current[last]
     }
 }

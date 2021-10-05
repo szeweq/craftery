@@ -1,11 +1,9 @@
 package szewek.craftery.net;
 
-import com.google.gson.reflect.TypeToken;
 import kotlin.Pair;
-import szewek.craftery.net.GsonBodyHandler;
-import szewek.craftery.net.ProgressSubscriber;
 import szewek.craftery.util.LongBiConsumer;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -32,11 +30,11 @@ public final class Downloader {
     }
 
     public static <T> T downloadJson(String url, LongBiConsumer progress) {
-        return get(url, progress, GsonBodyHandler.handle(new TypeToken<T>() {}));
+        return get(url, progress, JsonBodyHandler.handle());
     }
 
     public static <T> T downloadJson(String url, Class<T> cl, LongBiConsumer progress) {
-        return get(url, progress, GsonBodyHandler.handle(TypeToken.get(cl)));
+        return get(url, progress, JsonBodyHandler.handle(cl));
     }
 
     public static String buildQuery(String path, Collection<Pair<String, Object>> params) {

@@ -1,13 +1,13 @@
 package szewek.craftery.scan
 
 import com.electronwill.nightconfig.core.Config
-import com.google.gson.JsonObject
-import com.google.gson.JsonPrimitive
+import com.fasterxml.jackson.databind.node.ArrayNode
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
-import szewek.craftery.mcdata.*
+import szewek.craftery.mcdata.DataResourceType
+import szewek.craftery.mcdata.ResourceType
 import szewek.craftery.util.*
 import java.io.InputStream
 import java.util.stream.Stream
@@ -74,12 +74,12 @@ class ScanInfo {
             return
         }
         val (kind, namespace, rest) = path
-        runCatching { Scanner.GSON.fromJson(data.reader(), JsonObject::class.java) }.onSuccess {
+        runCatching { JsonUtil.mapper.readTree(data) }.onSuccess {
             val drt = DataResourceType.detect(kind, rest)
             if (drt.isTagType) {
                 val loc = Scanner.pathToLocation(name)
-                val cs = StreamSupport.stream(it.getAsJsonArray("values").spliterator(), false)
-                    .map { jv -> if (jv is JsonPrimitive && jv.isString) jv.asString else null }
+                val cs = StreamSupport.stream((it.withArray("values") as ArrayNode).spliterator(), false)
+                    .map { jv -> if (jv.isTextual) jv.asText() else null }
                     .filterNotNull()
                 val ts = tags[loc]
                 if (ts == null) {

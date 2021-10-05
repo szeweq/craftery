@@ -9,6 +9,7 @@ plugins {
 group = "szewek.craftery"
 
 val asmVersion = "9.1"
+val jacksonVersion = "2.13.0"
 
 repositories {
     mavenCentral()
@@ -31,7 +32,10 @@ compose.desktop {
 dependencies {
     implementation(compose.desktop.currentOs)
 
-    implementation("com.google.code.gson:gson:2.8.7")
+    implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.10")

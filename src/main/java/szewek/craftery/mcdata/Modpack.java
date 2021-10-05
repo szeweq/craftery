@@ -1,11 +1,11 @@
 package szewek.craftery.mcdata;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import kotlin.Pair;
+import szewek.craftery.util.JsonUtil;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -16,18 +16,17 @@ import java.util.zip.ZipInputStream;
 public class Modpack {
     private Modpack() {}
 
-    private static Gson GSON = new Gson();
-
     public static List<Pair<Integer, Integer>> readManifest(ZipInputStream input) {
         try {
             if (findManifest(input)) {
-                var manifest = GSON.fromJson(new InputStreamReader(input), JsonObject.class);
-                return StreamSupport.stream(manifest.getAsJsonArray("files").spliterator(), false)
-                        .map(jv -> jv instanceof JsonObject ? jv.getAsJsonObject() : null)
+                var mtree = JsonUtil.mapper.readTree(input);
+                ArrayNode files = mtree.withArray("files");
+                return StreamSupport.stream(files.spliterator(), false)
+                        .map(jv -> jv instanceof ObjectNode ? (ObjectNode) jv : null)
                         .filter(Objects::nonNull)
                         .map(jo -> {
-                            var pid = jo.getAsJsonPrimitive("projectID").getAsInt();
-                            var fid = jo.getAsJsonPrimitive("fileID").getAsInt();
+                            final var pid = jo.get("projectID").asInt();
+                            final var fid = jo.get("fileID").asInt();
                             return new Pair<>(pid, fid);
                         })
                         .collect(Collectors.toList());
