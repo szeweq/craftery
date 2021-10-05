@@ -20,7 +20,6 @@ object About: View("About") {
 
     @Composable
     override fun content() {
-        produceState(null, key1 = 0) {}
         CenteredColumn(fillSizeModifier) {
             Text("Craftery", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
             Text("© 2020-2021 Szeweq", Modifier.padding(bottom = 8.dp))
