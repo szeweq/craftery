@@ -21,7 +21,7 @@ java.toolchain.languageVersion.set(JavaLanguageVersion.of(16))
 
 compose.desktop {
     application {
-        mainClass = "szewek.craftery.Craftery"
+        mainClass = "szeweq.craftery.Craftery"
         nativeDistributions {
             targetFormats(TargetFormat.Dmg, TargetFormat.Exe, TargetFormat.Deb)
             packageName = "craftery"
