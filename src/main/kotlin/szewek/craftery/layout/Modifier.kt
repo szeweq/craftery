@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.*
-import java.awt.event.MouseEvent
 
 /**
  * Uses [hoverState] to draw a [shape] with [color].

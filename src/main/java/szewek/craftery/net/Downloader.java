@@ -3,7 +3,6 @@ package szewek.craftery.net;
 import kotlin.Pair;
 import szewek.craftery.util.LongBiConsumer;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
