@@ -8,6 +8,7 @@ import szeweq.craftery.util.JsonUtil;
 import szeweq.craftery.util.JsonUtil;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.net.http.HttpResponse;
 
 public class JsonBodyHandler {
@@ -16,7 +17,12 @@ public class JsonBodyHandler {
     }
 
     public static <T>HttpResponse.BodyHandler<T> handle(final Class<T> cl) {
-        return handle(new TypeReference<T>() {});
+        return handle(new TypeReference<T>() {
+            @Override
+            public Type getType() {
+                return cl;
+            }
+        });
     }
 
     public static <T> HttpResponse.BodyHandler<T> handle(final TypeReference<T> tref) {

@@ -2,6 +2,7 @@ package szeweq.craftery.util
 
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.ImageBitmap
+import com.fasterxml.jackson.core.type.TypeReference
 import szeweq.craftery.net.Downloader
 
 /**
@@ -14,7 +15,7 @@ fun <T> MutableState<T>.bindValue(value: T): () -> Unit = { this.value = value }
  * Kotlin compiler tried to use [java.lang.Object] class while specific class is required.
  */
 inline fun <reified T> downloadJson(url: String, progress: LongBiConsumer): T? =
-    Downloader.downloadJson(url, T::class.java, progress)
+    Downloader.downloadJson(url, object : TypeReference<T>() {}, progress)
 
 /**
  * Declaration of an "empty" 1x1 image.

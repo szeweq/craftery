@@ -1,5 +1,6 @@
 package szeweq.craftery.net;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import kotlin.Pair;
 import szeweq.craftery.util.LongBiConsumer;
 
@@ -10,6 +11,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collection;
+import java.util.Map;
 
 public final class Downloader {
     private Downloader() {}
@@ -36,6 +38,10 @@ public final class Downloader {
         return get(url, progress, JsonBodyHandler.handle(cl));
     }
 
+    public static <T> T downloadJson(String url, TypeReference<T> tref, LongBiConsumer progress) {
+        return get(url, progress, JsonBodyHandler.handle(tref));
+    }
+
     public static String buildQuery(String path, Collection<Pair<String, Object>> params) {
         if (params.isEmpty()) {
             return path;
@@ -46,6 +52,20 @@ public final class Downloader {
         for (var p : params) {
             if (c++ > 0) sb.append('&');
             sb.append(p.getFirst()).append('=').append(p.getSecond().toString());
+        }
+        return sb.toString();
+    }
+
+    public static String buildQuery(String path, Map<String, Object> params) {
+        if (params.isEmpty()) {
+            return path;
+        }
+        var sb = new StringBuilder();
+        sb.append(path).append('?');
+        var c = 0;
+        for (var p : params.entrySet()) {
+            if (c++ > 0) sb.append('&');
+            sb.append(p.getKey()).append('=').append(p.getValue().toString());
         }
         return sb.toString();
     }
