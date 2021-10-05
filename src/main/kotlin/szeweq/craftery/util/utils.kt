@@ -25,5 +25,5 @@ val emptyImage = ImageBitmap(1, 1)
 inline fun logTime(name: String, fn: () -> Unit) {
     val d = System.nanoTime()
     fn()
-    TimeLogManager.logNano(name, d);
+    TimeLogManager.logNano(name, d)
 }
