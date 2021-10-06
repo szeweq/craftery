@@ -34,10 +34,6 @@ public final class Downloader {
         return get(url, progress, JsonBodyHandler.handle());
     }
 
-    public static <T> T downloadJson(String url, Class<T> cl, LongBiConsumer progress) {
-        return get(url, progress, JsonBodyHandler.handle(cl));
-    }
-
     public static <T> T downloadJson(String url, TypeReference<T> tref, LongBiConsumer progress) {
         return get(url, progress, JsonBodyHandler.handle(tref));
     }

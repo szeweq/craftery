@@ -16,15 +16,6 @@ public class JsonBodyHandler {
         return handle(new TypeReference<>() {});
     }
 
-    public static <T>HttpResponse.BodyHandler<T> handle(final Class<T> cl) {
-        return handle(new TypeReference<T>() {
-            @Override
-            public Type getType() {
-                return cl;
-            }
-        });
-    }
-
     public static <T> HttpResponse.BodyHandler<T> handle(final TypeReference<T> tref) {
         final var or = JsonUtil.mapper.readerFor(tref);
         return ri -> HttpResponse.BodySubscribers.mapping(HttpResponse.BodySubscribers.ofInputStream(), inputStream -> {
