@@ -14,7 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.launch
-import szeweq.craftery.cfapi.CurseforgeAPI
+import szeweq.craftery.cfapi.CFAPI
 import szeweq.craftery.layout.*
 import szeweq.craftery.lookup.*
 import szeweq.craftery.mcdata.Modpack
@@ -117,7 +117,7 @@ class FileLookup(
             files.forEachIndexed { i, (pid, fid) ->
                 updateMessage("Getting file URL [$i / $l]...")
                 progress.setIndeterminate()
-                val murl = CurseforgeAPI.downloadURL(pid, fid)
+                val murl = CFAPI.downloadURL(pid, fid)
                 if (!murl.endsWith(".jar")) { return@forEachIndexed }
                 val mname = murl.substringAfterLast('/')
                 updateMessage("Downloading [$i / $l] $mname...")

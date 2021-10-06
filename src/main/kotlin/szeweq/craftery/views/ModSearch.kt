@@ -114,7 +114,7 @@ class ModSearch: View("Search mods") {
         val tid = typeId.value
         viewScope.launch {
             modlist.clear()
-            val a = CurseforgeAPI.findAddons(s, tid)
+            val a = CFAPI.findAddons(s, tid)
             modlist.addAll(a)
             title.value = "Search: $s"
             progress.setFinished()
