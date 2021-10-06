@@ -5,15 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
+import szeweq.craftery.util.Selection
 
 abstract class View(title: String) {
     val title = mutableStateOf(title)
     val progress = ProgressState()
     val viewScope = CoroutineScope(Dispatchers.Default)
-    lateinit var selection: SingleSelection
+    lateinit var selection: Selection<*>
 
     val isActive: Boolean
-        get() = selection.selected == this
+        get() = selection.selected === this
 
     fun activate() {
         selection.selected = this

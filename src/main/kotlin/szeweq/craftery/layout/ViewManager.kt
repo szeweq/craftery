@@ -1,15 +1,16 @@
 package szeweq.craftery.layout
 
 import androidx.compose.runtime.mutableStateListOf
+import szeweq.craftery.util.Selection
 import kotlin.reflect.KClass
 
 /**
  * Manages active views displayed in an app.
  */
 object ViewManager {
-    private val selection = SingleSelection()
+    private val selection = Selection<View>()
 
-    val active: View? get() = selection.selected as View?
+    val active: View? get() = selection.selected
 
     var views = mutableStateListOf<View>()
         private set
