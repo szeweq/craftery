@@ -38,6 +38,7 @@ class ModSearch: View("Search mods") {
     ) {
         Box {
             val state = rememberLazyListState()
+            val itemMod = Modifier.fillMaxWidth().height(64.dp)
             LazyColumn(Modifier.fillMaxSize().padding(horizontal = 12.dp), state = state) {
                 // Prevent displaying out-of-bounds item layouts
                 if (!modlist.isEmpty()) items(modlist.size, this@ModSearch::getSlugFromList) {
@@ -46,7 +47,7 @@ class ModSearch: View("Search mods") {
                     itemBox(item)
                 } else {
                     item {
-                        Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) {
+                        Box(itemMod, contentAlignment = Alignment.Center) {
                             Text(if (progress.isActive()) "Searching..." else "Empty")
                         }
                     }
@@ -68,7 +69,7 @@ class ModSearch: View("Search mods") {
             .hover(LocalHoverColor.current, shape = MaterialTheme.shapes.medium)
             .padding(4.dp)
         ) {
-            val attachment = remember(item) { item.defaultAttachment() }
+            val attachment = remember(item, item::defaultAttachment)
             if (attachment != null) ImageURL(attachment.thumbnailUrl, item.name, Modifier.size(60.dp))
             Column(Modifier.padding(start = 64.dp)) {
                 Row {
