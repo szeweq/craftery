@@ -8,7 +8,7 @@ public class Scanner {
     public static String genericFromSignature(String sig) {
         var aix = sig.indexOf('<');
         var zix = sig.lastIndexOf('>');
-        return sig.substring(aix + 1, zix);
+        return aix == -1 ? sig : zix == -1 ? sig.substring(aix + 1) : sig.substring(aix + 1, zix);
     }
 
     public static String pathToLocation(String path) {
