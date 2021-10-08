@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 
 @Composable
@@ -41,6 +42,6 @@ fun ThreeLinesItem(item: Triple<String, String, String>, second: String, third: 
  * Returns a simple text component that only uses [text] parameter.
  * It saves a lot of bytecode size if used inside another component (like a button).
  */
-fun ComposeText(text: String): @Composable RowScope.() -> Unit = {
-    Text(text)
+fun ComposeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Composable RowScope.() -> Unit = {
+    Text(text, fontSize = fontSize)
 }

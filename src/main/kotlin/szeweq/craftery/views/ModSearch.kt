@@ -34,7 +34,7 @@ class ModSearch: View("Search mods") {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun content() = Scaffold(
-        topBar = { topBar() }
+        topBar = topBar
     ) {
         Box {
             val state = rememberLazyListState()
@@ -83,8 +83,7 @@ class ModSearch: View("Search mods") {
     }
 
     @OptIn(ExperimentalComposeUiApi::class)
-    @Composable
-    private fun topBar() {
+    private val topBar = @Composable {
         val (text, setText) = search
         Card(Modifier.padding(12.dp, 4.dp)) {
             Row(Modifier.padding(horizontal = 4.dp), verticalAlignment = Alignment.CenterVertically) {
