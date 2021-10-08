@@ -1,13 +1,19 @@
 package szeweq.craftery.layout
 
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Card
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 /**
  * A state object for displaying and updating values in process-related tasks (like downloading a file).
@@ -48,3 +54,13 @@ fun LinearIndicator(
         LinearProgressIndicator(progressState.value, modifier, color)
     }
 }
+
+@Composable
+fun ProgressCard(
+    msgProgress: MessageProgressState,
+    modifier: Modifier = Modifier,
+    color: Color = MaterialTheme.colors.primary
+) = Card(modifier) { Column {
+    Text(msgProgress.message, Modifier.padding(8.dp))
+    LinearIndicator(msgProgress, Modifier.fillMaxWidth(), color = color)
+} }
