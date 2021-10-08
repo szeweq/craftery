@@ -38,7 +38,7 @@ public final class ImageCache {
         cli.sendAsync(hr, ImageCache::bodyHandlerOfImage)
                 .thenApply(HttpResponse::body)
                 .thenApply(img -> {
-                    final var ib = img == null ? null : DesktopImageAsset_desktopKt.asImageBitmap(img);
+                    final var ib = img == null ? null : DesktopImageAsset_desktopKt.toComposeImageBitmap(img);
                     if (ib != null) {
                         mapBitmaps.put(url, ib);
                         return ib;
