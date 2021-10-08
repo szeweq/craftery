@@ -30,6 +30,7 @@ class ScanInfo {
     val res = mutableMapOf<String, JsonInfo>()
     private val deps = mutableSetOf<String>()
     val tags = mutableMapOf<String, MutableSet<String>>()
+    val parseExceptions = mutableMapOf<String, Exception>()
 
     fun scanArchive(input: ZipInputStream) {
         input.eachEntry {
@@ -95,7 +96,9 @@ class ScanInfo {
                 res[name] = ji
             }
         }.onFailure {
+            println("PARSING ($name) FAILED!")
             it.printStackTrace()
+            if (it is Exception) parseExceptions[name] = it
         }
     }
 
