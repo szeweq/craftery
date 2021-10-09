@@ -2,52 +2,84 @@ package szeweq.craftery.layout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 val tabShape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp)
 
+private fun Modifier.scrollAction(scope: CoroutineScope, scrollState: LazyListState, value: Float) = clickable { scope.launch { scrollState.animateScrollBy(value) } }
+
+private fun LazyListState.scopeScrollToItem(scope: CoroutineScope, index: Int) = scope.launch { animateScrollToItem(index) }
+
 @Composable
-fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) = Row(
-    modifier.horizontalScroll(rememberScrollState()),
-    verticalAlignment = Alignment.Bottom
-) {
-    withProviders(LocalTextStyle provides TextStyle(fontSize = 13.sp)) {
-        for (v in views) ViewTab(v)
+fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
+    val lazyListState = rememberLazyListState()
+    val scope = rememberCoroutineScope()
+    Box(modifier) {
+        Icon(Icons.Default.ArrowBack, "", Modifier.size(16.dp).align(Alignment.CenterStart).scrollAction(scope, lazyListState, -200f))
+        withProviders(LocalTextStyle provides TextStyle(fontSize = 13.sp)) {
+            LazyRow(
+                Modifier.matchParentSize().padding(horizontal = 16.dp),
+                lazyListState,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                itemsIndexed(views) { i, v ->
+                    ViewTab(v) { lazyListState.scopeScrollToItem(scope, i) }
+                }
+                scope.launch {
+                    val ix = views.indexOfFirst(View::isActive)
+                    if (ix != -1) lazyListState.scrollToItem(ix)
+                }
+            }
+        }
+        Icon(Icons.Default.ArrowForward, "", Modifier.size(16.dp).align(Alignment.CenterEnd).scrollAction(scope, lazyListState, 200f))
+
     }
 }
 
 @Composable
-fun ViewTab(v: View) {
+fun ViewTab(v: View, activate: () -> Unit) {
     Box(
         Modifier.background(if(v.isActive) MaterialTheme.colors.background else Color.Transparent, tabShape).clip(tabShape),
         propagateMinConstraints = true
     ) {
-        if (v.progress.isActive()) LinearIndicator(v.progress, Modifier.matchParentSize(), LocalTabProgressColor.current)
+        if (v.progress.isActive()) LinearIndicator(
+            v.progress,
+            Modifier.matchParentSize().padding(bottom = 24.dp),
+            LocalTabProgressColor.current
+        )
         Row(
             Modifier
                 .clickableNumbered(1, 2) {
                     if (it == 2) v.tryClose()
                     v.activate()
+                    activate()
                 }
                 .hover(LocalTabHoverColor.current, tabShape)
                 .padding(horizontal = 4.dp, vertical = 6.dp),
