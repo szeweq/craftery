@@ -45,7 +45,7 @@ public class TimeLogManager {
                 measuredTimes[o] = t;
                 offset = o;
             } else {
-                measuredTimes[++size] = t;
+                measuredTimes[size++] = t;
             }
         }
 
