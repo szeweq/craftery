@@ -19,6 +19,7 @@ import szeweq.craftery.layout.LocalHoverColor
 import szeweq.craftery.layout.View
 import szeweq.craftery.layout.hover
 import szeweq.craftery.layout.withProviders
+import szeweq.craftery.util.KtUtil
 import szeweq.craftery.util.TimeLogManager
 
 object PerformanceView : View("Performance") {
@@ -37,9 +38,14 @@ object PerformanceView : View("Performance") {
         Column {
             Card(Modifier.padding(12.dp).fillMaxWidth()) {
                 val mem by remember { memoryFlow() }.collectAsState(0L to 0L)
+                val txtUsed = remember(mem.first) { KtUtil.lengthInBytes(mem.first) }
+                val txtTotal = remember(mem.second) { KtUtil.lengthInBytes(mem.second) }
                 Column(Modifier.padding(8.dp)) {
-                    Text("Memory: %.2f of %.2f kB".format(mem.first.toFloat() / 1024, mem.second.toFloat() / 1024))
-                    LinearProgressIndicator((mem.second - mem.first).toFloat() / mem.second)
+                    Text("Memory: $txtUsed of $txtTotal")
+                    LinearProgressIndicator(
+                        mem.first.toFloat() / mem.second,
+                        Modifier.fillMaxWidth().padding(top = 4.dp)
+                    )
                 }
             }
             Box {
