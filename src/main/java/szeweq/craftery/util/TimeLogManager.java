@@ -9,14 +9,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class TimeLogManager {
-    private static final Map<String, TimeHistory> historyMap = new ConcurrentHashMap<>();
+    private static final Map<String, ValueHistory> historyMap = new ConcurrentHashMap<>();
 
     public static final MutableState<Long> lastLog = SnapshotStateKt.mutableStateOf(System.nanoTime(), SnapshotStateKt.structuralEqualityPolicy());
 
     public static void logNano(String name, long nano) {
         var ll = System.nanoTime();
         var d = ll - nano;
-        historyMap.computeIfAbsent(name, k -> new TimeHistory()).add(d);
+        historyMap.computeIfAbsent(name, k -> new ValueHistory()).add(d);
         lastLog.setValue(ll);
     }
 
@@ -34,31 +34,4 @@ public class TimeLogManager {
                 .toList();
     }
 
-    public static final class TimeHistory {
-        private final long[] measuredTimes = new long[24];
-        private int size = 0;
-        private int offset = 0;
-
-        private void add(long t) {
-            if (size == 24) {
-                var o = (offset + 1) % 24;
-                measuredTimes[o] = t;
-                offset = o;
-            } else {
-                measuredTimes[size++] = t;
-            }
-        }
-
-        private long sum() {
-            long s = 0;
-            for (int i = 0; i < 24; i++) {
-                s += measuredTimes[i];
-            }
-            return s;
-        }
-
-        private long avg() {
-            return sum() / size;
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package szeweq.craftery.views
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.VerticalScrollbar
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -10,6 +11,13 @@ import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.addOutline
+import androidx.compose.ui.graphics.drawscope.DrawStyle
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -21,14 +29,21 @@ import szeweq.craftery.layout.hover
 import szeweq.craftery.layout.withProviders
 import szeweq.craftery.util.KtUtil
 import szeweq.craftery.util.TimeLogManager
+import szeweq.craftery.util.ValueHistory
+import kotlin.math.max
 
 object PerformanceView : View("Performance") {
+    private val memUsedHist = ValueHistory()
+    private val memTotalHist = ValueHistory()
 
-    private fun memoryFlow() = flow {
+    private val memoryFlow = flow {
         val rt = Runtime.getRuntime()
         while (true) {
             val t = rt.totalMemory()
-            emit(t - rt.freeMemory() to t)
+            val u = t - rt.freeMemory()
+            memUsedHist.add(u)
+            memTotalHist.add(t)
+            emit( memUsedHist.values to memTotalHist.values)
             delay(1000)
         }
     }
@@ -37,15 +52,40 @@ object PerformanceView : View("Performance") {
     override fun content() {
         Column {
             Card(Modifier.padding(12.dp).fillMaxWidth()) {
-                val mem by remember { memoryFlow() }.collectAsState(0L to 0L)
-                val txtUsed = remember(mem.first) { KtUtil.lengthInBytes(mem.first) }
-                val txtTotal = remember(mem.second) { KtUtil.lengthInBytes(mem.second) }
+                val mem by memoryFlow.collectAsState(longArrayOf() to longArrayOf())
+                if (mem.first.isEmpty() || mem.second.isEmpty()) {
+                    Text("Loading...")
+                    return@Card
+                }
+                val (used, total) = remember(mem) { mem.first.last() to mem.second.last() }
+                val txtUsed = remember(mem.first) { KtUtil.lengthInBytes(used) }
+                val txtTotal = remember(mem.second) { KtUtil.lengthInBytes(total) }
+                val cmax = remember(mem.second) { mem.second.maxOrNull()!! }
+                val csz = remember(mem.second) { mem.second.size }
+                val vused = remember(mem.first) { mem.first.map { it.toFloat() / cmax } }
                 Column(Modifier.padding(8.dp)) {
                     Text("Memory: $txtUsed of $txtTotal")
-                    LinearProgressIndicator(
-                        mem.first.toFloat() / mem.second,
-                        Modifier.fillMaxWidth().padding(top = 4.dp)
-                    )
+                    val prim = MaterialTheme.colors.primary
+                    val primv = MaterialTheme.colors.primaryVariant
+                    Canvas(Modifier.fillMaxWidth().requiredHeight(80.dp).padding(top = 6.dp).clip(MaterialTheme.shapes.medium)) {
+                        drawRect(Color.White, alpha = 0.75F)
+                        val (w, h) = size
+                        val spart = w / max(1, csz - 1)
+                        val pused = Path().apply {
+                            moveTo(0F, h)
+                            for (i in 0 until csz) {
+                                lineTo(spart * i, h - vused[i] * h)
+                            }
+                            lineTo(w, h)
+                            close()
+                        }
+                        drawPath(pused, prim)
+                        drawPath(pused, primv, style = Stroke(1f))
+                        for (i in 0 until csz) {
+                            drawLine(Color.DarkGray, Offset(spart * i, 0F), Offset(spart * i, h), alpha = 0.5F)
+                        }
+
+                    }
                 }
             }
             Box {
