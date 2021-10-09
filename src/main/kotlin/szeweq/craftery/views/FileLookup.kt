@@ -7,38 +7,49 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ProvideTextStyle
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectIndexed
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import szeweq.craftery.cfapi.CFAPI
 import szeweq.craftery.layout.*
 import szeweq.craftery.lookup.*
 import szeweq.craftery.mcdata.Modpack
-import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.net.Downloader
+import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
 import szeweq.craftery.util.bindValue
+import java.io.InputStream
 import java.util.zip.ZipInputStream
 
 class FileLookup(
-    name: String,
+    private val filename: String,
     private val loader: FileLoader,
     private val modpack: Boolean = false
-): View("Lookup: $name") {
-    private val message = mutableStateOf("")
+): View("Lookup: $filename") {
     private val lookups: List<ModLookup<*>> = listOf(
         ListResourceData(),
         DetectCapabilities(),
         StaticFields(),
         SusLazyOptionals(),
-        ListAllTags()
+        ListAllTags(),
+        ParseErrors()
     )
+    private val loading = mutableStateOf(true)
     private val index = mutableStateOf(0)
     private val currentLookup = derivedStateOf { lookups[index.value] }
+    private val downloadProgress = MessageProgressState()
+    private val scanProgress = MessageProgressState()
 
     init {
         viewScope.launch { processLookups() }
@@ -46,10 +57,13 @@ class FileLookup(
 
     @Composable
     override fun content() {
-        if (progress.isActive()) {
+        if (loading.value) {
             CenteredColumn(Modifier.fillMaxSize()) {
-                Text(message.value)
-                LinearIndicator(progress)
+                Text("Loading lookups...", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                val mod = Modifier.fillMaxWidth(0.75f).padding(4.dp)
+                if (downloadProgress.isActive())
+                    ProgressCard(downloadProgress, mod)
+                ProgressCard(scanProgress, mod)
             }
         } else {
             Row {
@@ -99,50 +113,58 @@ class FileLookup(
         }
     }
 
-    private fun updateMessage(msg: String) {
-        message.value = msg
+    private suspend fun processLookups() {
+        val si = ScanInfo()
+        loading.value = true
+        progress.setIndeterminate()
+        var total = 1L
+        val inputFlow: Flow<Pair<String, InputStream>> = if (modpack) flow {
+            downloadProgress.message = "Downloading modpack..."
+            downloadProgress.setIndeterminate()
+            val fi = loader.load(downloadProgress::setFraction)
+            downloadProgress.message = "Reading manifest..."
+            downloadProgress.setIndeterminate()
+            val files = Modpack.readManifest(ZipInputStream(fi))
+            total = files.size.toLong()
+            var i = 0
+            for ((pid, fid) in files) {
+                downloadProgress.message = "Getting file URL [$i / $total]..."
+                downloadProgress.value = 0F
+                val murl = CFAPI.downloadURL(pid, fid)
+                if (!murl.endsWith(".jar")) continue
+                val mname = murl.substringAfterLast('/')
+                downloadProgress.message = "Downloading [$i / $total] $mname..."
+                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), downloadProgress::setFraction)
+                emit(mname to mf)
+                i++
+            }
+            downloadProgress.setFinished()
+        } else flow {
+            downloadProgress.message = "Downloading file..."
+            downloadProgress.setIndeterminate()
+            val fi = loader.load(downloadProgress::setFraction)
+            emit(filename to fi)
+            downloadProgress.setFinished()
+        }
+        inputFlow.collectIndexed { i, (name, input) ->
+            scanProgress.message = "Scanning [$i / $total] $name..."
+            scanProgress.setFraction(i.toLong(), total)
+            ZipInputStream(input).use(si::scanArchive)
+        }
+        gather(si)
+        loading.value = false
+        progress.setFinished()
     }
 
-    private fun processLookups() {
-        val si = ScanInfo()
-        val updateProgress: (Long, Long) -> Unit = progress::setFraction
-        if (modpack) {
-            updateMessage("Downloading modpack...")
-            progress.setIndeterminate()
-            val fi = loader.load(updateProgress)
-            updateMessage("Reading manifest...")
-            progress.setIndeterminate()
-            val files = Modpack.readManifest(ZipInputStream(fi))
-            val l = files.size
-            files.forEachIndexed { i, (pid, fid) ->
-                updateMessage("Getting file URL [$i / $l]...")
-                progress.setIndeterminate()
-                val murl = CFAPI.downloadURL(pid, fid)
-                if (!murl.endsWith(".jar")) { return@forEachIndexed }
-                val mname = murl.substringAfterLast('/')
-                updateMessage("Downloading [$i / $l] $mname...")
-                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), updateProgress)
-                updateMessage("Scanning [$i / $l] $mname...")
-                val zip = ZipInputStream(mf)
-                si.scanArchive(zip)
-                zip.close()
-            }
-        } else {
-            updateMessage("Downloading file...")
-            progress.setIndeterminate()
-            val fi = loader.load(updateProgress)
-            updateMessage("Scanning classes...")
-            progress.setIndeterminate()
-            val zip = ZipInputStream(fi)
-            si.scanArchive(zip)
-            zip.close()
-        }
-
-        updateMessage("Gathering results...")
-        updateProgress(2, 3)
+    private fun gather(si: ScanInfo) {
+        scanProgress.value = 0F
+        var li = 0L
+        val ls = lookups.size.toLong()
         for (l in lookups) {
+            scanProgress.message = "Gathering results (${l.title})..."
             l.lazyGather(si)
+            scanProgress.setFraction(++li, ls)
         }
-        progress.setFinished()
+        scanProgress.setFinished()
     }
 }

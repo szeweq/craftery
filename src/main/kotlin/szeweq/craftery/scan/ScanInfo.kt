@@ -96,8 +96,6 @@ class ScanInfo {
                 res[name] = ji
             }
         }.onFailure {
-            println("PARSING ($name) FAILED!")
-            it.printStackTrace()
             if (it is Exception) parseExceptions[name] = it
         }
     }
