@@ -4,13 +4,11 @@ import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.MethodInsnNode
-import szeweq.craftery.util.fixedDesc
-import szeweq.craftery.util.toSet
-import szeweq.craftery.util.ClassNodeMap
+import szeweq.craftery.util.*
 
 class LazyOptionalInfo(classes: ClassNodeMap, classNode: ClassNode, fields: List<FieldNode>) {
     val name: String = classNode.name
-    val warnings = fields.stream().filter { f ->
+    val warnings: Map<String, String> = fields.stream().filter { f ->
         !classes.streamUsagesOf(classNode, f).anyMatch { (_, _, i) ->
             if (i.opcode == Opcodes.GETFIELD) {
                 val ni = i.next
@@ -25,8 +23,7 @@ class LazyOptionalInfo(classes: ClassNodeMap, classNode: ClassNode, fields: List
             false
         }
     }.map {
-        if (it.signature == null) { it.name to "NONE" }
-        else { it.name to Scanner.genericFromSignature(it.signature)
-        }
-    }.toSet()
+        val k = it.name.intern()
+        k to (if (it.signature == null) "NONE" else Scanner.genericFromSignature(it.signature))
+    }.collect(KtUtil.pairsToMap())
 }

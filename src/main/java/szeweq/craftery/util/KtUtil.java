@@ -1,10 +1,13 @@
 package szeweq.craftery.util;
 
+import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -15,6 +18,10 @@ public class KtUtil {
 	@NotNull
 	public static <T> Stream<T> streamValuesFrom(Map<?, T> map) {
 		return map.values().stream();
+	}
+
+	public static <K, V> Collector<Pair<K, V>, ?, Map<K, V>> pairsToMap() {
+		return Collectors.toMap(Pair::getFirst, Pair::getSecond);
 	}
 
 	@SuppressWarnings("unchecked")

@@ -16,7 +16,7 @@ class SusLazyOptionals: ModLookup<Triple<String, String, String>>("Suspicious La
     override fun gatherItems(si: ScanInfo): List<Triple<String, String, String>> {
         return si.streamLazyOptionals().mapMulti { lo, c: Consumer<Triple<String, String, String>> ->
             for (it in lo.warnings) {
-                c.accept(Triple(lo.name, it.first, it.second))
+                c.accept(Triple(lo.name, it.key, it.value))
             }
         }.toList()
     }
