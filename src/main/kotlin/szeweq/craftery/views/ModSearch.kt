@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import szeweq.craftery.cfapi.*
 import szeweq.craftery.layout.*
@@ -114,7 +115,7 @@ class ModSearch: View("Search mods") {
         val tid = typeId.value
         viewScope.launch {
             modlist.clear()
-            val a = CFAPI.findAddons(s, tid)
+            val a = CFAPI.findAddons(s, tid).await()
             modlist.addAll(a)
             title.value = "Search: $s"
             progress.setFinished()

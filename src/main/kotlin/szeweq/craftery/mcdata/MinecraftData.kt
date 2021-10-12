@@ -19,7 +19,7 @@ object MinecraftData {
         val d = System.currentTimeMillis()
         if (d - updated >= 1000 * 3600) {
             println("Updating Minecraft manifest...")
-            val o = downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json", progress)
+            val o = downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json", progress).get()
             if (o != null) {
                 manifest = o
                 updated = d
@@ -34,7 +34,7 @@ object MinecraftData {
         if (p == null) {
             val vu = manifest.versions.find { v == it.id }
             if (vu != null) {
-                val o = downloadJson<Package>(vu.url, progress)
+                val o = downloadJson<Package>(vu.url, progress).get()
                 if (o != null) {
                     packages[v] = o
                     return o
@@ -56,7 +56,7 @@ object MinecraftData {
             val vu = am.assetIndex.url
             val ma = assets[vi]
             if (ma == null) {
-                val dl = downloadJson<AssetMap>(vu, progress)
+                val dl = downloadJson<AssetMap>(vu, progress).get()
                 if (dl != null) {
                     assets[vi] = dl
                     return dl
@@ -95,13 +95,13 @@ object MinecraftData {
             return null
         }
         println("Downloading Minecraft client $z jar...")
-        val input = Downloader.downloadFile(u, progress)
+        val input = Downloader.downloadFile(u, progress).get()
         return ZipInputStream(input)
     }
 
     fun loadAllFilesFromJar(v: String?) {
         println("Getting Minecraft client...")
-        val z = getMinecraftClientJar(v) { _, _ -> }
+        val z = getMinecraftClientJar(v, LongBiConsumer.DUMMY)
         val out = ByteArrayOutputStream(DEFAULT_BUFFER_SIZE)
         println("Unpacking Minecraft client...")
         z?.eachEntry {

@@ -5,9 +5,10 @@ import szeweq.craftery.net.Downloader;
 
 import java.io.*;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public interface FileLoader {
-	InputStream load(LongBiConsumer progress);
+	CompletableFuture<InputStream> load(LongBiConsumer progress);
 
 	static FileLoader fromURL(final String url) {
 		Objects.requireNonNull(url);
@@ -17,7 +18,7 @@ public interface FileLoader {
 
 	static FileLoader fromFile(final File file) {
 		Objects.requireNonNull(file);
-		return progress -> {
+		return progress -> CompletableFuture.supplyAsync(() -> {
 			var out = new ByteArrayOutputStream(5120);
 			try {
 				var fis = new FileInputStream(file);
@@ -37,6 +38,6 @@ public interface FileLoader {
 				e.printStackTrace();
 			}
 			return new ByteArrayInputStream(out.toByteArray());
-		};
+		});
 	}
 }

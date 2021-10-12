@@ -4,6 +4,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.graphics.ImageBitmap
 import com.fasterxml.jackson.core.type.TypeReference
 import szeweq.craftery.net.Downloader
+import java.util.concurrent.CompletableFuture
 
 /**
  * Method for binding specific values for use in an event.
@@ -14,7 +15,7 @@ fun <T> MutableState<T>.bindValue(value: T): () -> Unit = { this.value = value }
  * Method fix for Kotlin code.
  * Kotlin compiler tried to use [java.lang.Object] class while specific class is required.
  */
-inline fun <reified T> downloadJson(url: String, progress: LongBiConsumer): T? =
+inline fun <reified T> downloadJson(url: String, progress: LongBiConsumer): CompletableFuture<T> =
     Downloader.downloadJson(url, object : TypeReference<T>() {}, progress)
 
 /**

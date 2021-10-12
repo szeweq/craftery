@@ -4,16 +4,13 @@ import androidx.compose.ui.graphics.*;
 import org.jetbrains.skia.Image;
 import szeweq.craftery.net.Downloader;
 
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public final class ImageCache {
@@ -29,14 +26,12 @@ public final class ImageCache {
         if (mapBitmaps.containsKey(url)) {
             cb.accept(mapBitmaps.get(url));
         } else {
-            downloadImage(url, cb);
+            downloadImageBitmap(url, cb);
         }
     }
 
-    public static void downloadImage(final String url, Consumer<ImageBitmap> cb) {
-        final var hr = HttpRequest.newBuilder(URI.create(url)).build();
-        cli.sendAsync(hr, ImageCache::bodyHandlerOfImage)
-                .thenApply(HttpResponse::body)
+    public static void downloadImageBitmap(final String url, Consumer<ImageBitmap> cb) {
+        downloadImage(url)
                 .thenApply(img -> {
                     final var ib = img == null ? null : DesktopImageAsset_desktopKt.toComposeImageBitmap(img);
                     if (ib != null) {
@@ -51,16 +46,18 @@ public final class ImageCache {
         return HttpResponse.BodySubscribers.mapping(HttpResponse.BodySubscribers.ofByteArray(), Image.Companion::makeFromEncoded);
     }
 
+    private static CompletableFuture<Image> downloadImage(final String url) {
+        final var hr = HttpRequest.newBuilder(URI.create(url)).build();
+        return cli.sendAsync(hr, ImageCache::bodyHandlerOfImage).thenApply(HttpResponse::body);
+    }
+
     public static Image fromURL(String url) {
         recycle();
         return map.computeIfAbsent(url, s -> {
-            var stream = Downloader.downloadFile(s, LongBiConsumer.DUMMY);
             Image img = null;
             try {
-                byte[] b = stream.readAllBytes();
-                stream.close();
-                img = Image.Companion.makeFromEncoded(b);
-            } catch (IOException e) {
+                img = downloadImage(s).get();
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
             return img;

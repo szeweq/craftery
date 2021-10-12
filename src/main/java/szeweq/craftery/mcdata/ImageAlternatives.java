@@ -11,6 +11,7 @@ import szeweq.craftery.util.LongBiConsumer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public final class ImageAlternatives {
     static Map<String, Integer> mapIds = Map.of(
@@ -32,11 +33,17 @@ public final class ImageAlternatives {
                 "iiurlwidth", 64,
                 "pageids", fileId
         );
-        JsonNode obj = Downloader.downloadJson(
-                Downloader.buildQuery("https://minecraft.gamepedia.com/api.php", query),
-                jsonNodeTypeReference,
-                LongBiConsumer.DUMMY
-        );
+        JsonNode obj = null;
+        try {
+            obj = Downloader.downloadJson(
+                    Downloader.buildQuery("https://minecraft.gamepedia.com/api.php", query),
+                    jsonNodeTypeReference,
+                    LongBiConsumer.DUMMY
+            ).get();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+        if (obj == null) return null;
         ArrayNode iinfo = obj.path("query").path("pages").path(fileId.toString()).withArray("imageinfo");
         if (iinfo != null) {
             var url = iinfo.path(0).get("thumburl").asText();

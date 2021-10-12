@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kotlin.Pair;
 import szeweq.craftery.util.LongBiConsumer;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -12,29 +11,25 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Collection;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 public final class Downloader {
     private Downloader() {}
     private static final HttpClient cli = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
 
-    private static <T> T get(String url, LongBiConsumer progress, HttpResponse.BodyHandler<T> bodyHandler) {
-        try {
-            return cli.send(HttpRequest.newBuilder(URI.create(url)).build(), ProgressSubscriber.handle(bodyHandler, progress)).body();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
+    private static <T> CompletableFuture<T> get(String url, LongBiConsumer progress, HttpResponse.BodyHandler<T> bodyHandler) {
+        return cli.sendAsync(HttpRequest.newBuilder(URI.create(url)).build(), ProgressSubscriber.handle(bodyHandler, progress)).thenApplyAsync(HttpResponse::body);
     }
 
-    public static InputStream downloadFile(String url, LongBiConsumer progress) {
+    public static CompletableFuture<InputStream> downloadFile(String url, LongBiConsumer progress) {
         return get(url, progress, HttpResponse.BodyHandlers.buffering(HttpResponse.BodyHandlers.ofInputStream(), 4096));
     }
 
-    public static <T> T downloadJson(String url, LongBiConsumer progress) {
-        return get(url, progress, JsonBodyHandler.handle());
+    public static CompletableFuture<byte[]> downloadBytes(String url, LongBiConsumer progress) {
+        return get(url, progress, HttpResponse.BodyHandlers.ofByteArray());
     }
 
-    public static <T> T downloadJson(String url, TypeReference<T> tref, LongBiConsumer progress) {
+    public static <T> CompletableFuture<T> downloadJson(String url, TypeReference<T> tref, LongBiConsumer progress) {
         return get(url, progress, JsonBodyHandler.handle(tref));
     }
 

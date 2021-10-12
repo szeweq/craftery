@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import szeweq.craftery.cfapi.CFAPI
 import szeweq.craftery.layout.*
@@ -121,7 +122,7 @@ class FileLookup(
         val inputFlow: Flow<Pair<String, InputStream>> = if (modpack) flow {
             downloadProgress.message = "Downloading modpack..."
             downloadProgress.setIndeterminate()
-            val fi = loader.load(downloadProgress::setFraction)
+            val fi = loader.load(downloadProgress::setFraction).await()
             downloadProgress.message = "Reading manifest..."
             downloadProgress.setIndeterminate()
             val files = Modpack.readManifest(ZipInputStream(fi))
@@ -130,11 +131,11 @@ class FileLookup(
             for ((pid, fid) in files) {
                 downloadProgress.message = "Getting file URL [$i / $total]..."
                 downloadProgress.value = 0F
-                val murl = CFAPI.downloadURL(pid, fid)
+                val murl = CFAPI.downloadURL(pid, fid).await()
                 if (!murl.endsWith(".jar")) continue
                 val mname = murl.substringAfterLast('/')
                 downloadProgress.message = "Downloading [$i / $total] $mname..."
-                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), downloadProgress::setFraction)
+                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), downloadProgress::setFraction).await()
                 emit(mname to mf)
                 i++
             }
@@ -142,7 +143,7 @@ class FileLookup(
         } else flow {
             downloadProgress.message = "Downloading file..."
             downloadProgress.setIndeterminate()
-            val fi = loader.load(downloadProgress::setFraction)
+            val fi = loader.load(downloadProgress::setFraction).await()
             emit(filename to fi)
             downloadProgress.setFinished()
         }
