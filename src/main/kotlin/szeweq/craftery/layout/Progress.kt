@@ -14,11 +14,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import szeweq.craftery.util.LongBiConsumer
 
 /**
  * A state object for displaying and updating values in process-related tasks (like downloading a file).
  */
-open class ProgressState {
+open class ProgressState : LongBiConsumer {
     var value by mutableStateOf(Float.MAX_VALUE)
 
     fun isActive() = value <= 1f
@@ -33,8 +34,8 @@ open class ProgressState {
         value = Float.MAX_VALUE
     }
 
-    fun setFraction(a: Long, b: Long) {
-        value = a.toFloat() / b
+    override fun accept(l: Long, r: Long) {
+        value = l.toFloat() / r
     }
 }
 

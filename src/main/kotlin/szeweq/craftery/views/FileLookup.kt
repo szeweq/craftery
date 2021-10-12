@@ -122,7 +122,7 @@ class FileLookup(
         val inputFlow: Flow<Pair<String, InputStream>> = if (modpack) flow {
             downloadProgress.message = "Downloading modpack..."
             downloadProgress.setIndeterminate()
-            val fi = loader.load(downloadProgress::setFraction).await()
+            val fi = loader.load(downloadProgress).await()
             downloadProgress.message = "Reading manifest..."
             downloadProgress.setIndeterminate()
             val files = Modpack.readManifest(ZipInputStream(fi))
@@ -135,7 +135,7 @@ class FileLookup(
                 if (!murl.endsWith(".jar")) continue
                 val mname = murl.substringAfterLast('/')
                 downloadProgress.message = "Downloading [$i / $total] $mname..."
-                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), downloadProgress::setFraction).await()
+                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), downloadProgress).await()
                 emit(mname to mf)
                 i++
             }
@@ -143,13 +143,13 @@ class FileLookup(
         } else flow {
             downloadProgress.message = "Downloading file..."
             downloadProgress.setIndeterminate()
-            val fi = loader.load(downloadProgress::setFraction).await()
+            val fi = loader.load(downloadProgress).await()
             emit(filename to fi)
             downloadProgress.setFinished()
         }
         inputFlow.collectIndexed { i, (name, input) ->
             scanProgress.message = "Scanning [$i / $total] $name..."
-            scanProgress.setFraction(i.toLong(), total)
+            scanProgress.accept(i.toLong(), total)
             ZipInputStream(input).use(si::scanArchive)
         }
         gather(si)
@@ -164,7 +164,7 @@ class FileLookup(
         for (l in lookups) {
             scanProgress.message = "Gathering results (${l.title})..."
             l.lazyGather(si)
-            scanProgress.setFraction(++li, ls)
+            scanProgress.accept(++li, ls)
         }
         scanProgress.setFinished()
     }

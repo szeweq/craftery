@@ -32,7 +32,7 @@ public class ProgressSubscriber<T> implements HttpResponse.BodySubscriber<T> {
 
     @Override
     public void onNext(List<ByteBuffer> item) {
-        final var s = size == -1 ? count : size;
+        final long s = size == -1 ? count : size;
         var c = 0;
         for (ByteBuffer byteBuffer : item) {
             c += byteBuffer.remaining();
