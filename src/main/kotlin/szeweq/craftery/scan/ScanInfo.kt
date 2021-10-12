@@ -121,7 +121,12 @@ class ScanInfo {
             val c = caps[typename]
             if (c != null) {
                 this += c.fields
-                c.supclasses.mapNotNull { caps[it] }.forEach { this += it.fields }
+                for (sup in c.supclasses) {
+                    val cs = caps[sup]
+                    if (cs != null) {
+                        this += cs.fields
+                    }
+                }
             }
         }
     }
