@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import kotlin.Pair;
 import szeweq.craftery.util.LongBiConsumer;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,7 +23,8 @@ public final class Downloader {
     }
 
     public static CompletableFuture<InputStream> downloadFile(String url, LongBiConsumer progress) {
-        return get(url, progress, HttpResponse.BodyHandlers.buffering(HttpResponse.BodyHandlers.ofInputStream(), 4096));
+        return downloadBytes(url, progress).thenApplyAsync(ByteArrayInputStream::new);
+        //return get(url, progress, HttpResponse.BodyHandlers.buffering(HttpResponse.BodyHandlers.ofInputStream(), 4096));
     }
 
     public static CompletableFuture<byte[]> downloadBytes(String url, LongBiConsumer progress) {
