@@ -12,13 +12,10 @@ class LazyOptionalInfo(classes: ClassNodeMap, classNode: ClassNode, fields: List
         !classes.streamUsagesOf(classNode, f).anyMatch { (_, _, i) ->
             if (i.opcode == Opcodes.GETFIELD) {
                 val ni = i.next
-                if (ni is MethodInsnNode
-                        && ni.opcode == Opcodes.INVOKEVIRTUAL
-                        && ni.owner == f.fixedDesc
-                        && ni.name == "invalidate"
-                ) {
-                    return@anyMatch true
-                }
+                ni is MethodInsnNode
+                    && ni.opcode == Opcodes.INVOKEVIRTUAL
+                    && ni.owner == f.fixedDesc
+                    && ni.name == "invalidate"
             }
             false
         }
