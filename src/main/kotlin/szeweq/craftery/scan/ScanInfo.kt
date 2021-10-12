@@ -11,6 +11,7 @@ import szeweq.craftery.mcdata.ResourceType
 import szeweq.craftery.util.*
 import java.io.ByteArrayInputStream
 import java.io.InputStream
+import java.util.function.Consumer
 import java.util.stream.Stream
 import java.util.stream.StreamSupport
 import java.util.zip.ZipInputStream
@@ -77,13 +78,12 @@ class ScanInfo {
             return
         }
         val (kind, namespace, rest) = path
-        runCatching { JsonUtil.mapper.readTree(data.reader()) }.onSuccess {
+        runCatching { JsonUtil.mapper.readTree(data) }.onSuccess {
             val drt = DataResourceType.detect(kind, rest)
             if (drt.isTagType) {
                 val loc = Scanner.pathToLocation(name)
                 val cs = StreamSupport.stream((it.withArray("values") as ArrayNode).spliterator(), false)
-                    .map { jv -> if (jv.isTextual) jv.asText() else null }
-                    .filterNotNull()
+                    .mapMulti { jv, c: Consumer<String> -> if (jv.isTextual) c.accept(jv.asText()) }
                 val ts = tags[loc]
                 if (ts == null) {
                     tags[loc] = cs.toMutableSet()
@@ -136,11 +136,11 @@ class ScanInfo {
     fun streamCapabilities() = caps.valueStream()
 
     fun streamLazyOptionals(): Stream<LazyOptionalInfo> = map.classStream
-        .map { c ->
-            val f = c.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
-            if (f.isEmpty()) return@map null
-            LazyOptionalInfo(map, c, f)
+        .mapMulti { cl, c: Consumer<LazyOptionalInfo> ->
+            val f = cl.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
+            if (f.isNotEmpty()) {
+                val loi = LazyOptionalInfo(map, cl, f)
+                if (loi.warnings.isNotEmpty()) c.accept(loi)
+            }
         }
-        .filterNotNull()
-        .filter { it.warnings.isNotEmpty() }
 }

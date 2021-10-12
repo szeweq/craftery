@@ -5,9 +5,10 @@ import kotlin.Triple;
 import org.objectweb.asm.tree.*;
 
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class ClassNodeMap {
     private final Map<String, ClassNode> nodes = new HashMap<>();
@@ -33,8 +34,12 @@ public class ClassNodeMap {
     }
 
     private <T> Stream<Pair<ClassNode, T>> getFlattenedClassValues(Function<ClassNode, List<T>> fn) {
-        return nodes.values().stream()
-                .flatMap(c -> fn.apply(c).stream().map(x -> new Pair<>(c, x)));
+        return nodes.values().stream().mapMulti((cl, c) -> {
+            var l = fn.apply(cl);
+            for (var x : l) {
+                c.accept(new Pair<>(cl, x));
+            }
+        });
     }
 
     private static String fixedDesc(String desc) {
@@ -103,28 +108,28 @@ public class ClassNodeMap {
         } while (true);
     }
 
-    public <N extends AbstractInsnNode> Stream<Triple<ClassNode, MethodNode, N>> instructionsStream(Function<Stream<AbstractInsnNode>, Stream<N>> tfn) {
-        return getAllClassMethods().flatMap(p -> {
-            var c = p.getFirst();
-            var m = p.getSecond();
-            return tfn.apply(StreamSupport.stream(m.instructions.spliterator(), false))
-                    .map(it -> new Triple<>(c, m, it));
+    public <N extends AbstractInsnNode> Stream<Triple<ClassNode, MethodNode, N>> instructionsStream(BiConsumer<AbstractInsnNode, Consumer<N>> tfn) {
+        return getAllClassMethods().mapMulti((p, c) -> {
+            final var cl = p.getFirst();
+            final var m = p.getSecond();
+            final Consumer<N> cx = n -> c.accept(new Triple<>(cl, m, n));
+            for (var node : m.instructions) {
+                tfn.accept(node, cx);
+            }
         });
     }
 
     public Stream<Triple<ClassNode, MethodNode, FieldInsnNode>> streamUsagesOf(ClassNode cn, FieldNode fn) {
-        return instructionsStream(s -> s
-                .map(it -> it instanceof FieldInsnNode ? (FieldInsnNode) it : null)
-                .filter(Objects::nonNull)
-                .filter(it -> fn.name.equals(it.name) && fn.desc.equals(it.desc) && cn.name.equals(it.owner))
-        );
+        return instructionsStream((node, c) -> {
+            if (node instanceof final FieldInsnNode it && fn.name.equals(it.name) && fn.desc.equals(it.desc) && cn.name.equals(it.owner))
+                c.accept(it);
+        });
     }
 
     public Stream<Triple<ClassNode, MethodNode, MethodInsnNode>> streamUsagesOf(ClassNode cn, MethodNode mn) {
-        return instructionsStream(s -> s
-                .map(it -> it instanceof MethodInsnNode ? (MethodInsnNode) it : null)
-                .filter(Objects::nonNull)
-                .filter(it -> mn.name.equals(it.name) && mn.desc.equals(it.desc) && cn.name.equals(it.owner))
-        );
+        return instructionsStream((node, c) -> {
+            if (node instanceof final MethodInsnNode it && mn.name.equals(it.name) && mn.desc.equals(it.desc) && cn.name.equals(it.owner))
+                c.accept(it);
+        });
     }
 }
