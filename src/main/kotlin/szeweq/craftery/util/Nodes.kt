@@ -18,19 +18,15 @@ val FieldNode.fixedDesc: String get() = if (desc.startsWith('L')) desc.substring
 inline fun <reified T> Map<*, T>.valueStream(): Stream<T> = KtUtil.streamValuesFrom(this)
 fun InsnList.stream(): Stream<AbstractInsnNode> = StreamSupport.stream(spliterator(), false)
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
-fun <T> Stream<T>.toMutableSet(): MutableSet<T> = collect(Collectors.toSet())
-fun <T, K, V> Stream<T>.toMap(kfn: (T) -> K, vfn: (T) -> V): MutableMap<K, V> = collect(Collectors.toMap(kfn, vfn))
 
 @Suppress("UNCHECKED_CAST")
 inline fun <reified R> Stream<*>.filterIsInstance(): Stream<R> = filter { it is R } as Stream<R>
-@Suppress("UNCHECKED_CAST")
-fun <T> Stream<T?>.filterNotNull() = filter(Objects::nonNull) as Stream<T>
 
 /**
  * Iterates over each entry found in ZIP input stream.
  */
 inline fun ZipInputStream.eachEntry(fn: (ZipEntry) -> Unit) {
-    var lastEntry = "(none)"
+    var lastEntry: String? = null
     try {
         var ze = nextEntry
         while (ze != null) {
