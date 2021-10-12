@@ -13,7 +13,6 @@ import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.function.Consumer
 import java.util.stream.Stream
-import java.util.stream.StreamSupport
 import java.util.zip.ZipInputStream
 
 class ScanInfo {
@@ -82,13 +81,10 @@ class ScanInfo {
             val drt = DataResourceType.detect(kind, rest)
             if (drt.isTagType) {
                 val loc = Scanner.pathToLocation(name)
-                val cs = StreamSupport.stream((it.withArray("values") as ArrayNode).spliterator(), false)
-                    .mapMulti { jv, c: Consumer<String> -> if (jv.isTextual) c.accept(jv.asText()) }
-                val ts = tags[loc]
-                if (ts == null) {
-                    tags[loc] = cs.toMutableSet()
-                } else {
-                    cs.forEach(ts::add)
+                val ts = tags.getOrPut(loc) { HashSet() }
+                val vs = it.withArray("values") as ArrayNode
+                for (jv in vs) {
+                    if (jv.isTextual) ts.add(jv.asText())
                 }
             } else if (it != null) {
                 val ji = JsonInfo(rest, namespace, drt)
