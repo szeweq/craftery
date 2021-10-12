@@ -9,7 +9,7 @@ import szeweq.craftery.util.*
 class LazyOptionalInfo(classes: ClassNodeMap, classNode: ClassNode, fields: List<FieldNode>) {
     val name: String = classNode.name
     val warnings: Map<String, String> = fields.stream().filter { f ->
-        !classes.streamUsagesOf(classNode, f).anyMatch { (_, _, i) ->
+        !classes.streamUsagesOf(classNode, f, true).anyMatch { (_, _, i) ->
             if (i.opcode == Opcodes.GETFIELD) {
                 val ni = i.next
                 ni is MethodInsnNode

@@ -23,7 +23,7 @@ class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {
     }
 
     override fun gatherItems(si: ScanInfo): List<FieldData> {
-        return si.streamStaticFields().map { (c, v) ->
+        return si.streamStaticFields(true).map { (c, v) ->
             val desc = v.fixedDesc
             val rt = si.getResourceType(desc)
             val ift = si.map.getAllInterfaceTypes(desc)

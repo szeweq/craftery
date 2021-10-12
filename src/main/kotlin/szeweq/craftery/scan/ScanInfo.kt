@@ -127,7 +127,7 @@ class ScanInfo {
         }
     }
 
-    fun streamStaticFields(): Stream<Pair<ClassNode, FieldNode>> = map.allClassFields
+    fun streamStaticFields(parallel: Boolean): Stream<Pair<ClassNode, FieldNode>> = map.getAllClassFields(parallel)
         .filter { (_, n) ->
             if (n.access and Opcodes.ACC_STATIC != 0 && n.desc != null) {
                 n.desc.let { it.startsWith('L') && !it.startsWith("java/") }

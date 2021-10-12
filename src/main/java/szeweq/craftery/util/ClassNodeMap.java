@@ -25,16 +25,17 @@ public class ClassNodeMap {
         return nodes.values().stream();
     }
 
-    public Stream<Pair<ClassNode, MethodNode>> getAllClassMethods() {
-        return getFlattenedClassValues(c -> c.methods);
+    public Stream<Pair<ClassNode, MethodNode>> getAllClassMethods(final boolean parallel) {
+        return getFlattenedClassValues(parallel, c -> c.methods);
     }
 
-    public Stream<Pair<ClassNode, FieldNode>> getAllClassFields() {
-        return getFlattenedClassValues(c -> c.fields);
+    public Stream<Pair<ClassNode, FieldNode>> getAllClassFields(final boolean parallel) {
+        return getFlattenedClassValues(parallel, c -> c.fields);
     }
 
-    private <T> Stream<Pair<ClassNode, T>> getFlattenedClassValues(Function<ClassNode, List<T>> fn) {
-        return nodes.values().stream().mapMulti((cl, c) -> {
+    private <T> Stream<Pair<ClassNode, T>> getFlattenedClassValues(final boolean parallel, Function<ClassNode, List<T>> fn) {
+        var vals = nodes.values();
+        return (parallel ? vals.parallelStream() : vals.stream()).mapMulti((cl, c) -> {
             var l = fn.apply(cl);
             for (var x : l) {
                 c.accept(new Pair<>(cl, x));
@@ -108,8 +109,8 @@ public class ClassNodeMap {
         } while (true);
     }
 
-    public <N extends AbstractInsnNode> Stream<Triple<ClassNode, MethodNode, N>> instructionsStream(BiConsumer<AbstractInsnNode, Consumer<N>> tfn) {
-        return getAllClassMethods().mapMulti((p, c) -> {
+    public <N extends AbstractInsnNode> Stream<Triple<ClassNode, MethodNode, N>> instructionsStream(final boolean parallel, BiConsumer<AbstractInsnNode, Consumer<N>> tfn) {
+        return getAllClassMethods(parallel).mapMulti((p, c) -> {
             final var cl = p.getFirst();
             final var m = p.getSecond();
             final Consumer<N> cx = n -> c.accept(new Triple<>(cl, m, n));
@@ -119,15 +120,15 @@ public class ClassNodeMap {
         });
     }
 
-    public Stream<Triple<ClassNode, MethodNode, FieldInsnNode>> streamUsagesOf(ClassNode cn, FieldNode fn) {
-        return instructionsStream((node, c) -> {
+    public Stream<Triple<ClassNode, MethodNode, FieldInsnNode>> streamUsagesOf(ClassNode cn, FieldNode fn, final boolean parallel) {
+        return instructionsStream(parallel, (node, c) -> {
             if (node instanceof final FieldInsnNode it && fn.name.equals(it.name) && fn.desc.equals(it.desc) && cn.name.equals(it.owner))
                 c.accept(it);
         });
     }
 
-    public Stream<Triple<ClassNode, MethodNode, MethodInsnNode>> streamUsagesOf(ClassNode cn, MethodNode mn) {
-        return instructionsStream((node, c) -> {
+    public Stream<Triple<ClassNode, MethodNode, MethodInsnNode>> streamUsagesOf(ClassNode cn, MethodNode mn, final boolean parallel) {
+        return instructionsStream(parallel, (node, c) -> {
             if (node instanceof final MethodInsnNode it && mn.name.equals(it.name) && mn.desc.equals(it.desc) && cn.name.equals(it.owner))
                 c.accept(it);
         });
