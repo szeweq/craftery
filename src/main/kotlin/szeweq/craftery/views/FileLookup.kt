@@ -4,15 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.ProvideTextStyle
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.future.await
-import kotlinx.coroutines.launch
 import szeweq.craftery.cfapi.CFAPI
 import szeweq.craftery.layout.*
 import szeweq.craftery.lookup.*
@@ -46,32 +44,54 @@ class FileLookup(
         ListAllTags(),
         ParseErrors()
     )
-    private val loading = mutableStateOf(true)
+    private val checks = lookups.map { false }.toMutableStateList()
+    private val workState = mutableStateOf(0)
     private val index = mutableStateOf(0)
     private val currentLookup = derivedStateOf { lookups[index.value] }
     private val downloadProgress = MessageProgressState()
     private val scanProgress = MessageProgressState()
 
-    init {
-        viewScope.launch { processLookups() }
-    }
-
+    @OptIn(ExperimentalComposeUiApi::class)
     @Composable
     override fun content() {
-        if (loading.value) {
-            CenteredColumn(Modifier.fillMaxSize()) {
-                Text("Loading lookups...", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                val mod = Modifier.fillMaxWidth(0.75f).padding(4.dp)
-                if (downloadProgress.isActive())
-                    ProgressCard(downloadProgress, mod)
-                ProgressCard(scanProgress, mod)
+        when (workState.value) {
+            0 -> CenteredColumn(Modifier.fillMaxSize()) {
+                TextH5("Select lookups to apply", Modifier.padding(8.dp))
+                Card(Modifier.fillMaxWidth(0.75f).padding(4.dp)) { Column {
+                    for (i in lookups.indices) {
+                        Row(Modifier.fillMaxWidth().hover(LocalHoverColor.current), verticalAlignment = Alignment.CenterVertically) {
+                            Checkbox(checks[i], { checks[i] = it }, Modifier.pointerHoverIcon(PointerIcon.Hand))
+                            Column {
+                                val l = lookups[i]
+                                Text(l.title, Modifier.padding(vertical = 2.dp))
+                                l.explain?.let { Text(it, fontSize = 12.sp) }
+                            }
+                        }
+                    }
+                    val enabled = remember { derivedStateOf { for (b in checks) if (b) return@derivedStateOf true; false } }
+                    Button(
+                        workState.bindValue(1),
+                        Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f), content = ComposeScopeText("Continue"),
+                        enabled = enabled.value
+                    )
+                } }
             }
-        } else {
-            Row {
-                sideList()
-                ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
-                    currentLookup.value.content()
+            1 -> {
+                LaunchedEffect(workState.value) { processLookups() }
+                CenteredColumn(Modifier.fillMaxSize()) {
+                    Text("Loading lookups...", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                    val mod = Modifier.fillMaxWidth(0.75f).padding(4.dp)
+                    if (downloadProgress.isActive())
+                        ProgressCard(downloadProgress, mod)
+                    ProgressCard(scanProgress, mod)
                 }
+            }
+            else -> Row {
+                sideList()
+                if (checks[index.value]) ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
+                     currentLookup.value.content()
+
+                } else Box(Modifier.fillMaxSize()) { Text("This lookup is disabled!", Modifier.align(Alignment.Center)) }
             }
         }
     }
@@ -83,29 +103,29 @@ class FileLookup(
             val bgSelected = bgBase.copy(0.25f)
             val bgHover = LocalHoverColor.current
             val bgSelectedHover = bgBase.copy(0.4f)
+            val hover = remember { lookups.map { false }.toMutableStateList() }
             lookups.forEachIndexed { i, l ->
-                val (hover, setHover) = remember { mutableStateOf(false) }
-                val bg = remember(index.value, hover) { derivedStateOf {
+                val bg = remember(index.value, hover[i]) {
                     if (index.value == i) {
-                        if (hover) bgSelectedHover else bgSelected
+                        if (hover[i]) bgSelectedHover else bgSelected
                     } else {
-                        if (hover) bgHover else Color.Transparent
+                        if (hover[i]) bgHover else Color.Transparent
                     }
-                } }
+                }
                 Box(Modifier
-                    .hoverState(setHover)
-                    .background(bg.value, MaterialTheme.shapes.medium)
+                    .hoverState { hover[i] = it }
+                    .background(bg, MaterialTheme.shapes.medium)
                     .clickable(onClick = index.bindValue(i))
-                ) { sideListItem(l) }
+                ) { sideListItem(i, l) }
             }
         }
     }
 
     @Composable
-    private fun sideListItem(l: ModLookup<*>) {
+    private fun sideListItem(i: Int, l: ModLookup<*>) {
         Row(Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center) {
             Text(l.title, Modifier.weight(1f))
-            Text(
+            if (checks[i]) Text(
                 l.list.size.toString(),
                 Modifier.background(MaterialTheme.colors.primary, CircleShape).padding(6.dp, 2.dp),
                 color = MaterialTheme.colors.onPrimary,
@@ -116,7 +136,6 @@ class FileLookup(
 
     private suspend fun processLookups() {
         val si = ScanInfo()
-        loading.value = true
         progress.setIndeterminate()
         var total = 1L
         val inputFlow: Flow<Pair<String, InputStream>> = if (modpack) flow {
@@ -153,18 +172,21 @@ class FileLookup(
             ZipInputStream(input).use(si::scanArchive)
         }
         gather(si)
-        loading.value = false
+        workState.value = 2
         progress.setFinished()
     }
 
     private fun gather(si: ScanInfo) {
         scanProgress.value = 0F
         var li = 0L
-        val ls = lookups.size.toLong()
-        for (l in lookups) {
-            scanProgress.message = "Gathering results (${l.title})..."
-            l.lazyGather(si)
-            scanProgress.accept(++li, ls)
+        val ls = checks.count { it }.toLong()
+        for (i in lookups.indices) {
+            if (checks[i]) {
+                val l = lookups[i]
+                scanProgress.message = "Gathering results (${l.title})..."
+                l.lazyGather(si)
+                scanProgress.accept(++li, ls)
+            }
         }
         scanProgress.setFinished()
     }
