@@ -21,6 +21,7 @@ val LocalTabProgressColor = compositionLocalOf { Color.White }
 val LocalTabHoverColor = compositionLocalOf { Color.White }
 
 val appTypography = Typography(
+    h5 = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 24.sp),
     body1 = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp),
     body2 = TextStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp),
     button = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp, letterSpacing = 0.5.sp)

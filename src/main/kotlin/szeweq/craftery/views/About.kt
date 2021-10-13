@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import szeweq.craftery.layout.CenteredColumn
 import szeweq.craftery.layout.ComposeScopeText
+import szeweq.craftery.layout.TextH5
 import szeweq.craftery.layout.View
 
 object About: View("About") {
@@ -20,7 +21,7 @@ object About: View("About") {
     @Composable
     override fun content() {
         CenteredColumn(fillSizeModifier) {
-            Text("Craftery", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
+            TextH5("Craftery", Modifier.padding(8.dp))
             Text("© 2020-2021 Szeweq", Modifier.padding(bottom = 8.dp))
             val uriHandler = LocalUriHandler.current
             Button(onClick = {

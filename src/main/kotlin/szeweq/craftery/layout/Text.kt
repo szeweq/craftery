@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -49,3 +50,6 @@ fun ComposeScopeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @
 fun ComposeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Composable () -> Unit = {
     Text(text, fontSize = fontSize)
 }
+
+@Composable
+fun TextH5(text: String, modifier: Modifier = Modifier) = BasicText(text, modifier, style = MaterialTheme.typography.h5)
