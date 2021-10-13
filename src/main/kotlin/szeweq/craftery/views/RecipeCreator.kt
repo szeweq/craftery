@@ -46,10 +46,9 @@ class RecipeCreator: View("Create recipes") {
                         CraftingGrid()
                     }
                     Column(mod) {
-                        val hoverBg = MaterialTheme.colors.onSurface.copy(0.2f)
                         LazyVerticalGrid(GridCells.Adaptive(52.dp)) {
                             items(exampleVanillaItems) {
-                                Box { ItemSlot(it, modifier = Modifier.hover(hoverBg)) }
+                                Box { ItemSlot(it, modifier = Modifier.hover()) }
                             }
                         }
                     }

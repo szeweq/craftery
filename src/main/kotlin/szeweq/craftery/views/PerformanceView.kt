@@ -114,7 +114,7 @@ object PerformanceView : View("Performance") {
     @Composable
     private fun itemBox(item: Pair<String, Long>) {
         Box(Modifier
-            .hover(LocalHoverColor.current, shape = MaterialTheme.shapes.medium)
+            .hover(shape = MaterialTheme.shapes.medium)
             .padding(4.dp)
         ) {
             Row {

@@ -59,7 +59,7 @@ class FileLookup(
                 TextH5("Select lookups to apply", Modifier.padding(8.dp))
                 Card(Modifier.fillMaxWidth(0.75f).padding(4.dp)) { Column {
                     for (i in lookups.indices) {
-                        Row(Modifier.fillMaxWidth().hover(LocalHoverColor.current), verticalAlignment = Alignment.CenterVertically) {
+                        Row(Modifier.fillMaxWidth().hover(), verticalAlignment = Alignment.CenterVertically) {
                             Checkbox(checks[i], { checks[i] = it }, Modifier.pointerHoverIcon(PointerIcon.Hand))
                             Column {
                                 val l = lookups[i]

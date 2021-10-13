@@ -70,7 +70,7 @@ fun menuContent(dismiss: () -> Unit) {
     for ((text, fn) in menuActions) {
         DropdownMenuItem(
             { fn(); dismiss() },
-            Modifier.hover(LocalHoverColor.current).heightIn(min = 32.dp, max = 32.dp),
+            Modifier.hover().heightIn(min = 32.dp, max = 32.dp),
             contentPadding = menuPadding,
             content = ComposeScopeText(text, fontSize = 13.sp)
         )

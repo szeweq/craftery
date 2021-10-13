@@ -48,7 +48,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             }
             Card(ModifierMaxSize.padding(2.dp)) {
                 Column {
-                    val mod = Modifier.fillMaxWidth().hover(LocalHoverColor.current)
+                    val mod = Modifier.fillMaxWidth().hover()
                     for (f in addon.latestFiles) {
                         Box(mod, contentAlignment = Alignment.CenterStart) {
                             Column(Modifier.padding(2.dp)) {

@@ -44,7 +44,7 @@ class LanguageEditor: View("Language Editor") {
             val state = rememberLazyListState()
             LazyColumn(ModifierMaxSize.padding(end = 12.dp), state = state) {
                 items(lang) {
-                    Box(Modifier.fillMaxWidth().hover(LocalHoverColor.current, MaterialTheme.shapes.medium)
+                    Box(Modifier.fillMaxWidth().hover(shape = MaterialTheme.shapes.medium)
                     ) {
                         Column {
                             Text(it.key, Modifier.padding(2.dp))

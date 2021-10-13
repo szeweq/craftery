@@ -17,7 +17,7 @@ import szeweq.craftery.util.bindValue
  */
 @Composable
 fun <T> ComboBox(name: String, setValue: (T) -> Unit, vararg pairs: Pair<String, T>) = ComboBoxLayout(name) { dismiss ->
-    val mod = Modifier.hover(LocalHoverColor.current)
+    val mod = Modifier.hover()
     for ((txt, value) in pairs) {
         ComboBoxItem(txt, { setValue(value); dismiss() }, mod)
     }
@@ -28,7 +28,7 @@ fun <T> ComboBox(name: String, setValue: (T) -> Unit, vararg pairs: Pair<String,
  */
 @Composable
 fun ComboBox(name: String, setValue: (String) -> Unit, values: Iterable<String>) = ComboBoxLayout(name) { dismiss ->
-    val mod = Modifier.hover(LocalHoverColor.current)
+    val mod = Modifier.hover()
     for (txt in values) {
         ComboBoxItem(txt, { setValue(txt); dismiss() }, mod)
     }

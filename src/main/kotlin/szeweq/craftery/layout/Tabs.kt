@@ -74,30 +74,34 @@ fun ViewTab(v: View, activate: () -> Unit) {
             Modifier.matchParentSize().padding(bottom = 24.dp),
             LocalTabProgressColor.current
         )
-        Row(
-            Modifier
-                .clickableNumbered(1, 2) {
-                    if (it == 2) v.tryClose()
-                    v.activate()
-                    activate()
-                }
-                .hover(LocalTabHoverColor.current, tabShape)
-                .padding(horizontal = 4.dp, vertical = 6.dp),
-            verticalAlignment = Alignment.CenterVertically
+        withProviders(
+            LocalHoverColor provides LocalTabHoverColor.current
         ) {
-            Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
-            val close = v.close
-            if (close != null) {
-                CloseButton(LocalTabHoverColor.current, close)
+            Row(
+                Modifier
+                    .clickableNumbered(1, 2) {
+                        if (it == 2) v.tryClose()
+                        v.activate()
+                        activate()
+                    }
+                    .hover(shape = tabShape)
+                    .padding(horizontal = 4.dp, vertical = 6.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
+                val close = v.close
+                if (close != null) {
+                    CloseButton(close)
+                }
             }
         }
     }
 }
 
 @Composable
-private fun CloseButton(hoverBg: Color, action: () -> Unit) {
+private fun CloseButton(action: () -> Unit) {
     Box(
-        Modifier.hover(hoverBg, CircleShape).clip(CircleShape).clickable(onClick = action)
+        Modifier.hover(shape = CircleShape).clip(CircleShape).clickable(onClick = action)
     ) {
         Icon(Icons.Default.Close, "Close", Modifier.size(16.dp).padding(2.dp))
     }

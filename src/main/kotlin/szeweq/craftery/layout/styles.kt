@@ -49,6 +49,9 @@ fun AppTheme(content: @Composable () -> Unit) = MaterialTheme(
     )
 }
 
+/**
+ * This is an inline version of CompositionLocalProvider
+ */
 @OptIn(InternalComposeApi::class)
 @Composable
 inline fun withProviders(vararg values: ProvidedValue<*>, fn: @Composable () -> Unit) {

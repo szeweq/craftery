@@ -12,6 +12,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.pointer.*
 
 val ModifierMaxSize = Modifier.fillMaxSize()
@@ -20,12 +21,12 @@ val ModifierMaxSize = Modifier.fillMaxSize()
  * Uses [hoverState] to draw a [shape] with [color].
  */
 fun Modifier.hover(
-    color: Color,
+    color: Color = Color.Unspecified,
     shape: Shape = RectangleShape
 ) = composed {
     val (hover, setHover) = remember { mutableStateOf(false) }
     val mod = hoverState(setHover)
-    if (hover) mod.background(color, shape) else mod
+    if (hover) mod.background(color.takeOrElse { LocalHoverColor.current }, shape) else mod
 }
 
 /**

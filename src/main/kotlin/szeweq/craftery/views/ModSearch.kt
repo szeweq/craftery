@@ -67,7 +67,7 @@ class ModSearch: View("Search mods") {
     private fun itemBox(item: AddonSearch) {
         Box(Modifier
             .clickable { ViewManager.open(AddonInfo(item)) }
-            .hover(LocalHoverColor.current, shape = MaterialTheme.shapes.medium)
+            .hover(shape = MaterialTheme.shapes.medium)
             .padding(4.dp)
         ) {
             val attachment = remember(item, item::defaultAttachment)
