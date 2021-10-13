@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -52,4 +54,7 @@ fun ComposeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Compo
 }
 
 @Composable
-fun TextH5(text: String, modifier: Modifier = Modifier) = BasicText(text, modifier, style = MaterialTheme.typography.h5)
+fun TextH5(text: String, modifier: Modifier = Modifier) {
+    val textColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+    BasicText(text, modifier, style = MaterialTheme.typography.h5 + TextStyle(color = textColor))
+}
