@@ -8,7 +8,7 @@ plugins {
 }
 group = "szewek.craftery"
 
-val asmVersion = "9.1"
+val asmVersion = "9.2"
 val jacksonVersion = "2.13.0"
 
 repositories {
