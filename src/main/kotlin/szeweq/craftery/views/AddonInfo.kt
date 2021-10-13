@@ -35,7 +35,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             if (lf != null) {
                 Button({
                     ViewManager.open(FileLookup(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
-                }, content = ComposeText("Lookup"))
+                }, content = ComposeScopeText("Lookup"))
             }
         }
         withProviders(LocalTextStyle provides TextStyle(fontSize = 12.sp)) {

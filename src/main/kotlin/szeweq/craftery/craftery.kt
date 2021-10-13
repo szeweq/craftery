@@ -72,7 +72,7 @@ fun menuContent(dismiss: () -> Unit) {
             { fn(); dismiss() },
             Modifier.hover(LocalHoverColor.current).heightIn(min = 32.dp, max = 32.dp),
             contentPadding = menuPadding,
-            content = ComposeText(text, fontSize = 13.sp)
+            content = ComposeScopeText(text, fontSize = 13.sp)
         )
     }
 }
@@ -90,7 +90,7 @@ fun welcome() {
     CenteredColumn(Modifier.fillMaxSize(1.0f)) {
         Text("What would you like to do?", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
         val mod = Modifier.padding(2.dp)
-        Button(ViewManager.selectOrOpenAction<ModSearch>(), mod, content = ComposeText("Search for mods/modpacks"))
-        Button(ViewManager.selectOrOpenAction<LanguageEditor>(), mod, content = ComposeText("Open language editor"))
+        Button(ViewManager.selectOrOpenAction<ModSearch>(), mod, content = ComposeScopeText("Search for mods/modpacks"))
+        Button(ViewManager.selectOrOpenAction<LanguageEditor>(), mod, content = ComposeScopeText("Open language editor"))
     }
 }

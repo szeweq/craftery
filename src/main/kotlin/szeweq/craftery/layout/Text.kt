@@ -42,6 +42,10 @@ fun ThreeLinesItem(item: Triple<String, String, String>, second: String, third: 
  * Returns a simple text component that only uses [text] parameter.
  * It saves a lot of bytecode size if used inside another component (like a button).
  */
-fun ComposeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Composable RowScope.() -> Unit = {
+fun ComposeScopeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Composable Any.() -> Unit = {
+    Text(text, fontSize = fontSize)
+}
+
+fun ComposeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Composable () -> Unit = {
     Text(text, fontSize = fontSize)
 }
