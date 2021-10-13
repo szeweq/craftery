@@ -42,7 +42,7 @@ class LanguageEditor: View("Language Editor") {
     override fun content() = Scaffold(topBar = { topBar() }) {
         Box {
             val state = rememberLazyListState()
-            LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
+            LazyColumn(ModifierMaxSize.padding(end = 12.dp), state = state) {
                 items(lang) {
                     Box(Modifier.fillMaxWidth().hover(LocalHoverColor.current, MaterialTheme.shapes.medium)
                     ) {

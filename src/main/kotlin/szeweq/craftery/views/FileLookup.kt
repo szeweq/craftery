@@ -55,7 +55,7 @@ class FileLookup(
     @Composable
     override fun content() {
         when (workState.value) {
-            0 -> CenteredColumn(Modifier.fillMaxSize()) {
+            0 -> CenteredColumn(ModifierMaxSize) {
                 TextH5("Select lookups to apply", Modifier.padding(8.dp))
                 Card(Modifier.fillMaxWidth(0.75f).padding(4.dp)) { Column {
                     for (i in lookups.indices) {
@@ -71,14 +71,15 @@ class FileLookup(
                     val enabled = remember { derivedStateOf { for (b in checks) if (b) return@derivedStateOf true; false } }
                     Button(
                         workState.bindValue(1),
-                        Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f), content = ComposeScopeText("Continue"),
-                        enabled = enabled.value
+                        Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
+                        enabled = enabled.value,
+                        content = ComposeScopeText("Continue")
                     )
                 } }
             }
             1 -> {
                 LaunchedEffect(workState.value) { processLookups() }
-                CenteredColumn(Modifier.fillMaxSize()) {
+                CenteredColumn(ModifierMaxSize) {
                     Text("Loading lookups...", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
                     val mod = Modifier.fillMaxWidth(0.75f).padding(4.dp)
                     if (downloadProgress.isActive())
@@ -91,7 +92,7 @@ class FileLookup(
                 if (checks[index.value]) ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
                      currentLookup.value.content()
 
-                } else Box(Modifier.fillMaxSize()) { Text("This lookup is disabled!", Modifier.align(Alignment.Center)) }
+                } else Box(ModifierMaxSize) { Text("This lookup is disabled!", Modifier.align(Alignment.Center)) }
             }
         }
     }

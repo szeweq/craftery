@@ -21,7 +21,7 @@ import szeweq.craftery.util.KtUtil
 class AddonInfo(private val addon: AddonSearch): View(addon.name) {
 
     @Composable
-    override fun content() = Column(Modifier.padding(4.dp).fillMaxSize()) {
+    override fun content() = Column(ModifierMaxSize.padding(4.dp)) {
         Row {
             val img = addon.defaultAttachment()
             if (img != null) {
@@ -46,7 +46,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
                 Text("Website URL", Modifier.requiredWidth(120.dp), fontWeight = FontWeight.Bold)
                 urlText(addon.websiteUrl)
             }
-            Card(Modifier.fillMaxSize().padding(2.dp)) {
+            Card(ModifierMaxSize.padding(2.dp)) {
                 Column {
                     val mod = Modifier.fillMaxWidth().hover(LocalHoverColor.current)
                     for (f in addon.latestFiles) {

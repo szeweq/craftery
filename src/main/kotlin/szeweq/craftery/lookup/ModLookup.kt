@@ -13,6 +13,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import szeweq.craftery.layout.ModifierMaxSize
 import szeweq.craftery.scan.ScanInfo
 
 abstract class ModLookup<T>(val title: String) {
@@ -27,12 +28,12 @@ abstract class ModLookup<T>(val title: String) {
 
     @Composable
     fun content() = key(this) {
-        Box(Modifier.fillMaxSize()) {
+        Box(ModifierMaxSize) {
             if (list.isEmpty()) {
                 Text("This lookup is empty!", Modifier.align(Alignment.Center))
             } else {
                 val state = rememberLazyListState()
-                LazyColumn(Modifier.fillMaxSize().padding(end = 12.dp), state = state) {
+                LazyColumn(ModifierMaxSize.padding(end = 12.dp), state = state) {
                     items(list) { item -> Column(Modifier.padding(2.dp)) { decorate(item) } }
                 }
                 VerticalScrollbar(

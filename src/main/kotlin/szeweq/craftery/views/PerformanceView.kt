@@ -23,10 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
-import szeweq.craftery.layout.LocalHoverColor
-import szeweq.craftery.layout.View
-import szeweq.craftery.layout.hover
-import szeweq.craftery.layout.withProviders
+import szeweq.craftery.layout.*
 import szeweq.craftery.util.KtUtil
 import szeweq.craftery.util.TimeLogManager
 import szeweq.craftery.util.ValueHistory
@@ -94,7 +91,7 @@ object PerformanceView : View("Performance") {
                     withProviders(
                         LocalTextStyle provides TextStyle(fontSize = 12.sp)
                     ) {
-                        LazyColumn(Modifier.fillMaxSize().padding(horizontal = 12.dp), state = state) {
+                        LazyColumn(ModifierMaxSize.padding(horizontal = 12.dp), state = state) {
                             val avgs = TimeLogManager.averages()
                             if (avgs.isEmpty()) item {
                                 Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) {

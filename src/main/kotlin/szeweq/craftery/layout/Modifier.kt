@@ -3,6 +3,7 @@ package szeweq.craftery.layout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -12,6 +13,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.input.pointer.*
+
+val ModifierMaxSize = Modifier.fillMaxSize()
 
 /**
  * Uses [hoverState] to draw a [shape] with [color].

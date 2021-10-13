@@ -40,7 +40,7 @@ class ModSearch: View("Search mods") {
         Box {
             val state = rememberLazyListState()
             val itemMod = Modifier.fillMaxWidth().height(64.dp)
-            LazyColumn(Modifier.fillMaxSize().padding(horizontal = 12.dp), state = state) {
+            LazyColumn(ModifierMaxSize.padding(horizontal = 12.dp), state = state) {
                 // Prevent displaying out-of-bounds item layouts
                 if (!modlist.isEmpty()) items(modlist.size, this@ModSearch::getSlugFromList) {
                     if (it >= modlist.size) return@items

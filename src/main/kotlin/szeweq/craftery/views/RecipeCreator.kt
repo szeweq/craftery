@@ -13,10 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
-import szeweq.craftery.layout.CraftingGrid
-import szeweq.craftery.layout.ItemSlot
-import szeweq.craftery.layout.View
-import szeweq.craftery.layout.hover
+import szeweq.craftery.layout.*
 import szeweq.craftery.mcdata.MinecraftData
 import szeweq.craftery.mcdata.Models
 
@@ -43,7 +40,7 @@ class RecipeCreator: View("Create recipes") {
     override fun content() {
         if (Models.compileState) {
             Box {
-                Row(Modifier.fillMaxSize()) {
+                Row(ModifierMaxSize) {
                     val mod = Modifier.padding(8.dp)
                     Column(mod) {
                         CraftingGrid()
@@ -58,7 +55,7 @@ class RecipeCreator: View("Create recipes") {
                     }
                 }
             }
-        } else Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        } else Box(ModifierMaxSize, contentAlignment = Alignment.Center) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 val mod = Modifier.padding(2.dp)
                 CircularProgressIndicator(mod)

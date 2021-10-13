@@ -87,7 +87,7 @@ val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(
 
 @Composable
 fun welcome() {
-    CenteredColumn(Modifier.fillMaxSize(1.0f)) {
+    CenteredColumn(ModifierMaxSize) {
         TextH5("What would you like to do?", Modifier.padding(8.dp))
         val mod = Modifier.padding(2.dp)
         Button(ViewManager.selectOrOpenAction<ModSearch>(), mod, content = ComposeScopeText("Search for mods/modpacks"))
