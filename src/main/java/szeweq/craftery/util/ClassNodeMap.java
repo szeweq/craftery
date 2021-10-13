@@ -109,28 +109,30 @@ public class ClassNodeMap {
         } while (true);
     }
 
-    public <N extends AbstractInsnNode> Stream<Triple<ClassNode, MethodNode, N>> instructionsStream(final boolean parallel, BiConsumer<AbstractInsnNode, Consumer<N>> tfn) {
+    public <N extends AbstractInsnNode> Stream<Triple<ClassNode, MethodNode, N>> instructionsStream(final boolean parallel, Function<AbstractInsnNode, N> tfn) {
         return getAllClassMethods(parallel).mapMulti((p, c) -> {
             final var cl = p.getFirst();
             final var m = p.getSecond();
-            final Consumer<N> cx = n -> c.accept(new Triple<>(cl, m, n));
             for (var node : m.instructions) {
-                tfn.accept(node, cx);
+                var n = tfn.apply(node);
+                if (n != null) c.accept(new Triple<>(cl, m, n));
             }
         });
     }
 
     public Stream<Triple<ClassNode, MethodNode, FieldInsnNode>> streamUsagesOf(ClassNode cn, FieldNode fn, final boolean parallel) {
-        return instructionsStream(parallel, (node, c) -> {
+        return instructionsStream(parallel, (node) -> {
             if (node instanceof final FieldInsnNode it && fn.name.equals(it.name) && fn.desc.equals(it.desc) && cn.name.equals(it.owner))
-                c.accept(it);
+                return it;
+            return null;
         });
     }
 
     public Stream<Triple<ClassNode, MethodNode, MethodInsnNode>> streamUsagesOf(ClassNode cn, MethodNode mn, final boolean parallel) {
-        return instructionsStream(parallel, (node, c) -> {
+        return instructionsStream(parallel, (node) -> {
             if (node instanceof final MethodInsnNode it && mn.name.equals(it.name) && mn.desc.equals(it.desc) && cn.name.equals(it.owner))
-                c.accept(it);
+                return it;
+            return null;
         });
     }
 }
