@@ -15,7 +15,10 @@ import java.util.zip.ZipInputStream
 
 val FieldNode.fixedDesc: String get() = if (desc.startsWith('L')) desc.substring(1, desc.length - 1) else desc
 
-inline fun <reified T> Map<*, T>.valueStream(): Stream<T> = KtUtil.streamValuesFrom(this)
+inline fun <reified T> Map<*, T>.valueStream(): Stream<T> =
+    KtUtil.streamValuesFrom(this)
+inline fun <reified K, reified V> Map<K, V>.entryPairStream(): Stream<Pair<K, V>> =
+    KtUtil.streamEntriesFrom(this)
 fun InsnList.stream(): Stream<AbstractInsnNode> = StreamSupport.stream(spliterator(), false)
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
 

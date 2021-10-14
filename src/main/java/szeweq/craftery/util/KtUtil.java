@@ -20,6 +20,14 @@ public class KtUtil {
 		return map.values().stream();
 	}
 
+	public static <K, V> Stream<Pair<K, V>> streamEntriesFrom(Map<K, V> map) {
+		return map.entrySet().stream().map(KtUtil::entriesToPairs);
+	}
+
+	public static <K, V> Pair<K, V> entriesToPairs(Map.Entry<K, V> entry) {
+		return new Pair<>(entry.getKey(), entry.getValue());
+	}
+
 	public static <K, V> Collector<Pair<K, V>, ?, Map<K, V>> pairsToMap() {
 		return Collectors.toMap(Pair::getFirst, Pair::getSecond);
 	}
