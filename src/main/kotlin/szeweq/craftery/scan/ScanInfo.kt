@@ -45,7 +45,7 @@ class ScanInfo {
         when {
             name == "META-INF/mods.toml" -> {
                 // Assuming this is a Forge mod
-                scanModsTomlFile(data)
+                scanModsTomlFile(name, data)
             }
             name.endsWith(".json") -> {
                 if (!name.endsWith("sounds.json")) scanJsonFile(name, data)
@@ -56,18 +56,22 @@ class ScanInfo {
         }
     }
 
-    private fun scanModsTomlFile(data: InputStream) {
-        val cfg = Scanner.TOML.parse(data)
-        val mods = cfg.getList<Config?>("mods")
-        for (m in mods) {
-            if (m == null) continue
-            val modId = m.get<String>("modId") ?: continue
-            val modDeps = m.getList<Config?>(listOf("dependencies", modId))
-            for (md in modDeps) {
-                if (md == null) continue
-                val s = md.get<String>("modId") ?: continue
-                if (s != "forge" && s != "minecraft") deps += s
+    private fun scanModsTomlFile(filename: String, data: InputStream) {
+        try {
+            val cfg = Scanner.TOML.parse(data)
+            val mods = cfg.getList<Config?>("mods")
+            for (m in mods) {
+                if (m == null) continue
+                val modId = m.get<String>("modId") ?: continue
+                val modDeps = m.getList<Config?>(listOf("dependencies", modId))
+                for (md in modDeps) {
+                    if (md == null) continue
+                    val s = md.get<String>("modId") ?: continue
+                    if (s != "forge" && s != "minecraft") deps += s
+                }
             }
+        } catch (e: Exception) {
+            parseExceptions[filename + "META-INF/mods.toml"] = e
         }
     }
 
@@ -77,7 +81,8 @@ class ScanInfo {
             return
         }
         val (kind, namespace, rest) = path
-        runCatching { JsonUtil.mapper.readTree(data) }.onSuccess {
+        try {
+            val it = JsonUtil.mapper.readTree(data)
             val drt = DataResourceType.detect(kind, rest)
             if (drt.isTagType) {
                 val loc = Scanner.pathToLocation(name)
@@ -91,8 +96,8 @@ class ScanInfo {
                 ji.gatherDetails(it)
                 res[name] = ji
             }
-        }.onFailure {
-            if (it is Exception) parseExceptions[name] = it
+        } catch (e: Exception) {
+            parseExceptions[name] = e
         }
     }
 
