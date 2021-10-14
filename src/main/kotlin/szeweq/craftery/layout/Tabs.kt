@@ -43,7 +43,10 @@ fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
     val scope = rememberCoroutineScope()
     Box(modifier) {
         Icon(Icons.Default.ArrowBack, "", Modifier.size(16.dp).align(Alignment.CenterStart).scrollAction(scope, lazyListState, -200f))
-        withProviders(LocalTextStyle provides TextStyle(fontSize = 13.sp)) {
+        withProviders(
+            LocalTextStyle provides TextStyle(fontSize = 13.sp),
+            LocalHoverColor provides LocalTabHoverColor.current
+        ) {
             LazyRow(
                 Modifier.matchParentSize().padding(horizontal = 16.dp),
                 lazyListState,
@@ -74,25 +77,21 @@ fun ViewTab(v: View, activate: () -> Unit) {
             Modifier.matchParentSize().padding(bottom = 24.dp),
             LocalTabProgressColor.current
         )
-        withProviders(
-            LocalHoverColor provides LocalTabHoverColor.current
-        ) {
-            Row(
-                Modifier
-                    .clickableNumbered(1, 2) {
-                        if (it == 2) v.tryClose()
-                        v.activate()
-                        activate()
-                    }
-                    .hover(shape = tabShape)
-                    .padding(horizontal = 4.dp, vertical = 6.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
-                val close = v.close
-                if (close != null) {
-                    CloseButton(close)
+        Row(
+            Modifier
+                .clickableNumbered(1, 2) {
+                    if (it == 2) v.tryClose()
+                    v.activate()
+                    activate()
                 }
+                .hover(shape = tabShape)
+                .padding(horizontal = 4.dp, vertical = 6.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
+            val close = v.close
+            if (close != null) {
+                CloseButton(close)
             }
         }
     }
