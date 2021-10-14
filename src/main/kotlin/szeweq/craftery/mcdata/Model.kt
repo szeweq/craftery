@@ -12,33 +12,33 @@ import org.jetbrains.skia.Paint
 import org.jetbrains.skia.Rect
 
 /**
- * Abstract class for drawing Minecraft items and blocks in a slot.
+ * Interface for drawing Minecraft items and blocks in a slot.
  */
-abstract class Model {
+interface Model {
 
-    abstract fun draw(scope: DrawScope)
+    fun draw(scope: DrawScope)
 
-    object Empty: Model() {
+    object Empty: Model {
         override fun draw(scope: DrawScope) {
             scope.drawCircle(Color.Yellow, 4f)
         }
     }
 
-    object Failed: Model() {
+    object Failed: Model {
         override fun draw(scope: DrawScope) {
             scope.drawCircle(Color.Red, 6f)
         }
 
     }
 
-    class Custom(private val img: Image): Model() {
+    class Custom(private val img: Image): Model {
         override fun draw(scope: DrawScope) {
             val size = scope.size
             scope.drawIntoCanvas { it.nativeCanvas.drawImageRect(img, Rect.makeWH(size.width, size.height)) }
         }
     }
 
-    class Item(tex: String): Model() {
+    class Item(tex: String): Model {
         private val imgTex by lazy { Models.getImageOf(tex) }
 
         override fun draw(scope: DrawScope) {
@@ -50,7 +50,7 @@ abstract class Model {
         }
     }
 
-    class Block(up: String, north: String, west: String): Model() {
+    class Block(up: String, north: String, west: String): Model {
         private val upTex by Models.lazyImageOf(up)
         private val northTex by Models.lazyImageOf(north)
         private val westTex by Models.lazyImageOf(west)
@@ -70,27 +70,28 @@ abstract class Model {
                 val r = Rect.makeWH(size.width, size.height)
                 val p = Paint()
                 p.color = 0xFF000000.toInt()
+                val nativeCanvas = drawContext.canvas.nativeCanvas
                 val north = northTex
                 if (north != null) withTransform(::transformX) {
                     p.setAlphaf(0.2f)
-                    drawIntoCanvas { it.nativeCanvas.apply {
+                    nativeCanvas.apply {
                         drawImageRect(north, r)
                         drawRect(r, p)
-                    } }
+                    }
                 }
 
                 val up = upTex
                 if (up != null) withTransform(::transformY) {
-                    drawIntoCanvas { it.nativeCanvas.drawImageRect(up, r) }
+                    nativeCanvas.drawImageRect(up, r)
                 }
 
                 val west = westTex
                 if (west != null) withTransform(::transformZ) {
                     p.setAlphaf(0.4f)
-                    drawIntoCanvas { it.nativeCanvas.apply {
+                    nativeCanvas.apply {
                         drawImageRect(west, r)
                         drawRect(r, p)
-                    } }
+                    }
                 }
             }
         }
