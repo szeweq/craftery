@@ -40,7 +40,12 @@ fun ComboBoxItem(
     onClick: () -> Unit,
     modifier: Modifier,
     contentPadding: PaddingValues = PaddingValues(horizontal = 8.dp)
-) = DropdownMenuItem(onClick, modifier.heightIn(min = 32.dp, max = 32.dp), contentPadding = contentPadding) { Text(text, fontSize = 13.sp) }
+) = DropdownMenuItem(
+    onClick,
+    modifier.heightIn(min = 32.dp, max = 32.dp),
+    contentPadding = contentPadding,
+    content = ComposeScopeText(text, fontSize = 13.sp)
+)
 
 @Composable
 private fun ComboBoxLayout(name: String, content: @Composable ColumnScope.(() -> Unit) -> Unit) = Box {
