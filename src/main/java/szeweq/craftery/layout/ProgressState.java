@@ -15,7 +15,7 @@ public class ProgressState implements LongBiConsumer {
         return state.getValue();
     }
 
-    private void setValue(float v) {
+    public void setValue(float v) {
         state.setValue(v);
     }
 
