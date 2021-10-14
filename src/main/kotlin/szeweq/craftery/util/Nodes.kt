@@ -19,7 +19,11 @@ inline fun <reified T> Map<*, T>.valueStream(): Stream<T> =
     KtUtil.streamValuesFrom(this)
 inline fun <reified K, reified V> Map<K, V>.entryPairStream(): Stream<Pair<K, V>> =
     KtUtil.streamEntriesFrom(this)
-fun InsnList.stream(): Stream<AbstractInsnNode> = StreamSupport.stream(spliterator(), false)
+fun InsnList.stream(): Stream<AbstractInsnNode> =
+    StreamSupport.stream(
+        Spliterators.spliterator(iterator(), size().toLong(), Spliterator.ORDERED),
+        false
+    )
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
 
 inline fun <reified R> Stream<*>.filterByInstance(): Stream<R> = KtUtil.streamInstances(this, R::class.java)
