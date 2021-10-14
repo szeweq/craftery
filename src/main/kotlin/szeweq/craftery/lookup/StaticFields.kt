@@ -8,6 +8,7 @@ import szeweq.craftery.mcdata.ResourceType
 import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.scan.Scanner
 import szeweq.craftery.util.fixedDesc
+import java.util.stream.Stream
 
 class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {
     class FieldData(val name: String, val rtype: ResourceType, val from: String, val info: String)
@@ -22,7 +23,7 @@ class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {
         Text("Info:" + item.info)
     }
 
-    override fun gatherItems(si: ScanInfo): List<FieldData> {
+    override fun gatherItems(si: ScanInfo): Stream<FieldData> {
         return si.streamStaticFields(true).map { (c, v) ->
             val desc = v.fixedDesc
             val rt = si.getResourceType(desc)
@@ -34,6 +35,6 @@ class StaticFields: ModLookup<StaticFields.FieldData>("Static fields") {
                 c.name,
                 "Type: $desc\nInterfaces: ${ift.joinToString()}$sig"
             )
-        }.toList()
+        }
     }
 }

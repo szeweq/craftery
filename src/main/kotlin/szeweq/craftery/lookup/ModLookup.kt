@@ -15,6 +15,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import szeweq.craftery.layout.ModifierMaxSize
 import szeweq.craftery.scan.ScanInfo
+import java.util.stream.Stream
+import kotlin.streams.asSequence
+import kotlin.streams.toList
 
 abstract class ModLookup<T>(val title: String) {
     val list = mutableStateListOf<T>()
@@ -24,7 +27,7 @@ abstract class ModLookup<T>(val title: String) {
     @Composable
     abstract fun ColumnScope.decorate(item: T)
 
-    abstract fun gatherItems(si: ScanInfo): List<T>
+    abstract fun gatherItems(si: ScanInfo): Stream<T>
 
     @Composable
     fun content() = key(this) {
@@ -45,7 +48,7 @@ abstract class ModLookup<T>(val title: String) {
     }
 
     fun lazyGather(si: ScanInfo) {
-        val l = gatherItems(si)
+        val l = gatherItems(si).toList()
         list.clear()
         list.addAll(l)
     }

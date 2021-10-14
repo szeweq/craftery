@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import szeweq.craftery.mcdata.DataResourceType
 import szeweq.craftery.scan.ScanInfo
+import java.util.stream.Stream
 
 class ListResourceData: ModLookup<ListResourceData.DataFields>("Resources") {
     class DataFields(val name: String, val drtype: DataResourceType, val namespace: String, val info: String)
@@ -20,8 +21,8 @@ class ListResourceData: ModLookup<ListResourceData.DataFields>("Resources") {
         Text("Info: " + item.info)
     }
 
-    override fun gatherItems(si: ScanInfo): List<DataFields> {
-        return si.res.values.map {
+    override fun gatherItems(si: ScanInfo): Stream<DataFields> {
+        return si.res.values.stream().map {
             val info = if (it.details.isEmpty()) "(None)" else it.details.entries.joinToString("\n") { (k, v) -> "$k: $v" }
             DataFields(it.name, it.type, it.namespace, info)
         }
