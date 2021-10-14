@@ -22,9 +22,6 @@ inline fun <reified K, reified V> Map<K, V>.entryPairStream(): Stream<Pair<K, V>
 fun InsnList.stream(): Stream<AbstractInsnNode> = StreamSupport.stream(spliterator(), false)
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
 
-@Suppress("UNCHECKED_CAST")
-inline fun <reified R> Stream<*>.filterIsInstance(): Stream<R> = filter { it is R } as Stream<R>
-
 inline fun <reified R> Stream<*>.filterByInstance(): Stream<R> = KtUtil.streamInstances(this, R::class.java)
 
 /**
