@@ -33,19 +33,26 @@ import kotlinx.coroutines.launch
 
 val tabShape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp)
 
-private fun Modifier.scrollAction(scope: CoroutineScope, scrollState: LazyListState, value: Float) = clickable { scope.launch { scrollState.animateScrollBy(value) } }
+private fun Modifier.scrollAction(scope: CoroutineScope, scrollState: LazyListState, value: Float) =
+    clickable { scope.launch { scrollState.animateScrollBy(value) } }
 
-private fun LazyListState.scopeScrollToItem(scope: CoroutineScope, index: Int) = scope.launch { animateScrollToItem(index) }
+private fun LazyListState.scopeScrollToItem(scope: CoroutineScope, index: Int) =
+    scope.launch { animateScrollToItem(index) }
 
 @Composable
 fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
     val lazyListState = rememberLazyListState()
     val scope = rememberCoroutineScope()
     Box(modifier) {
-        Icon(Icons.Default.ArrowBack, "", Modifier.size(16.dp).align(Alignment.CenterStart).scrollAction(scope, lazyListState, -200f))
+        Icon(
+            Icons.Default.ArrowBack,
+            "Previous tabs",
+            Modifier.size(16.dp).align(Alignment.CenterStart).scrollAction(scope, lazyListState, -200f)
+        )
         withProviders(
             LocalTextStyle provides TextStyle(fontSize = 13.sp),
-            LocalHoverColor provides LocalTabHoverColor.current
+            LocalHoverColor provides LocalTabHoverColor.current,
+            LocalContentAlpha provides 1f
         ) {
             LazyRow(
                 Modifier.matchParentSize().padding(horizontal = 16.dp),
@@ -61,7 +68,11 @@ fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
                 }
             }
         }
-        Icon(Icons.Default.ArrowForward, "", Modifier.size(16.dp).align(Alignment.CenterEnd).scrollAction(scope, lazyListState, 200f))
+        Icon(
+            Icons.Default.ArrowForward,
+            "Next tabs",
+            Modifier.size(16.dp).align(Alignment.CenterEnd).scrollAction(scope, lazyListState, 200f)
+        )
 
     }
 }
@@ -69,7 +80,9 @@ fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
 @Composable
 fun ViewTab(v: View, activate: () -> Unit) {
     Box(
-        Modifier.background(if(v.isActive) MaterialTheme.colors.background else Color.Transparent, tabShape).clip(tabShape),
+        Modifier
+            .background(if(v.isActive) MaterialTheme.colors.background else Color.Transparent, tabShape)
+            .clip(tabShape),
         propagateMinConstraints = true
     ) {
         if (v.progress.isActive()) LinearIndicator(
@@ -88,7 +101,7 @@ fun ViewTab(v: View, activate: () -> Unit) {
                 .padding(horizontal = 4.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(v.title.value, color = LocalContentColor.current, modifier = Modifier.padding(start = 2.dp, end = 4.dp))
+            Text(v.title.value, Modifier.padding(start = 2.dp, end = 4.dp))
             val close = v.close
             if (close != null) {
                 CloseButton(close)
