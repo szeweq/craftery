@@ -25,6 +25,8 @@ fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
 @Suppress("UNCHECKED_CAST")
 inline fun <reified R> Stream<*>.filterIsInstance(): Stream<R> = filter { it is R } as Stream<R>
 
+inline fun <reified R> Stream<*>.filterByInstance(): Stream<R> = KtUtil.streamInstances(this, R::class.java)
+
 /**
  * Iterates over each entry found in ZIP input stream.
  */

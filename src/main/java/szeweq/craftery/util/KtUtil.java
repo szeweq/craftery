@@ -24,6 +24,12 @@ public class KtUtil {
 		return map.entrySet().stream().map(KtUtil::entriesToPairs);
 	}
 
+	public static <T> Stream<T> streamInstances(final Stream<?> stream, final Class<T> cl) {
+		return stream.mapMulti((t, c) -> {
+			if (cl.isInstance(t)) c.accept(cl.cast(t));
+		});
+	}
+
 	public static <K, V> Pair<K, V> entriesToPairs(Map.Entry<K, V> entry) {
 		return new Pair<>(entry.getKey(), entry.getValue());
 	}
