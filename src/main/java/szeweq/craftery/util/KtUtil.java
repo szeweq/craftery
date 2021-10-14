@@ -48,6 +48,7 @@ public class KtUtil {
 	}
 
 	private static final String SIZES = "kMGT";
+	private static final String sizeFormat = "%.2f %cB";
 
 	public static String lengthInBytes(long size) {
 		var i = 0;
@@ -60,7 +61,7 @@ public class KtUtil {
 			return size + " bytes";
 		}
 		if (i > 4) { i = 4; }
-		return String.format("%.2f %cB", x, SIZES.charAt(i - 1));
+		return sizeFormat.formatted(x, SIZES.charAt(i - 1));
 	}
 
 	private KtUtil() {}
