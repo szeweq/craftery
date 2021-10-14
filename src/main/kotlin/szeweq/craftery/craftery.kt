@@ -19,9 +19,8 @@ import szeweq.craftery.util.bindValue
 import szeweq.craftery.util.logTime
 import szeweq.craftery.views.*
 
-fun startApp() = logTime("App launch") {
+fun startApp() =
     singleWindowApplication(visible = true, title = Craftery.APP_TITLE, content = app)
-}
 
 /**
  * Main composable function for an app. It saves bytecode size this way (Kotlin generates objects for functions).
