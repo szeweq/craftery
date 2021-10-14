@@ -8,40 +8,9 @@ import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import szeweq.craftery.util.LongBiConsumer
-
-/**
- * A state object for displaying and updating values in process-related tasks (like downloading a file).
- */
-open class ProgressState : LongBiConsumer {
-    var value by mutableStateOf(Float.MAX_VALUE)
-
-    fun isActive() = value <= 1f
-
-    fun isIndeterminate() = value == -1f
-
-    fun setIndeterminate() {
-        value = -1f
-    }
-
-    fun setFinished() {
-        value = Float.MAX_VALUE
-    }
-
-    override fun accept(l: Long, r: Long) {
-        value = l.toFloat() / r
-    }
-}
-
-class MessageProgressState: ProgressState() {
-    var message by mutableStateOf("")
-}
 
 @Composable
 fun LinearIndicator(
@@ -49,7 +18,7 @@ fun LinearIndicator(
     modifier: Modifier = Modifier,
     color: Color = MaterialTheme.colors.primary
 ) {
-    if (progressState.isIndeterminate()) {
+    if (progressState.isIndeterminate) {
         LinearProgressIndicator(modifier, color)
     } else {
         LinearProgressIndicator(progressState.value, modifier, color)
