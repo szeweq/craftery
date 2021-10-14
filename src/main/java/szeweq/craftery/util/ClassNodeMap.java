@@ -25,6 +25,10 @@ public class ClassNodeMap {
         return nodes.values().stream();
     }
 
+    public Stream<ClassNode> getParallelClassStream() {
+        return nodes.values().parallelStream();
+    }
+
     public Stream<Pair<ClassNode, MethodNode>> getAllClassMethods(final boolean parallel) {
         return getFlattenedClassValues(parallel, c -> c.methods);
     }
