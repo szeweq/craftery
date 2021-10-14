@@ -67,10 +67,11 @@ fun topBar() {
 @Composable
 fun menuContent(dismiss: () -> Unit) {
     val menuPadding = PaddingValues(horizontal = 8.dp)
+    val mod = Modifier.hover().heightIn(min = 32.dp, max = 32.dp)
     for ((text, fn) in menuActions) {
         DropdownMenuItem(
             { fn(); dismiss() },
-            Modifier.hover().heightIn(min = 32.dp, max = 32.dp),
+            mod,
             contentPadding = menuPadding,
             content = ComposeScopeText(text, fontSize = 13.sp)
         )
