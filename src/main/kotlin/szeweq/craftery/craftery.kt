@@ -9,7 +9,6 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,10 +33,11 @@ private val app: @Composable FrameWindowScope.() -> Unit = {
         ) {
             val v = ViewManager.active
             key(v) {
-                window.title = v?.title?.value
                 if (v == null) {
+                    window.title = Craftery.APP_TITLE
                     welcome()
                 } else logTime("Update view [${v.javaClass.name}]") {
+                    window.title = "${v.title.value} - ${Craftery.APP_TITLE}"
                     v.content()
                 }
             }
@@ -53,7 +53,6 @@ fun topBar() {
             val menuToggle = remember { mutableStateOf(false) }
             val iconSize = 24.dp
             val dismiss = menuToggle.bindValue(false)
-
             IconButton(menuToggle.bindValue(true)) {
                 Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
             }
