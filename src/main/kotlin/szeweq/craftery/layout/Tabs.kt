@@ -97,11 +97,15 @@ fun ViewTab(v: View, activate: () -> Unit) {
     }
 }
 
+private val ModifierCloseButton = Modifier
+    .size(16.dp)
+    .hover(shape = CircleShape)
+    .clip(CircleShape)
+    .padding(2.dp)
+
 @Composable
-private fun CloseButton(action: () -> Unit) {
-    Box(
-        Modifier.hover(shape = CircleShape).clip(CircleShape).clickable(onClick = action)
-    ) {
-        Icon(Icons.Default.Close, "Close", Modifier.size(16.dp).padding(2.dp))
-    }
-}
+private fun CloseButton(action: () -> Unit) = Icon(
+    Icons.Default.Close,
+    "Close",
+    ModifierCloseButton.clickable(onClick = action)
+)
