@@ -141,7 +141,7 @@ class ScanInfo {
 
     fun streamCapabilities() = caps.valueStream()
 
-    fun streamLazyOptionals(): Stream<LazyOptionalInfo> = map.classStream
+    fun streamLazyOptionals(): Stream<LazyOptionalInfo> = map.parallelClassStream
         .mapMulti { cl, c: Consumer<LazyOptionalInfo> ->
             val f = cl.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
             if (f.isNotEmpty()) {
