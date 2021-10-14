@@ -13,11 +13,11 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import szeweq.craftery.layout.ModifierMaxSize
 import szeweq.craftery.scan.ScanInfo
 import java.util.stream.Stream
-import kotlin.streams.asSequence
-import kotlin.streams.toList
 
 abstract class ModLookup<T>(val title: String) {
     val list = mutableStateListOf<T>()
@@ -47,9 +47,9 @@ abstract class ModLookup<T>(val title: String) {
         }
     }
 
-    fun lazyGather(si: ScanInfo) {
-        val l = gatherItems(si).toList()
+    suspend fun lazyGather(scope: CoroutineScope, si: ScanInfo) {
+        val l = scope.async { gatherItems(si).toList() }
         list.clear()
-        list.addAll(l)
+        list.addAll(l.await())
     }
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.flow
@@ -177,7 +178,10 @@ class FileLookup(
         progress.setFinished()
     }
 
-    private fun gather(si: ScanInfo) {
+    private suspend fun gather(si: ScanInfo) {
+        scanProgress.message = "Preparing lookups..."
+        scanProgress.setIndeterminate()
+        delay(1000)
         scanProgress.value = 0F
         var li = 0L
         val ls = checks.count { it }.toLong()
@@ -185,7 +189,7 @@ class FileLookup(
             if (checks[i]) {
                 val l = lookups[i]
                 scanProgress.message = "Gathering results (${l.title})..."
-                l.lazyGather(si)
+                l.lazyGather(viewScope, si)
                 scanProgress.accept(++li, ls)
             }
         }
