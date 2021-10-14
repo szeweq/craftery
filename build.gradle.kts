@@ -37,9 +37,9 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.10")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
     implementation("com.electronwill.night-config:toml:3.6.4")
     implementation("org.ow2.asm:asm:$asmVersion")
     implementation("org.ow2.asm:asm-tree:$asmVersion")
