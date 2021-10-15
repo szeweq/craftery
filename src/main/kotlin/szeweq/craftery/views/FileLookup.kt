@@ -30,6 +30,7 @@ import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
 import szeweq.craftery.util.bindValue
 import java.io.InputStream
+import java.net.URLEncoder
 import java.util.zip.ZipInputStream
 
 class FileLookup(
@@ -154,9 +155,13 @@ class FileLookup(
                 downloadProgress.value = 0F
                 val murl = CFAPI.downloadURL(pid, fid).await()
                 if (!murl.endsWith(".jar")) continue
-                val mname = murl.substringAfterLast('/')
+                val ix = murl.lastIndexOf('/') + 1
+                val mname = murl.substring(ix)
                 downloadProgress.message = "Downloading [$i / $total] $mname..."
-                val mf = Downloader.downloadFile(murl.replace(" ", "%20"), downloadProgress).await()
+                val mf = Downloader.downloadFile(
+                    murl.substring(0, ix) + URLEncoder.encode(mname, Charsets.UTF_8),
+                    downloadProgress
+                ).await()
                 emit(mname to mf)
                 i++
             }
