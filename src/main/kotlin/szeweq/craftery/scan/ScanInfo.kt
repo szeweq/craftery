@@ -139,7 +139,7 @@ class ScanInfo {
             } else false
         }
 
-    fun streamCapabilities() = caps.valueStream()
+    fun streamCapabilities() = KtUtil.streamValuesFrom(caps)
 
     fun streamLazyOptionals(): Stream<LazyOptionalInfo> = map.parallelClassStream
         .mapMulti { cl, c: Consumer<LazyOptionalInfo> ->
