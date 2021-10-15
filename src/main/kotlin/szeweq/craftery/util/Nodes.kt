@@ -22,7 +22,7 @@ inline fun <reified K, reified V> Map<K, V>.entryPairStream(): Stream<Pair<K, V>
 fun InsnList.stream(): Stream<AbstractInsnNode> =
     StreamSupport.stream(
         Spliterators.spliterator(iterator(), size().toLong(), Spliterator.ORDERED),
-        false
+        size() > 10
     )
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
 
