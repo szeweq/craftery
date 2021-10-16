@@ -26,20 +26,15 @@ public final class ImageCache {
         if (mapBitmaps.containsKey(url)) {
             cb.accept(mapBitmaps.get(url));
         } else {
-            downloadImageBitmap(url, cb);
+            downloadImage(url)
+                    .thenApply(DesktopImageAsset_desktopKt::toComposeImageBitmap)
+                    .whenComplete((imageBitmap, th) -> {
+                        if (th == null && imageBitmap != null) {
+                            mapBitmaps.put(url, imageBitmap);
+                        }
+                    })
+                    .thenAccept(cb);
         }
-    }
-
-    public static void downloadImageBitmap(final String url, Consumer<ImageBitmap> cb) {
-        downloadImage(url)
-                .thenApply(img -> {
-                    final var ib = img == null ? null : DesktopImageAsset_desktopKt.toComposeImageBitmap(img);
-                    if (ib != null) {
-                        mapBitmaps.put(url, ib);
-                        return ib;
-                    }
-                    return emptyBitmap;
-                }).thenAccept(cb);
     }
 
     private static HttpResponse.BodySubscriber<Image> bodyHandlerOfImage(HttpResponse.ResponseInfo ri) {

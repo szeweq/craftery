@@ -1,12 +1,14 @@
 package szeweq.craftery.layout
 
 import androidx.compose.foundation.Image
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import szeweq.craftery.util.ImageCache
 
 /**
@@ -17,13 +19,10 @@ fun ImageURL(
     url: String,
     contentDescription: String?,
     modifier: Modifier = Modifier,
-    alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Fit,
-    alpha: Float = DefaultAlpha
 ) {
-    val scope = rememberCoroutineScope()
     val (img, setImg) = remember(url) { mutableStateOf(ImageCache.emptyBitmap) }
-    scope.launch { ImageCache.lazyGet(url, setImg) }
-    Image(img, contentDescription, modifier, alignment, contentScale, alpha)
+    LaunchedEffect(url) { withContext(Dispatchers.IO) { ImageCache.lazyGet(url, setImg) } }
+    Image(img, contentDescription, modifier, contentScale = contentScale)
 }
 
