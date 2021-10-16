@@ -49,7 +49,7 @@ class ModSearch: View("Search mods") {
                 } else {
                     item {
                         Box(itemMod, contentAlignment = Alignment.Center) {
-                            Text(if (progress.isActive()) "Searching..." else "Empty")
+                            Text(if (progress.isActive) "Searching..." else "Empty")
                         }
                     }
                 }
