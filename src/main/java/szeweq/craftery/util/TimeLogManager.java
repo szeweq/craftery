@@ -26,12 +26,13 @@ public class TimeLogManager {
         return ms + " ms " + ns + " ns";
     }
 
-    public static List<Pair<String, Long>> averages() {
+    @SuppressWarnings("unchecked")
+    public static Pair<String, Long>[] averages() {
         return historyMap.entrySet()
                 .stream()
                 .map(e -> new Pair<>(e.getKey(), e.getValue().avg()))
                 .sorted((l, r) -> (int) (r.getSecond() - l.getSecond()))
-                .toList();
+                .toArray(Pair[]::new);
     }
 
 }
