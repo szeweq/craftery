@@ -10,6 +10,7 @@ group = "szewek.craftery"
 
 val asmVersion = "9.2"
 val jacksonVersion = "2.13.0"
+val composeVersion = "1.0.0-alpha4-build396"
 
 repositories {
     mavenCentral()
@@ -36,6 +37,8 @@ dependencies {
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     implementation("com.fasterxml.jackson.core:jackson-annotations:$jacksonVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
+
+    implementation("org.jetbrains.compose.material:material-icons-extended-desktop:$composeVersion")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
