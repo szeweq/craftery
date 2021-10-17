@@ -83,11 +83,11 @@ class LanguageEditor: View("Language Editor") {
         verticalAlignment = Alignment.CenterVertically
     ) {
         val mod = Modifier.padding(4.dp)
-        Button({
+        DesktopButton({
             val f = chooseJSON()
             if (f != null) viewScope.launch(Dispatchers.IO) { loadFile(f) }
         }, mod) { Text("Load original file") }
-        Button({
+        DesktopButton({
             val f = chooseJSON(true)
             if (f != null) viewScope.launch(Dispatchers.IO) { saveTranslation(f) }
         }, mod) { Text("Save translations") }

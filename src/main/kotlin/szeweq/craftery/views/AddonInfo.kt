@@ -33,7 +33,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             }
             val lf = addon.latestFile()
             if (lf != null) {
-                Button({
+                DesktopButton({
                     ViewManager.open(FileLookup(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
                 }, content = ComposeScopeText("Lookup"))
             }

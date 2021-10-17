@@ -3,12 +3,16 @@ package szeweq.craftery
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,8 +92,21 @@ val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(
 fun welcome() {
     CenteredColumn(ModifierMaxSize) {
         TextH5("What would you like to do?", Modifier.padding(8.dp))
-        val mod = Modifier.padding(2.dp)
-        Button(ViewManager.selectOrOpenAction<ModSearch>(), mod, content = ComposeScopeText("Search for mods/modpacks"))
-        Button(ViewManager.selectOrOpenAction<LanguageEditor>(), mod, content = ComposeScopeText("Open language editor"))
+        val mod = Modifier.padding(2.dp).width(200.dp)
+        mainButton(ViewManager.selectOrOpenAction<ModSearch>(), mod, Icons.Default.Search, "Search for mods/modpacks")
+        mainButton(ViewManager.selectOrOpenAction<LanguageEditor>(), mod, Icons.Default.Language, "Open language editor")
+    }
+}
+
+@Composable
+fun mainButton(onClick: () -> Unit, modifier: Modifier, icon: ImageVector, text: String) {
+    DesktopButton(
+        onClick,
+        modifier,
+    ) {
+        CenteredColumn {
+            Icon(icon, text)
+            Text(text, Modifier.padding(top = 4.dp), textAlign = TextAlign.Center)
+        }
     }
 }

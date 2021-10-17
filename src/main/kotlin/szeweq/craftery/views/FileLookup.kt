@@ -71,7 +71,7 @@ class FileLookup(
                         }
                     }
                     val enabled = remember { derivedStateOf { for (b in checks) if (b) return@derivedStateOf true; false } }
-                    Button(
+                    DesktopButton(
                         workState.bindValue(1),
                         Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
                         enabled = enabled.value,
