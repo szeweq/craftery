@@ -51,9 +51,11 @@ fun ComboBoxItem(
 private fun ComboBoxLayout(name: String, content: @Composable ColumnScope.(() -> Unit) -> Unit) = Box {
     val menuToggle = remember { mutableStateOf(false) }
     val dismiss = menuToggle.bindValue(false)
-    Button(menuToggle.bindValue(true), Modifier.heightIn(24.dp), contentPadding = PaddingValues(8.dp, 4.dp)) {
+    DesktopButton(menuToggle.bindValue(true), Modifier.heightIn(24.dp), contentPadding = PaddingValues(8.dp, 4.dp)) {
         Text(name, fontSize = 12.sp, letterSpacing = 0.5.sp)
         Icon(Icons.Default.ArrowDropDown, "Dropdown", Modifier.size(16.dp))
     }
-    DropdownMenu(menuToggle.value, dismiss) { content(dismiss) }
+    DropdownMenu(menuToggle.value, dismiss) {
+        content(dismiss)
+    }
 }
