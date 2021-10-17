@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import szeweq.craftery.layout.*
 import szeweq.craftery.mcdata.MinecraftData
@@ -29,7 +30,7 @@ class RecipeCreator: View("Create recipes") {
     ).map { "minecraft:item/$it" }
 
     init {
-        viewScope.launch {
+        viewScope.launch(Dispatchers.IO) {
             MinecraftData.loadAllFilesFromJar(null)
             Models.compile()
         }
