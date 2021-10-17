@@ -10,7 +10,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import szeweq.craftery.util.bindValue
+import szeweq.craftery.util.bind
 
 /**
  * A combo box with custom values and labels.
@@ -50,8 +50,8 @@ fun ComboBoxItem(
 @Composable
 private fun ComboBoxLayout(name: String, content: @Composable ColumnScope.(() -> Unit) -> Unit) = Box {
     val menuToggle = remember { mutableStateOf(false) }
-    val dismiss = menuToggle.bindValue(false)
-    DesktopButton(menuToggle.bindValue(true), Modifier.heightIn(24.dp), contentPadding = PaddingValues(8.dp, 4.dp)) {
+    val dismiss = menuToggle.bind(false)
+    DesktopButton(menuToggle.bind(true), Modifier.heightIn(24.dp), contentPadding = PaddingValues(8.dp, 4.dp)) {
         Text(name, fontSize = 12.sp, letterSpacing = 0.5.sp)
         Icon(Icons.Default.ArrowDropDown, "Dropdown", Modifier.size(16.dp))
     }

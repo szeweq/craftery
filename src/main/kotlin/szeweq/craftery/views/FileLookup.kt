@@ -28,7 +28,7 @@ import szeweq.craftery.mcdata.Modpack
 import szeweq.craftery.net.Downloader
 import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
-import szeweq.craftery.util.bindValue
+import szeweq.craftery.util.bind
 import java.io.InputStream
 import java.net.URLEncoder
 import java.util.zip.ZipInputStream
@@ -72,7 +72,7 @@ class FileLookup(
                     }
                     val enabled = remember { derivedStateOf { for (b in checks) if (b) return@derivedStateOf true; false } }
                     DesktopButton(
-                        workState.bindValue(1),
+                        workState.bind(1),
                         Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
                         enabled = enabled.value,
                         content = ComposeScopeText("Continue")
@@ -118,7 +118,7 @@ class FileLookup(
                 Box(Modifier
                     .hoverState { hover[i] = it }
                     .background(bg, MaterialTheme.shapes.medium)
-                    .clickable(onClick = index.bindValue(i))
+                    .clickable(onClick = index.bind(i))
                 ) { sideListItem(i, l) }
             }
         }

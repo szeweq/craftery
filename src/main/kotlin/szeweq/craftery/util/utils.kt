@@ -9,7 +9,7 @@ import java.util.concurrent.CompletableFuture
 /**
  * Method for binding specific values for use in an event.
  */
-fun <T> MutableState<T>.bindValue(value: T): () -> Unit = { this.value = value }
+fun <T> MutableState<T>.bind(value: T): () -> Unit = { this.value = value }
 
 /**
  * Method fix for Kotlin code.

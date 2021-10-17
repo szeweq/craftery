@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.singleWindowApplication
 import szeweq.craftery.layout.*
-import szeweq.craftery.util.bindValue
+import szeweq.craftery.util.bind
 import szeweq.craftery.util.logTime
 import szeweq.craftery.views.*
 
@@ -55,8 +55,8 @@ fun topBar() {
         Box(Modifier.fillMaxHeight().requiredWidth(24.dp).padding(vertical = 6.dp)) {
             val menuToggle = remember { mutableStateOf(false) }
             val iconSize = 24.dp
-            val dismiss = menuToggle.bindValue(false)
-            IconButton(menuToggle.bindValue(true)) {
+            val dismiss = menuToggle.bind(false)
+            IconButton(menuToggle.bind(true)) {
                 Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
             }
             DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
