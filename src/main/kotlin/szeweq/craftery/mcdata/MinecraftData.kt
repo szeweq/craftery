@@ -9,7 +9,7 @@ import java.util.*
 import java.util.zip.ZipInputStream
 
 object MinecraftData {
-    var manifest = Manifest(mapOf(), listOf())
+    var manifest = MCManifest(mapOf(), listOf())
     var updated = 0L
     val packages = mutableMapOf<String, Package>()
     val assets = mutableMapOf<String, AssetMap>()
@@ -19,7 +19,7 @@ object MinecraftData {
         val d = System.currentTimeMillis()
         if (d - updated >= 1000 * 3600) {
             println("Updating Minecraft manifest...")
-            val o = downloadJson<Manifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json", progress).get()
+            val o = downloadJson<MCManifest>("https://launchermeta.mojang.com/mc/game/version_manifest.json", progress).get()
             if (o != null) {
                 manifest = o
                 updated = d
@@ -70,7 +70,7 @@ object MinecraftData {
 
     fun getAsset(p: String, progress: LongBiConsumer) {
         updateManifest(progress)
-        val v = manifest.latest["release"] ?: return
+        val v = manifest.latestRelease ?: return
         val ma = getAssetMap(v, progress) ?: return
         val mf = ma.objects[p]
     }
@@ -78,7 +78,7 @@ object MinecraftData {
     private fun getMinecraftClientJar(v: String?, progress: LongBiConsumer): ZipInputStream? {
         updateManifest(progress)
         progress.accept(0, 1)
-        val z = v ?: manifest.latest["release"]
+        val z = v ?: manifest.latestRelease
         if (z == null) {
             println("No Minecraft version selected!")
             return null
@@ -113,16 +113,6 @@ object MinecraftData {
             }
         }
     }
-
-    class Manifest(val latest: Map<String, String>, val versions: List<Version>)
-
-    class Version(
-            val id: String,
-            val type: String,
-            val url: String,
-            val time: Date,
-            val releaseTime: Date
-    )
 
     class Package(
         val id: String,
