@@ -27,7 +27,7 @@ public final class ImageCache {
             cb.accept(mapBitmaps.get(url));
         } else {
             downloadImage(url)
-                    .thenApply(DesktopImageAsset_desktopKt::toComposeImageBitmap)
+                    .thenApply(SkiaImageAsset_skikoKt::toComposeImageBitmap)
                     .whenComplete((imageBitmap, th) -> {
                         if (th == null && imageBitmap != null) {
                             mapBitmaps.put(url, imageBitmap);
