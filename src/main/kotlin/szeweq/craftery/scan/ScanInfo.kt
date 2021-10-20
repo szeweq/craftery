@@ -2,6 +2,7 @@ package szeweq.craftery.scan
 
 import com.electronwill.nightconfig.core.Config
 import com.fasterxml.jackson.databind.node.ArrayNode
+import kotlinx.coroutines.flow.collect
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
@@ -9,7 +10,6 @@ import org.objectweb.asm.tree.FieldNode
 import szeweq.craftery.mcdata.DataResourceType
 import szeweq.craftery.mcdata.ResourceType
 import szeweq.craftery.util.*
-import java.io.ByteArrayInputStream
 import java.io.InputStream
 import java.util.function.Consumer
 import java.util.stream.Stream
@@ -32,12 +32,9 @@ class ScanInfo {
     val tags = mutableMapOf<String, MutableSet<String>>()
     val parseExceptions = mutableMapOf<String, Exception>()
 
-    fun scanArchive(input: ZipInputStream) {
-        input.eachEntry {
-            if (!it.isDirectory) {
-                val bais = ByteArrayInputStream(input.readAllBytes())
-                scanFile(it.name, bais)
-            }
+    suspend fun scanArchive(input: ZipInputStream) {
+        input.entryStreamFlow().collect { (entry, stream) ->
+            scanFile(entry.name, stream)
         }
     }
 

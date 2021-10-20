@@ -1,8 +1,13 @@
 package szeweq.craftery.util
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.channelFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.InsnList
+import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
@@ -42,8 +47,25 @@ inline fun ZipInputStream.eachEntry(fn: (ZipEntry) -> Unit) {
         print("Error occured while reading entry: $lastEntry")
         ex.printStackTrace()
     }
-
 }
+
+fun ZipInputStream.entryStreamFlow() = flow<Pair<ZipEntry, InputStream>> {
+    var lastEntry: String? = null
+    try {
+        var ze = nextEntry
+        while (ze != null) {
+            lastEntry = ze.name
+            if (!ze.isDirectory) {
+                val bais = ByteArrayInputStream(readAllBytes())
+                emit(ze to bais)
+            }
+            ze = nextEntry
+        }
+    } catch (ex: IOException) {
+        print("Error occured while reading entry: $lastEntry")
+        ex.printStackTrace()
+    }
+}.flowOn(Dispatchers.IO)
 
 fun InputStream.copyWithProgress(out: OutputStream, total: Long, progress: LongBiConsumer): Long {
     var bytesCopied: Long = 0

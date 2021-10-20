@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.future.await
@@ -32,6 +33,7 @@ import szeweq.craftery.util.bind
 import java.io.InputStream
 import java.net.URLEncoder
 import java.util.zip.ZipInputStream
+import kotlin.time.measureTime
 
 class FileLookup(
     private val filename: String,
@@ -174,9 +176,12 @@ class FileLookup(
             downloadProgress.setFinished()
         }
         inputFlow.collectIndexed { i, (name, input) ->
+            val d = System.nanoTime()
             scanProgress.message = "Scanning [$i / $total] $name..."
             scanProgress.accept(i.toLong(), total)
-            ZipInputStream(input).use(si::scanArchive)
+            si.scanArchive(ZipInputStream(input))
+            val du = (System.nanoTime() - d) / 1e6f
+            println("Done [$name] in $du")
         }
         gather(si)
         workState.value = 2
