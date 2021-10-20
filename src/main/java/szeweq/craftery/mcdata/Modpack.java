@@ -4,33 +4,33 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import kotlin.Pair;
 import szeweq.craftery.util.JsonUtil;
-import szeweq.craftery.util.JsonUtil;
+import szeweq.craftery.util.KtUtil;
 
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.StreamSupport;
 import java.util.zip.ZipInputStream;
 
 public class Modpack {
     private Modpack() {}
 
-    public static List<Pair<Integer, Integer>> readManifest(ZipInputStream input) {
+    public static List<IntPair> readManifest(ZipInputStream input) {
         try {
             if (findManifest(input)) {
                 var mtree = JsonUtil.mapper.readTree(input);
                 ArrayNode files = mtree.withArray("files");
-                return StreamSupport.stream(files.spliterator(), false)
-                        .map(jv -> jv instanceof ObjectNode ? (ObjectNode) jv : null)
-                        .filter(Objects::nonNull)
+                var spl = Spliterators.spliterator(files.elements(), files.size(), Spliterator.ORDERED);
+
+                return KtUtil.streamInstances(StreamSupport.stream(spl, false), ObjectNode.class)
                         .map(jo -> {
                             final var pid = jo.get("projectID").asInt();
                             final var fid = jo.get("fileID").asInt();
                             return new Pair<>(pid, fid);
                         })
-                        .collect(Collectors.toList());
+                        .toList();
             }
         } catch (IOException e) {
             e.printStackTrace();
