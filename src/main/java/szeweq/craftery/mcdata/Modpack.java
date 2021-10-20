@@ -2,7 +2,8 @@ package szeweq.craftery.mcdata;
 
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import kotlin.Pair;
+import org.jetbrains.annotations.NotNull;
+import szeweq.craftery.util.IntPair;
 import szeweq.craftery.util.JsonUtil;
 import szeweq.craftery.util.KtUtil;
 
@@ -17,6 +18,7 @@ import java.util.zip.ZipInputStream;
 public class Modpack {
     private Modpack() {}
 
+    @NotNull
     public static List<IntPair> readManifest(ZipInputStream input) {
         try {
             if (findManifest(input)) {
@@ -26,9 +28,9 @@ public class Modpack {
 
                 return KtUtil.streamInstances(StreamSupport.stream(spl, false), ObjectNode.class)
                         .map(jo -> {
-                            final var pid = jo.get("projectID").asInt();
-                            final var fid = jo.get("fileID").asInt();
-                            return new Pair<>(pid, fid);
+                            final int pid = jo.get("projectID").asInt();
+                            final int fid = jo.get("fileID").asInt();
+                            return new IntPair(pid, fid);
                         })
                         .toList();
             }
