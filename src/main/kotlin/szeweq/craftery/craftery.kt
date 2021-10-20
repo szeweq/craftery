@@ -8,8 +8,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
@@ -21,6 +19,7 @@ import androidx.compose.ui.window.singleWindowApplication
 import szeweq.craftery.layout.*
 import szeweq.craftery.util.bind
 import szeweq.craftery.util.logTime
+import szeweq.craftery.util.rememberInitialState
 import szeweq.craftery.views.*
 
 fun startApp() =
@@ -53,7 +52,7 @@ fun topBar() {
     TopAppBar(Modifier.height(32.dp)) {
         TabsView(Modifier.fillMaxHeight().weight(1f), ViewManager.views)
         Box(Modifier.fillMaxHeight().requiredWidth(24.dp).padding(vertical = 6.dp)) {
-            val menuToggle = remember { mutableStateOf(false) }
+            val menuToggle = rememberInitialState(false)
             val iconSize = 24.dp
             val dismiss = menuToggle.bind(false)
             IconButton(menuToggle.bind(true)) {
@@ -68,8 +67,9 @@ fun topBar() {
 
 @Composable
 fun menuContent(dismiss: () -> Unit) {
+    val h = 32.dp
     val menuPadding = PaddingValues(horizontal = 8.dp)
-    val mod = Modifier.hover().heightIn(min = 32.dp, max = 32.dp)
+    val mod = Modifier.hover().heightIn(min = h, max = h)
     for ((text, fn) in menuActions) {
         DropdownMenuItem(
             { fn(); dismiss() },

@@ -4,9 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
@@ -14,6 +11,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.takeOrElse
 import androidx.compose.ui.input.pointer.*
+import szeweq.craftery.util.rememberInitialState
 
 val ModifierMaxSize = Modifier.fillMaxSize()
 
@@ -24,7 +22,7 @@ fun Modifier.hover(
     color: Color = Color.Unspecified,
     shape: Shape = RectangleShape
 ) = composed {
-    val (hover, setHover) = remember { mutableStateOf(false) }
+    val (hover, setHover) = rememberInitialState(false)
     val mod = hoverState(setHover)
     if (hover) mod.background(color.takeOrElse { LocalHoverColor.current }, shape) else mod
 }

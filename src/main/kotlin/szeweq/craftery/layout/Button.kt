@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.compositeOver
+import szeweq.craftery.util.rememberInitialState
 
 @Composable
 fun DesktopButton(
@@ -23,7 +24,7 @@ fun DesktopButton(
     contentPadding: PaddingValues = ButtonDefaults.ContentPadding,
     content: @Composable RowScope.() -> Unit
 ) {
-    val hover = remember { mutableStateOf(false) }
+    val hover = rememberInitialState(false)
     Button(
         onClick,
         modifier.hoverState(hover.component2()),
