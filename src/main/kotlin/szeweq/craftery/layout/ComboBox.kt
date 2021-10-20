@@ -1,13 +1,15 @@
 package szeweq.craftery.layout
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
+import androidx.compose.material.DropdownMenu
+import androidx.compose.material.DropdownMenuItem
+import androidx.compose.material.Icon
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.state.ToggleableState
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import szeweq.craftery.util.and
