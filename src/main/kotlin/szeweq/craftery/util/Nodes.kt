@@ -1,7 +1,6 @@
 package szeweq.craftery.util
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import org.objectweb.asm.tree.AbstractInsnNode
