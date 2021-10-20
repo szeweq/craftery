@@ -50,12 +50,12 @@ fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
             Modifier.size(16.dp).align(Alignment.CenterStart).scrollAction(scope, lazyListState, -200f)
         )
         withProviders(
-            LocalTextStyle provides TextStyle(fontSize = 13.sp),
+            LocalTextStyle provides LocalTextStyle.current.merge(MaterialTheme.typography.caption),
             LocalHoverColor provides LocalTabHoverColor.current,
             LocalContentAlpha provides 1f
         ) {
             LazyRow(
-                Modifier.matchParentSize().padding(horizontal = 16.dp),
+                Modifier.matchParentSize().padding(horizontal = 20.dp),
                 lazyListState,
                 verticalAlignment = Alignment.Bottom
             ) {
