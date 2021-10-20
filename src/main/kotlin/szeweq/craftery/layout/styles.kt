@@ -24,7 +24,8 @@ val appTypography = Typography(
     h5 = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 24.sp),
     body1 = TextStyle(fontWeight = FontWeight.Normal, fontSize = 16.sp),
     body2 = TextStyle(fontWeight = FontWeight.Normal, fontSize = 14.sp),
-    button = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp, letterSpacing = 0.5.sp)
+    button = TextStyle(fontWeight = FontWeight.SemiBold, fontSize = 14.sp, letterSpacing = 0.5.sp),
+    caption = TextStyle(fontWeight = FontWeight.Normal, fontSize = 12.sp)
 )
 
 @Composable

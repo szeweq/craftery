@@ -1,10 +1,7 @@
 package szeweq.craftery.layout
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.DropdownMenu
-import androidx.compose.material.DropdownMenuItem
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
@@ -50,7 +47,7 @@ fun ComboBoxItem(
     onClick and LocalDismissMethod.current,
     modifier.heightIn(min = 32.dp, max = 32.dp),
     contentPadding = contentPadding,
-    content = ComposeScopeText(text, fontSize = 13.sp)
+    content = ComposeScopeText(text)
 )
 
 @Composable
@@ -62,7 +59,8 @@ private fun ComboBoxLayout(name: String, content: @Composable ColumnScope.() -> 
         Icon(Icons.Default.ArrowDropDown, "Dropdown", Modifier.size(16.dp))
     }
     withProviders(
-        LocalDismissMethod provides dismiss
+        LocalDismissMethod provides dismiss,
+        LocalTextStyle provides LocalTextStyle.current.merge(MaterialTheme.typography.caption)
     ) {
         DropdownMenu(menuToggle.value, dismiss, content = content)
     }

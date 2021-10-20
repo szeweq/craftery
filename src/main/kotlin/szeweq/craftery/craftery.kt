@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.singleWindowApplication
 import szeweq.craftery.layout.*
+import szeweq.craftery.util.and
 import szeweq.craftery.util.bind
 import szeweq.craftery.util.logTime
 import szeweq.craftery.util.rememberInitialState
@@ -55,29 +56,36 @@ fun topBar() {
             val menuToggle = rememberInitialState(false)
             val iconSize = 24.dp
             val dismiss = menuToggle.bind(false)
+            withProviders(
+                LocalDismissMethod provides dismiss
+            ) {
+                DropdownMenu(menuToggle.value, dismiss) {
+                    menuContent()
+                }
+            }
             IconButton(menuToggle.bind(true)) {
                 Icon(Icons.Default.Menu, "Menu", Modifier.size(iconSize))
-            }
-            DropdownMenu(menuToggle.value, dismiss, offset = DpOffset(-iconSize, 0.dp)) {
-                menuContent(dismiss)
             }
         }
     }
 }
 
 @Composable
-fun menuContent(dismiss: () -> Unit) {
+fun menuContent() {
     val h = 32.dp
     val menuPadding = PaddingValues(horizontal = 8.dp)
     val mod = Modifier.hover().heightIn(min = h, max = h)
-    for ((text, fn) in menuActions) {
-        DropdownMenuItem(
-            { fn(); dismiss() },
-            mod,
-            contentPadding = menuPadding,
-            content = ComposeScopeText(text, fontSize = 13.sp)
-        )
+    ProvideTextStyle(MaterialTheme.typography.caption) {
+        for ((text, fn) in menuActions) {
+            DropdownMenuItem(
+                fn and LocalDismissMethod.current,
+                mod,
+                contentPadding = menuPadding,
+                content = ComposeScopeText(text)
+            )
+        }
     }
+
 }
 
 val menuActions: Array<Pair<String, () -> Unit>> = arrayOf(

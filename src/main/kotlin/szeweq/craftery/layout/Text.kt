@@ -6,10 +6,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.LocalContentAlpha
-import androidx.compose.material.LocalContentColor
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -45,16 +42,26 @@ fun ThreeLinesItem(item: Triple<String, String, String>, second: String, third: 
  * Returns a simple text component that only uses [text] and [fontSize] parameters.
  * It saves a lot of bytecode size if used inside scoped components (rows, columns, buttons, etc.).
  */
-fun ComposeScopeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Composable Any.() -> Unit = {
-    Text(text, fontSize = fontSize)
+@Composable
+fun ComposeScopeText(
+    text: String,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    style: TextStyle = LocalTextStyle.current
+): @Composable Any.() -> Unit = {
+    Text(text, fontSize = fontSize, style = style)
 }
 
 /**
  * Returns a simple text component that only uses [text] and [fontSize] parameters.
  * It saves a lot of bytecode size if used inside another component that does not use any scope.
  */
-fun ComposeText(text: String, fontSize: TextUnit = TextUnit.Unspecified): @Composable () -> Unit = {
-    Text(text, fontSize = fontSize)
+@Composable
+fun ComposeText(
+    text: String,
+    fontSize: TextUnit = TextUnit.Unspecified,
+    style: TextStyle = LocalTextStyle.current
+): @Composable () -> Unit = {
+    Text(text, fontSize = fontSize, style = style)
 }
 
 @Composable
