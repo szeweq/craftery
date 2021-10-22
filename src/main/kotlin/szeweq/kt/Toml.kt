@@ -1,4 +1,4 @@
-package szeweq.craftery.util
+package szeweq.kt
 
 import com.electronwill.nightconfig.core.Config
 

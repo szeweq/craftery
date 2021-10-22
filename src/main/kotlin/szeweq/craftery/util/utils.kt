@@ -11,15 +11,8 @@ import java.util.concurrent.CompletableFuture
  */
 fun <T> MutableState<T>.bind(value: T): () -> Unit = { this.value = value }
 
-fun <T> ((T) -> Unit).bind(value: T): () -> Unit = { this(value) }
-
 @Composable
 fun <T> rememberInitialState(value: T): MutableState<T> = remember { mutableStateOf(value) }
-
-infix fun (() -> Unit).and(other: () -> Unit): () -> Unit = {
-    this()
-    other()
-}
 
 /**
  * Method fix for Kotlin code.

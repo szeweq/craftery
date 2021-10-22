@@ -1,4 +1,4 @@
-package szeweq.craftery.util;
+package szeweq.kt;
 
 import kotlin.Pair;
 import org.jetbrains.annotations.NotNull;

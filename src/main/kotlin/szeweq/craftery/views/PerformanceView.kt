@@ -15,8 +15,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.addOutline
-import androidx.compose.ui.graphics.drawscope.DrawStyle
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
@@ -24,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flow
 import szeweq.craftery.layout.*
-import szeweq.craftery.util.KtUtil
+import szeweq.kt.KtUtil
 import szeweq.craftery.util.TimeLogManager
 import szeweq.craftery.util.ValueHistory
 import kotlin.math.max

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.jetbrains.annotations.NotNull;
 import szeweq.craftery.util.IntPair;
 import szeweq.craftery.util.JsonUtil;
-import szeweq.craftery.util.KtUtil;
+import szeweq.kt.KtUtil;
 
 import java.io.IOException;
 import java.util.Collections;

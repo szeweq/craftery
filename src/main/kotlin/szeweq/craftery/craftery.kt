@@ -11,17 +11,15 @@ import androidx.compose.runtime.key
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.singleWindowApplication
 import szeweq.craftery.layout.*
-import szeweq.craftery.util.and
 import szeweq.craftery.util.bind
 import szeweq.craftery.util.logTime
 import szeweq.craftery.util.rememberInitialState
 import szeweq.craftery.views.*
+import szeweq.kt.and
 
 fun startApp() =
     singleWindowApplication(visible = true, title = Craftery.APP_TITLE, content = app)

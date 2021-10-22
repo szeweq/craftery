@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.flowOn
 import org.objectweb.asm.tree.AbstractInsnNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.InsnList
+import szeweq.kt.KtUtil
 import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.io.InputStream

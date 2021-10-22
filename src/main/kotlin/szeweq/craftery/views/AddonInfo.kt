@@ -1,7 +1,6 @@
 package szeweq.craftery.views
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Button
 import androidx.compose.material.Card
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
@@ -16,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import szeweq.craftery.cfapi.AddonSearch
 import szeweq.craftery.layout.*
 import szeweq.craftery.util.FileLoader
-import szeweq.craftery.util.KtUtil
+import szeweq.kt.KtUtil
 
 class AddonInfo(private val addon: AddonSearch): View(addon.name) {
 

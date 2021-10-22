@@ -5,7 +5,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
 import szeweq.craftery.scan.ScanInfo
-import szeweq.craftery.util.KtUtil
 import szeweq.craftery.util.entryPairStream
 import java.util.stream.Stream
 

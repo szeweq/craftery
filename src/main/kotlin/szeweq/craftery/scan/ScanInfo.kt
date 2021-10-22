@@ -10,6 +10,8 @@ import org.objectweb.asm.tree.FieldNode
 import szeweq.craftery.mcdata.DataResourceType
 import szeweq.craftery.mcdata.ResourceType
 import szeweq.craftery.util.*
+import szeweq.kt.KtUtil
+import szeweq.kt.getList
 import java.io.InputStream
 import java.util.function.Consumer
 import java.util.stream.Stream

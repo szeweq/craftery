@@ -5,6 +5,7 @@ import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.MethodInsnNode
 import szeweq.craftery.util.*
+import szeweq.kt.KtUtil
 
 class LazyOptionalInfo(classes: ClassNodeMap, classNode: ClassNode, fields: List<FieldNode>) {
     val name: String = classNode.name

@@ -9,8 +9,9 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import szeweq.craftery.util.and
 import szeweq.craftery.util.bind
+import szeweq.kt.and
+import szeweq.kt.bind
 import szeweq.craftery.util.rememberInitialState
 
 val LocalDismissMethod = staticCompositionLocalOf { {} }

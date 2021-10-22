@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.future.await
@@ -30,10 +29,10 @@ import szeweq.craftery.net.Downloader
 import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
 import szeweq.craftery.util.bind
+import szeweq.kt.bind
 import java.io.InputStream
 import java.net.URLEncoder
 import java.util.zip.ZipInputStream
-import kotlin.time.measureTime
 
 class FileLookup(
     private val filename: String,
