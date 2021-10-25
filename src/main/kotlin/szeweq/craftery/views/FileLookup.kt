@@ -11,6 +11,7 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.PointerIcon
+import androidx.compose.ui.input.pointer.PointerIconDefaults
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +64,7 @@ class FileLookup(
                 Card(Modifier.fillMaxWidth(0.75f).padding(4.dp)) { Column {
                     for (i in lookups.indices) {
                         Row(Modifier.fillMaxWidth().hover(), verticalAlignment = Alignment.CenterVertically) {
-                            Checkbox(checks[i], { checks[i] = it }, Modifier.pointerHoverIcon(PointerIcon.Hand))
+                            Checkbox(checks[i], { checks[i] = it }, Modifier.pointerHoverIcon(PointerIconDefaults.Hand))
                             Column {
                                 val l = lookups[i]
                                 Text(l.title, Modifier.padding(vertical = 2.dp))
