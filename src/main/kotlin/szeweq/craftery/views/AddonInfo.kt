@@ -16,6 +16,7 @@ import szeweq.craftery.cfapi.AddonSearch
 import szeweq.craftery.layout.*
 import szeweq.craftery.util.FileLoader
 import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.DesktopButton
 import szeweq.desktopose.hover.hover
 import szeweq.kt.KtUtil

@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.pointer.PointerIcon
 import androidx.compose.ui.input.pointer.PointerIconDefaults
 import androidx.compose.ui.input.pointer.pointerHoverIcon
 import androidx.compose.ui.text.TextStyle
@@ -23,19 +22,23 @@ import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.future.await
 import szeweq.craftery.cfapi.CFAPI
-import szeweq.craftery.layout.*
+import szeweq.craftery.layout.CenteredColumn
+import szeweq.craftery.layout.ModifierMaxSize
+import szeweq.craftery.layout.TextH5
+import szeweq.craftery.layout.View
 import szeweq.craftery.lookup.*
 import szeweq.craftery.mcdata.Modpack
 import szeweq.craftery.net.Downloader
 import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
-import szeweq.craftery.util.bind
 import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.core.bind
 import szeweq.desktopose.hover.DesktopButton
 import szeweq.desktopose.hover.LocalHoverColor
 import szeweq.desktopose.hover.hover
 import szeweq.desktopose.hover.hoverState
-import szeweq.kt.bind
+import szeweq.desktopose.progress.MessageProgressState
+import szeweq.desktopose.progress.ProgressCard
 import java.io.InputStream
 import java.net.URLEncoder
 import java.util.zip.ZipInputStream
@@ -91,7 +94,7 @@ class FileLookup(
                 CenteredColumn(ModifierMaxSize) {
                     Text("Loading lookups...", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
                     val mod = Modifier.fillMaxWidth(0.75f).padding(4.dp)
-                    if (downloadProgress.isActive())
+                    if (downloadProgress.isActive)
                         ProgressCard(downloadProgress, mod)
                     ProgressCard(scanProgress, mod)
                 }

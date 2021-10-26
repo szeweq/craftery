@@ -2,6 +2,7 @@ package szeweq.craftery.util;
 
 import szeweq.craftery.net.Downloader;
 import szeweq.craftery.net.Downloader;
+import szeweq.desktopose.core.LongBiConsumer;
 
 import java.io.*;
 import java.util.Objects;

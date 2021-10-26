@@ -25,13 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.LocalHoverColor
 import szeweq.desktopose.hover.hover
+import szeweq.desktopose.progress.LinearIndicator
 
 val tabShape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp)
 
@@ -87,7 +87,7 @@ fun ViewTab(v: View, activate: () -> Unit) {
             .clip(tabShape),
         propagateMinConstraints = true
     ) {
-        if (v.progress.isActive()) LinearIndicator(
+        if (v.progress.isActive) LinearIndicator(
             v.progress,
             Modifier.matchParentSize().padding(bottom = 24.dp),
             LocalTabProgressColor.current

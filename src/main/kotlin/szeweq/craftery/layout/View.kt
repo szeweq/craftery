@@ -6,6 +6,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.cancel
 import szeweq.craftery.util.Selection
+import szeweq.desktopose.progress.ProgressState
 
 abstract class View(title: String) {
     val title = mutableStateOf(title)

@@ -7,7 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.jetbrains.skia.Image;
 import szeweq.craftery.net.Downloader;
 import szeweq.craftery.util.ImageCache;
-import szeweq.craftery.util.LongBiConsumer;
+import szeweq.desktopose.core.LongBiConsumer;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

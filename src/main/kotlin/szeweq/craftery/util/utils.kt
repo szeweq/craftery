@@ -1,18 +1,10 @@
 package szeweq.craftery.util
 
-import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.ImageBitmap
 import com.fasterxml.jackson.core.type.TypeReference
 import szeweq.craftery.net.Downloader
+import szeweq.desktopose.core.LongBiConsumer
 import java.util.concurrent.CompletableFuture
-
-/**
- * Method for binding specific values for use in an event.
- */
-fun <T> MutableState<T>.bind(value: T): () -> Unit = { this.value = value }
-
-@Composable
-fun <T> rememberInitialState(value: T): MutableState<T> = remember { mutableStateOf(value) }
 
 /**
  * Method fix for Kotlin code.

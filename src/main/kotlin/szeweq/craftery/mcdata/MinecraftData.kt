@@ -1,9 +1,9 @@
 package szeweq.craftery.mcdata
 
 import szeweq.craftery.net.Downloader
-import szeweq.craftery.util.LongBiConsumer
 import szeweq.craftery.util.downloadJson
 import szeweq.craftery.util.eachEntry
+import szeweq.desktopose.core.LongBiConsumer
 import java.io.ByteArrayOutputStream
 import java.util.*
 import java.util.zip.ZipInputStream

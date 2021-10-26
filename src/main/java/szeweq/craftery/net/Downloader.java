@@ -2,7 +2,7 @@ package szeweq.craftery.net;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import kotlin.Pair;
-import szeweq.craftery.util.LongBiConsumer;
+import szeweq.desktopose.core.LongBiConsumer;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;

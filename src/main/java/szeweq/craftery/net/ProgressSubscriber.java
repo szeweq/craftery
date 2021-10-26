@@ -1,6 +1,6 @@
 package szeweq.craftery.net;
 
-import szeweq.craftery.util.LongBiConsumer;
+import szeweq.desktopose.core.LongBiConsumer;
 
 import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;

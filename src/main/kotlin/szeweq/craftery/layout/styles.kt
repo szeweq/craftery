@@ -11,6 +11,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.LocalHoverColor
 
 val colorsDark = darkColors(
@@ -48,15 +49,4 @@ fun AppTheme(content: @Composable () -> Unit) = MaterialTheme(
         LocalScrollbarStyle provides scrollbar,
         fn = content
     )
-}
-
-/**
- * This is an inline version of CompositionLocalProvider
- */
-@OptIn(InternalComposeApi::class)
-@Composable
-inline fun withProviders(vararg values: ProvidedValue<*>, fn: @Composable () -> Unit) {
-    currentComposer.startProviders(values)
-    fn()
-    currentComposer.endProviders()
 }

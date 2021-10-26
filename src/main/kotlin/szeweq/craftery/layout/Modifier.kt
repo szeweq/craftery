@@ -1,17 +1,13 @@
 package szeweq.craftery.layout
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.forEachGesture
 import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.takeOrElse
-import androidx.compose.ui.input.pointer.*
-import szeweq.craftery.util.rememberInitialState
+import androidx.compose.ui.input.pointer.PointerEvent
+import androidx.compose.ui.input.pointer.changedToDown
+import androidx.compose.ui.input.pointer.consumeDownChange
+import androidx.compose.ui.input.pointer.pointerInput
 
 val ModifierMaxSize = Modifier.fillMaxSize()
 

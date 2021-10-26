@@ -15,15 +15,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.FrameWindowScope
 import androidx.compose.ui.window.singleWindowApplication
 import szeweq.craftery.layout.*
-import szeweq.craftery.util.bind
 import szeweq.craftery.util.logTime
-import szeweq.craftery.util.rememberInitialState
 import szeweq.craftery.views.*
-import szeweq.desktopose.core.LocalDismissMethod
-import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.core.*
 import szeweq.desktopose.hover.DesktopButton
 import szeweq.desktopose.hover.hover
-import szeweq.kt.and
 
 fun startApp() =
     singleWindowApplication(visible = true, title = Craftery.APP_TITLE, content = app)
