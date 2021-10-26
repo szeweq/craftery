@@ -16,37 +16,6 @@ import szeweq.craftery.util.rememberInitialState
 val ModifierMaxSize = Modifier.fillMaxSize()
 
 /**
- * Uses [hoverState] to draw a [shape] with [color].
- */
-fun Modifier.hover(
-    color: Color = Color.Unspecified,
-    shape: Shape = RectangleShape
-) = composed {
-    val (hover, setHover) = rememberInitialState(false)
-    val mod = hoverState(setHover)
-    if (hover) mod.background(color.takeOrElse { LocalHoverColor.current }, shape) else mod
-}
-
-/**
- * Updates hover state when pointer enters or exits the component.
- */
-fun Modifier.hoverState(cb: (Boolean) -> Unit) = pointerInput(cb) {
-    awaitPointerEventScope {
-        while (true) {
-            val event = awaitPointerEvent()
-            when (event.type) {
-                PointerEventType.Enter -> {
-                    cb(true)
-                }
-                PointerEventType.Exit -> {
-                    cb(false)
-                }
-            }
-        }
-    }
-}
-
-/**
  * Checks which mouse button was pressed while filtering pointer input events.
  */
 fun Modifier.clickableNumbered(vararg buttons: Int, onClick: (Int) -> Unit) = pointerInput(onClick) {

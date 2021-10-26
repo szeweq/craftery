@@ -30,6 +30,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import szeweq.desktopose.hover.LocalHoverColor
+import szeweq.desktopose.hover.hover
 
 val tabShape = RoundedCornerShape(4.dp, 4.dp, 0.dp, 0.dp)
 

@@ -19,6 +19,10 @@ import szeweq.craftery.util.bind
 import szeweq.craftery.util.logTime
 import szeweq.craftery.util.rememberInitialState
 import szeweq.craftery.views.*
+import szeweq.desktopose.core.LocalDismissMethod
+import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.hover.DesktopButton
+import szeweq.desktopose.hover.hover
 import szeweq.kt.and
 
 fun startApp() =
@@ -79,7 +83,7 @@ fun menuContent() {
                 fn and LocalDismissMethod.current,
                 mod,
                 contentPadding = menuPadding,
-                content = ComposeScopeText(text)
+                content = UseScopeText(text)
             )
         }
     }

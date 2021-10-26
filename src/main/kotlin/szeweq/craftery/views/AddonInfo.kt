@@ -15,6 +15,9 @@ import androidx.compose.ui.unit.sp
 import szeweq.craftery.cfapi.AddonSearch
 import szeweq.craftery.layout.*
 import szeweq.craftery.util.FileLoader
+import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.hover.DesktopButton
+import szeweq.desktopose.hover.hover
 import szeweq.kt.KtUtil
 
 class AddonInfo(private val addon: AddonSearch): View(addon.name) {
@@ -34,7 +37,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
             if (lf != null) {
                 DesktopButton({
                     ViewManager.open(FileLookup(lf.fileName, FileLoader.fromURL(lf.downloadUrl), addon.categorySection.packageType != 6))
-                }, content = ComposeScopeText("Lookup"))
+                }, content = UseScopeText("Lookup"))
             }
         }
         withProviders(LocalTextStyle provides TextStyle(fontSize = 12.sp)) {

@@ -11,12 +11,12 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import szeweq.desktopose.hover.LocalHoverColor
 
 val colorsDark = darkColors(
     primary = Color(0xff388e3c),
     onPrimary = Color(0xff002200)
 )
-val LocalHoverColor = compositionLocalOf { Color.Black.copy(0.12f) }
 val LocalTabProgressColor = compositionLocalOf { Color.White }
 val LocalTabHoverColor = compositionLocalOf { Color.White }
 

@@ -25,6 +25,7 @@ import szeweq.craftery.layout.*
 import szeweq.kt.KtUtil
 import szeweq.craftery.util.TimeLogManager
 import szeweq.craftery.util.ValueHistory
+import szeweq.desktopose.hover.hover
 import kotlin.math.max
 
 object PerformanceView : View("Performance") {

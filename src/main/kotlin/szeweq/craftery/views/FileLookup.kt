@@ -30,6 +30,11 @@ import szeweq.craftery.net.Downloader
 import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
 import szeweq.craftery.util.bind
+import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.hover.DesktopButton
+import szeweq.desktopose.hover.LocalHoverColor
+import szeweq.desktopose.hover.hover
+import szeweq.desktopose.hover.hoverState
 import szeweq.kt.bind
 import java.io.InputStream
 import java.net.URLEncoder
@@ -77,7 +82,7 @@ class FileLookup(
                         workState.bind(1),
                         Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
                         enabled = enabled.value,
-                        content = ComposeScopeText("Continue")
+                        content = UseScopeText("Continue")
                     )
                 } }
             }

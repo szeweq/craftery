@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import szeweq.craftery.layout.*
 import szeweq.craftery.mcdata.MinecraftData
 import szeweq.craftery.mcdata.Models
+import szeweq.desktopose.hover.hover
 
 class RecipeCreator: View("Create recipes") {
     private val exampleVanillaItems = arrayOf(

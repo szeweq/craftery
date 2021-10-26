@@ -11,10 +11,12 @@ group = "szewek.craftery"
 val asmVersion = "9.2"
 val jacksonVersion = "2.13.0"
 val composeVersion = "1.0.0-beta1"
+val desktoposeVersion = "main-SNAPSHOT"
 
 repositories {
     mavenCentral()
     maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
+    maven { url = uri("https://jitpack.io") }
     google()
 }
 
@@ -32,6 +34,11 @@ compose.desktop {
 
 dependencies {
     implementation(compose.desktop.currentOs)
+
+    implementation("com.github.szeweq.desktopose:core:$desktoposeVersion")
+    implementation("com.github.szeweq.desktopose:hover:$desktoposeVersion")
+    implementation("com.github.szeweq.desktopose:combo-box:$desktoposeVersion")
+    implementation("com.github.szeweq.desktopose:progress:$desktoposeVersion")
 
     implementation("com.fasterxml.jackson.core:jackson-core:$jacksonVersion")
     implementation("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")

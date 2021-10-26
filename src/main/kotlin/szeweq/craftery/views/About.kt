@@ -7,6 +7,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import szeweq.craftery.layout.*
+import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.hover.DesktopButton
 
 object About: View("About") {
 
@@ -18,7 +20,7 @@ object About: View("About") {
             val uriHandler = LocalUriHandler.current
             DesktopButton(onClick = {
                 uriHandler.openUri("https://github.com/Szeweq/craftery")
-            }, content = ComposeScopeText("Github"))
+            }, content = UseScopeText("Github"))
         }
     }
 }

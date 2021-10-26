@@ -24,6 +24,8 @@ import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import szeweq.craftery.cfapi.*
 import szeweq.craftery.layout.*
+import szeweq.desktopose.combobox.ComboBox
+import szeweq.desktopose.hover.hover
 
 class ModSearch: View("Search mods") {
     private val search = mutableStateOf("")

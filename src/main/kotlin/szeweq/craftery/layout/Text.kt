@@ -38,32 +38,6 @@ fun ThreeLinesItem(item: Triple<String, String, String>, second: String, third: 
     Text("$third: " + item.third)
 }
 
-/**
- * Returns a simple text component that only uses [text] and [fontSize] parameters.
- * It saves a lot of bytecode size if used inside scoped components (rows, columns, buttons, etc.).
- */
-@Composable
-fun ComposeScopeText(
-    text: String,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    style: TextStyle = LocalTextStyle.current
-): @Composable Any.() -> Unit = {
-    Text(text, fontSize = fontSize, style = style)
-}
-
-/**
- * Returns a simple text component that only uses [text] and [fontSize] parameters.
- * It saves a lot of bytecode size if used inside another component that does not use any scope.
- */
-@Composable
-fun ComposeText(
-    text: String,
-    fontSize: TextUnit = TextUnit.Unspecified,
-    style: TextStyle = LocalTextStyle.current
-): @Composable () -> Unit = {
-    Text(text, fontSize = fontSize, style = style)
-}
-
 @Composable
 fun TextH5(text: String, modifier: Modifier = Modifier) {
     val textColor = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
