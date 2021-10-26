@@ -79,7 +79,7 @@ fun menuContent() {
                 fn and LocalDismissMethod.current,
                 mod,
                 contentPadding = menuPadding,
-                content = UseScopeText(text)
+                content = UseScopeText(text, style = LocalTextStyle.current)
             )
         }
     }
