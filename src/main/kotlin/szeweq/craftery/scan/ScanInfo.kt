@@ -11,10 +11,7 @@ import org.objectweb.asm.tree.FieldNode
 import org.objectweb.asm.tree.MethodInsnNode
 import szeweq.craftery.mcdata.DataResourceType
 import szeweq.craftery.mcdata.ResourceType
-import szeweq.craftery.util.ClassNodeMap
-import szeweq.craftery.util.JsonUtil
-import szeweq.craftery.util.entryStreamFlow
-import szeweq.craftery.util.fixedDesc
+import szeweq.craftery.util.*
 import szeweq.kt.KtUtil
 import szeweq.kt.getList
 import java.io.InputStream
@@ -145,7 +142,7 @@ class ScanInfo {
 
     fun flowCapabilities() = caps.values.asFlow()
 
-    fun flowLazyOptionals(): Flow<LazyOptionalInfo> = map.classFlow.transform { cl ->
+    fun flowLazyOptionals(): Flow<LazyOptionalInfo> = map.flowClasses.transform { cl ->
         val fl = cl.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
         if (fl.isNotEmpty()) {
             val warnings = mutableMapOf<String, String>()
