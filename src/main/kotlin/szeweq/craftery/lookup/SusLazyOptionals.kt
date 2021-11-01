@@ -2,6 +2,8 @@ package szeweq.craftery.lookup
 
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.transform
 import szeweq.craftery.layout.ThreeLinesItem
 import szeweq.craftery.scan.ScanInfo
 import java.util.function.Consumer
@@ -14,10 +16,10 @@ class SusLazyOptionals: ModLookup<Triple<String, String, String>>("Suspicious La
     override fun ColumnScope.decorate(item: Triple<String, String, String>) =
         ThreeLinesItem(item, "Name", "Generic class")
 
-    override fun gatherItems(si: ScanInfo): Stream<Triple<String, String, String>> {
-        return si.streamLazyOptionals().mapMulti { lo, c: Consumer<Triple<String, String, String>> ->
+    override fun gatherItems(si: ScanInfo): Flow<Triple<String, String, String>> {
+        return si.flowLazyOptionals().transform { lo ->
             for (it in lo.warnings) {
-                c.accept(Triple(lo.name, it.key, it.value))
+                emit(Triple(lo.name, it.key, it.value))
             }
         }
     }

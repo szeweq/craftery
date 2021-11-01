@@ -3,7 +3,6 @@ package szeweq.craftery.scan
 import org.objectweb.asm.tree.FieldInsnNode
 import org.objectweb.asm.tree.InsnList
 import org.objectweb.asm.tree.MethodInsnNode
-import szeweq.craftery.util.filterByInstance
 import szeweq.craftery.util.stream
 import szeweq.craftery.util.toSet
 import java.util.function.Consumer

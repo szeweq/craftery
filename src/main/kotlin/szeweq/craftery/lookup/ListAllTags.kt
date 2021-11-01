@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
+import kotlinx.coroutines.flow.Flow
 import szeweq.craftery.scan.ScanInfo
-import szeweq.craftery.util.entryPairStream
-import java.util.stream.Stream
+import szeweq.kt.entryPairFlow
 
 class ListAllTags: ModLookup<Pair<String, Set<String>>>("Tags") {
     override val explain = "Table displays all found tags"
@@ -17,7 +17,7 @@ class ListAllTags: ModLookup<Pair<String, Set<String>>>("Tags") {
         Text("Values: " + item.second)
     }
 
-    override fun gatherItems(si: ScanInfo): Stream<Pair<String, Set<String>>> {
-        return si.tags.entryPairStream()
+    override fun gatherItems(si: ScanInfo): Flow<Pair<String, Set<String>>> {
+        return si.tags.entryPairFlow()
     }
 }

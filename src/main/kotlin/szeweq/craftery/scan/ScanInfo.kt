@@ -2,14 +2,19 @@ package szeweq.craftery.scan
 
 import com.electronwill.nightconfig.core.Config
 import com.fasterxml.jackson.databind.node.ArrayNode
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.stream.consumeAsFlow
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
 import org.objectweb.asm.tree.FieldNode
+import org.objectweb.asm.tree.MethodInsnNode
 import szeweq.craftery.mcdata.DataResourceType
 import szeweq.craftery.mcdata.ResourceType
-import szeweq.craftery.util.*
+import szeweq.craftery.util.ClassNodeMap
+import szeweq.craftery.util.JsonUtil
+import szeweq.craftery.util.entryStreamFlow
+import szeweq.craftery.util.fixedDesc
 import szeweq.kt.KtUtil
 import szeweq.kt.getList
 import java.io.InputStream
@@ -120,32 +125,46 @@ class ScanInfo {
         return mutableSetOf<String>().apply {
             val c = caps[typename]
             if (c != null) {
-                this += c.fields
+                addAll(c.fields)
                 for (sup in c.supclasses) {
                     val cs = caps[sup]
                     if (cs != null) {
-                        this += cs.fields
+                        addAll(cs.fields)
                     }
                 }
             }
         }
     }
 
-    fun streamStaticFields(parallel: Boolean): Stream<Pair<ClassNode, FieldNode>> = map.getAllClassFields(parallel)
+    fun flowStaticFields(): Flow<Pair<ClassNode, FieldNode>> = map.allClassFields
         .filter { (_, n) ->
             if (n.access and Opcodes.ACC_STATIC != 0 && n.desc != null) {
                 n.desc.let { it.startsWith('L') && !it.startsWith("java/") }
             } else false
         }
 
-    fun streamCapabilities() = KtUtil.streamValuesFrom(caps)
+    fun flowCapabilities() = caps.values.asFlow()
 
-    fun streamLazyOptionals(): Stream<LazyOptionalInfo> = map.parallelClassStream
-        .mapMulti { cl, c: Consumer<LazyOptionalInfo> ->
-            val f = cl.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
-            if (f.isNotEmpty()) {
-                val loi = LazyOptionalInfo(map, cl, f)
-                if (loi.warnings.isNotEmpty()) c.accept(loi)
-            }
+    fun flowLazyOptionals(): Flow<LazyOptionalInfo> = map.classFlow.transform { cl ->
+        val fl = cl.fields.filter { it.desc == TypeNames.LAZY_OPTIONAL }
+        if (fl.isNotEmpty()) {
+            val warnings = mutableMapOf<String, String>()
+            fl.asFlow().filter { f ->
+                map.flowUsagesOf(cl, f).firstOrNull { (_, _, i) ->
+                    if (i.opcode == Opcodes.GETFIELD) {
+                        val ni = i.next
+                        ni is MethodInsnNode
+                                && ni.opcode == Opcodes.INVOKEVIRTUAL
+                                && ni.owner == f.fixedDesc
+                                && ni.name == "invalidate"
+                    }
+                    false
+                } == null
+            }.map {
+                val k = it.name.intern()
+                k to (if (it.signature == null) "NONE" else Scanner.genericFromSignature(it.signature))
+            }.collect { warnings[it.first] = it.second }
+            if (warnings.isNotEmpty()) emit(LazyOptionalInfo(cl.name, warnings))
         }
+    }
 }

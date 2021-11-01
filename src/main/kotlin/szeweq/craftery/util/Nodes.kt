@@ -21,16 +21,12 @@ import java.util.zip.ZipInputStream
 
 val FieldNode.fixedDesc: String get() = if (desc.startsWith('L')) desc.substring(1, desc.length - 1) else desc
 
-inline fun <reified K, reified V> Map<K, V>.entryPairStream(): Stream<Pair<K, V>> =
-    KtUtil.streamEntriesFrom(this)
 fun InsnList.stream(): Stream<AbstractInsnNode> =
     StreamSupport.stream(
         Spliterators.spliterator(iterator(), size().toLong(), Spliterator.ORDERED),
         size() > 10
     )
 fun <T> Stream<T>.toSet(): Set<T> = collect(Collectors.toUnmodifiableSet())
-
-inline fun <reified R> Stream<*>.filterByInstance(): Stream<R> = KtUtil.streamInstances(this, R::class.java)
 
 /**
  * Iterates over each entry found in ZIP input stream.
