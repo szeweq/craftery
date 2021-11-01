@@ -25,6 +25,7 @@ import kotlinx.coroutines.launch
 import szeweq.craftery.cfapi.*
 import szeweq.craftery.layout.*
 import szeweq.desktopose.combobox.ComboBox
+import szeweq.desktopose.core.UseScopeText
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.hover
 
@@ -52,9 +53,10 @@ class ModSearch: View("Search mods") {
                     itemBox(item)
                 } else {
                     item {
-                        Box(itemMod, contentAlignment = Alignment.Center) {
-                            Text(if (progress.isActive) "Searching..." else "Empty")
-                        }
+                        Box(itemMod,
+                            contentAlignment = Alignment.Center,
+                            content = UseScopeText(if (progress.isActive) "Searching..." else "Empty")
+                        )
                     }
                 }
             }
