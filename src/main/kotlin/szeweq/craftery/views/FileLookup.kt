@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collectIndexed
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.future.await
@@ -172,7 +173,7 @@ class FileLookup(
                 i++
             }
             downloadProgress.setFinished()
-        } else flow {
+        }.buffer() else flow {
             downloadProgress.message = "Downloading file..."
             downloadProgress.setIndeterminate()
             val fi = loader.load(downloadProgress).await()
