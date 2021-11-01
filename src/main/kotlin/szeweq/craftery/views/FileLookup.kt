@@ -1,8 +1,9 @@
 package szeweq.craftery.views
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -112,23 +113,18 @@ class FileLookup(
     @Composable
     private fun sideList() {
         Column(Modifier.width(200.dp)) {
-            val bgBase = MaterialTheme.colors.onSurface
-            val bgSelected = bgBase.copy(0.25f)
-            val bgHover = LocalHoverColor.current
-            val bgSelectedHover = bgBase.copy(0.4f)
-            val hover = remember { lookups.map { false }.toMutableStateList() }
+            val bgBase = MaterialTheme.colors.onSurface.copy(0.25f)
+            val indication = LocalIndication.current
             lookups.forEachIndexed { i, l ->
-                val bg = remember(index.value, hover[i]) {
-                    if (index.value == i) {
-                        if (hover[i]) bgSelectedHover else bgSelected
-                    } else {
-                        if (hover[i]) bgHover else Color.Transparent
-                    }
+                val bg = remember(index.value) {
+                    if (index.value == i) bgBase else Color.Transparent
                 }
+                val interactionSource = remember { MutableInteractionSource() }
                 Box(Modifier
-                    .hoverState { hover[i] = it }
                     .background(bg, MaterialTheme.shapes.medium)
-                    .clickable(onClick = index.bind(i))
+                    .indication(interactionSource, indication)
+                    .hoverable(interactionSource)
+                    .selectable(index.value == i, interactionSource, indication, onClick = index.bind(i))
                 ) { sideListItem(i, l) }
             }
         }
