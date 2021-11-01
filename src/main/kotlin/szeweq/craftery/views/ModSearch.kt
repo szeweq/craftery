@@ -102,7 +102,6 @@ class ModSearch: View("Search mods") {
                     Modifier
                         .weight(1f)
                         .padding(start = 8.dp, end = 8.dp)
-                        .fillMaxWidth()
                         .onKeyEvent { if (it.key == Key.Enter && it.type == KeyEventType.KeyUp) findMods(); false }
                 )
                 IconButton(::findMods, enabled = search.value.isNotEmpty()) {
