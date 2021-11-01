@@ -3,7 +3,6 @@ package szeweq.craftery.scan
 import com.electronwill.nightconfig.core.Config
 import com.fasterxml.jackson.databind.node.ArrayNode
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.stream.consumeAsFlow
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.Opcodes
 import org.objectweb.asm.tree.ClassNode
@@ -15,8 +14,6 @@ import szeweq.craftery.util.*
 import szeweq.kt.KtUtil
 import szeweq.kt.getList
 import java.io.InputStream
-import java.util.function.Consumer
-import java.util.stream.Stream
 import java.util.zip.ZipInputStream
 
 class ScanInfo {
