@@ -42,28 +42,21 @@ class ModSearch: View("Search mods") {
     override fun content() = Scaffold(
         topBar = topBar
     ) {
-        Box {
-            val state = rememberLazyListState()
-            val itemMod = Modifier.fillMaxWidth().height(64.dp)
-            LazyColumn(ModifierMaxSize.padding(horizontal = 12.dp), state = state) {
-                // Prevent displaying out-of-bounds item layouts
-                if (!modlist.isEmpty()) items(modlist.size, this@ModSearch::getSlugFromList) {
-                    if (it >= modlist.size) return@items
-                    val item = modlist[it]
-                    itemBox(item)
-                } else {
-                    item {
-                        Box(itemMod,
-                            contentAlignment = Alignment.Center,
-                            content = UseScopeText(if (progress.isActive) "Searching..." else "Empty")
-                        )
-                    }
+        val itemMod = Modifier.fillMaxWidth().height(64.dp)
+        ScrollableColumn {
+            // Prevent displaying out-of-bounds item layouts
+            if (!modlist.isEmpty()) items(modlist.size, this@ModSearch::getSlugFromList) {
+                if (it >= modlist.size) return@items
+                val item = modlist[it]
+                itemBox(item)
+            } else {
+                item {
+                    Box(itemMod,
+                        contentAlignment = Alignment.Center,
+                        content = UseScopeText(if (progress.isActive) "Searching..." else "Empty")
+                    )
                 }
             }
-            VerticalScrollbar(
-                rememberScrollbarAdapter(state),
-                Modifier.align(Alignment.CenterEnd).fillMaxHeight()
-            )
         }
     }
 

@@ -43,40 +43,30 @@ class LanguageEditor: View("Language Editor") {
     @OptIn(ExperimentalFoundationApi::class)
     @Composable
     override fun content() = Scaffold(topBar = { topBar() }) {
-        Box {
-            val state = rememberLazyListState()
-            LazyColumn(ModifierMaxSize.padding(end = 12.dp), state = state) {
-                items(lang) {
-                    Box(Modifier.fillMaxWidth().hover(shape = MaterialTheme.shapes.medium)
-                    ) {
-                        Column {
-                            Text(it.key, Modifier.padding(2.dp))
-                            Row {
-                                val mod = Modifier.weight(0.5f).padding(2.dp)
-                                ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
-                                    Column(mod) {
-                                        Text("Original", fontWeight = FontWeight.Bold)
-                                        Text(it.orig)
-                                    }
-                                    Column(mod) {
-                                        Text("Translated", fontWeight = FontWeight.Bold)
-                                        SimpleTextField(
-                                            it.trans,
-                                            it::trans::set,
-                                            Modifier.fillMaxWidth(),
-                                            background = LocalHoverColor.current
-                                        )
-                                    }
-                                }
+        ScrollableColumn {
+            items(lang) {
+                Column(Modifier.fillMaxWidth().hover(shape = MaterialTheme.shapes.medium)) {
+                    Text(it.key, Modifier.padding(2.dp))
+                    Row {
+                        val mod = Modifier.weight(0.5f).padding(2.dp)
+                        ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
+                            Column(mod) {
+                                Text("Original", fontWeight = FontWeight.Bold)
+                                Text(it.orig)
+                            }
+                            Column(mod) {
+                                Text("Translated", fontWeight = FontWeight.Bold)
+                                SimpleTextField(
+                                    it.trans,
+                                    it::trans::set,
+                                    Modifier.fillMaxWidth(),
+                                    background = LocalHoverColor.current
+                                )
                             }
                         }
                     }
                 }
             }
-            VerticalScrollbar(
-                rememberScrollbarAdapter(state),
-                Modifier.align(Alignment.CenterEnd).fillMaxHeight()
-            )
         }
     }
 

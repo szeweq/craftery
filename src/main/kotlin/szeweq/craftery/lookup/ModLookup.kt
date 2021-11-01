@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
 import szeweq.craftery.layout.ModifierMaxSize
+import szeweq.craftery.layout.ScrollableColumn
 import szeweq.craftery.scan.ScanInfo
 import java.util.stream.Stream
 
@@ -31,19 +32,10 @@ abstract class ModLookup<T>(val title: String) {
 
     @Composable
     fun content() = key(this) {
-        Box(ModifierMaxSize) {
-            if (list.isEmpty()) {
-                Text("This lookup is empty!", Modifier.align(Alignment.Center))
-            } else {
-                val state = rememberLazyListState()
-                LazyColumn(ModifierMaxSize.padding(end = 12.dp), state = state) {
-                    items(list) { item -> Column(Modifier.padding(2.dp)) { decorate(item) } }
-                }
-                VerticalScrollbar(
-                    rememberScrollbarAdapter(state),
-                    Modifier.align(Alignment.CenterEnd).fillMaxHeight()
-                )
-            }
+        if (list.isEmpty()) Box(ModifierMaxSize) {
+            Text("This lookup is empty!", Modifier.align(Alignment.Center))
+        } else ScrollableColumn {
+            items(list) { item -> Column(Modifier.padding(2.dp)) { decorate(item) } }
         }
     }
 
