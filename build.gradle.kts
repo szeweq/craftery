@@ -4,13 +4,13 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 plugins {
     kotlin("jvm") version "1.5.31"
 
-    id("org.jetbrains.compose") version "1.0.0-beta1"
+    id("org.jetbrains.compose") version "1.0.0-beta5"
 }
 group = "szewek.craftery"
 
 val asmVersion = "9.2"
 val jacksonVersion = "2.13.0"
-val composeVersion = "1.0.0-beta1"
+val composeVersion = "1.0.0-beta5"
 val desktoposeVersion = "0.2.0"
 
 repositories {
