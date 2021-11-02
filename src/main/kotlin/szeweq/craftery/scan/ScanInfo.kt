@@ -132,8 +132,9 @@ class ScanInfo {
 
     fun flowStaticFields(): Flow<Pair<ClassNode, FieldNode>> = map.allClassFields
         .filter { (_, n) ->
-            if (n.access and Opcodes.ACC_STATIC != 0 && n.desc != null) {
-                n.desc.let { it.startsWith('L') && !it.startsWith("java/") }
+            if ((n.access and Opcodes.ACC_STATIC) != 0 && n.desc != null && n.desc.startsWith('L')) {
+                val d = n.desc.substring(1)
+                !(d.startsWith("java") || d.startsWith("com/apache"))
             } else false
         }
 
