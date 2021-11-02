@@ -33,8 +33,10 @@ import szeweq.craftery.mcdata.Modpack
 import szeweq.craftery.net.Downloader
 import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
+import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.core.UseScopeText
 import szeweq.desktopose.core.bind
+import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.DesktopButton
 import szeweq.desktopose.hover.LocalHoverColor
 import szeweq.desktopose.hover.hover
@@ -113,27 +115,34 @@ class FileLookup(
 
     @Composable
     private fun sideList() {
-        Column(Modifier.width(200.dp)) {
-            val bgBase = MaterialTheme.colors.onSurface.copy(0.25f)
-            val indication = LocalIndication.current
-            lookups.forEachIndexed { i, l ->
-                val bg = remember(index.value) {
-                    if (index.value == i) bgBase else Color.Transparent
+        Surface(elevation = 1.dp) {
+            Column(Modifier.fillMaxHeight().width(200.dp)) {
+                val bgBase = MaterialTheme.colors.onSurface.copy(0.25f)
+                val indication = LocalIndication.current
+                withProviders(
+                    LocalTextStyle providesMerged MaterialTheme.typography.body2
+                ) {
+                    lookups.forEachIndexed { i, l ->
+                        val bg = remember(index.value) {
+                            if (index.value == i) bgBase else Color.Transparent
+                        }
+                        val interactionSource = remember { MutableInteractionSource() }
+                        sideListItem(i, l, Modifier
+                            .background(bg, MaterialTheme.shapes.medium)
+                            .indication(interactionSource, indication)
+                            .hoverable(interactionSource)
+                            .selectable(index.value == i, interactionSource, indication, onClick = index.bind(i))
+                        )
+                    }
                 }
-                val interactionSource = remember { MutableInteractionSource() }
-                Box(Modifier
-                    .background(bg, MaterialTheme.shapes.medium)
-                    .indication(interactionSource, indication)
-                    .hoverable(interactionSource)
-                    .selectable(index.value == i, interactionSource, indication, onClick = index.bind(i))
-                ) { sideListItem(i, l) }
+
             }
         }
     }
 
     @Composable
-    private fun sideListItem(i: Int, l: ModLookup<*>) {
-        Row(Modifier.padding(8.dp), horizontalArrangement = Arrangement.Center) {
+    private fun sideListItem(i: Int, l: ModLookup<*>, mod: Modifier = Modifier) {
+        Row(mod.padding(8.dp), horizontalArrangement = Arrangement.Center) {
             Text(l.title, Modifier.weight(1f))
             if (checks[i]) Text(
                 l.list.size.toString(),
