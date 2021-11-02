@@ -47,6 +47,31 @@ object PerformanceView : View("Performance") {
     }
 
     @Composable
+    fun memoryGraph(vsize: Int, values: List<Float>) {
+        val prim = MaterialTheme.colors.primary
+        val primv = MaterialTheme.colors.primaryVariant
+        Canvas(Modifier.fillMaxWidth().requiredHeight(80.dp).padding(top = 6.dp).clip(MaterialTheme.shapes.medium)) {
+            drawRect(Color.White, alpha = 0.75F)
+            val (w, h) = size
+            val spart = w / max(1, vsize - 1)
+            val pused = Path().apply {
+                moveTo(0F, h)
+                for (i in 0 until vsize) {
+                    lineTo(spart * i, h - values[i] * h)
+                }
+                lineTo(w, h)
+                close()
+            }
+            drawPath(pused, prim)
+            drawPath(pused, primv, style = Stroke(1f))
+            for (i in 0 until vsize) {
+                drawLine(Color.DarkGray, Offset(spart * i, 0F), Offset(spart * i, h), alpha = 0.5F)
+            }
+
+        }
+    }
+
+    @Composable
     override fun content() {
         Column {
             Card(Modifier.padding(12.dp).fillMaxWidth()) {
@@ -63,27 +88,7 @@ object PerformanceView : View("Performance") {
                 val vused = remember(mem.first) { mem.first.map { it.toFloat() / cmax } }
                 Column(Modifier.padding(8.dp)) {
                     Text("Memory: $txtUsed of $txtTotal")
-                    val prim = MaterialTheme.colors.primary
-                    val primv = MaterialTheme.colors.primaryVariant
-                    Canvas(Modifier.fillMaxWidth().requiredHeight(80.dp).padding(top = 6.dp).clip(MaterialTheme.shapes.medium)) {
-                        drawRect(Color.White, alpha = 0.75F)
-                        val (w, h) = size
-                        val spart = w / max(1, csz - 1)
-                        val pused = Path().apply {
-                            moveTo(0F, h)
-                            for (i in 0 until csz) {
-                                lineTo(spart * i, h - vused[i] * h)
-                            }
-                            lineTo(w, h)
-                            close()
-                        }
-                        drawPath(pused, prim)
-                        drawPath(pused, primv, style = Stroke(1f))
-                        for (i in 0 until csz) {
-                            drawLine(Color.DarkGray, Offset(spart * i, 0F), Offset(spart * i, h), alpha = 0.5F)
-                        }
-
-                    }
+                    memoryGraph(csz, vused)
                 }
             }
             Box {
