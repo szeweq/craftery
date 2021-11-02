@@ -60,5 +60,5 @@ dependencies {
 }
 tasks.withType<KotlinCompile> {
     kotlinOptions.jvmTarget = "16"
-    kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn")
+    kotlinOptions.freeCompilerArgs = listOf("-Xopt-in=kotlin.RequiresOptIn", "-Xlambdas=indy")
 }
