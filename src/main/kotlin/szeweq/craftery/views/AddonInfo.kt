@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.sp
 import szeweq.craftery.cfapi.AddonSearch
 import szeweq.craftery.layout.*
 import szeweq.craftery.util.FileLoader
+import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.core.UseScopeText
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.DesktopButton
@@ -41,7 +42,7 @@ class AddonInfo(private val addon: AddonSearch): View(addon.name) {
                 }, content = UseScopeText("Lookup"))
             }
         }
-        withProviders(LocalTextStyle provides TextStyle(fontSize = 12.sp)) {
+        withProviders(LocalTextStyle providesMerged TextStyle(fontSize = 12.sp)) {
             infoRow("Authors", addon.authors.joinToString { it.name })
             infoRow("Summary", addon.summary)
             infoRow("Download count", addon.downloadCount.toString())

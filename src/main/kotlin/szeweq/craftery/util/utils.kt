@@ -1,6 +1,9 @@
 package szeweq.craftery.util
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.text.TextStyle
 import com.fasterxml.jackson.core.type.TypeReference
 import szeweq.craftery.net.Downloader
 import szeweq.desktopose.core.LongBiConsumer
@@ -23,3 +26,7 @@ inline fun logTime(name: String, fn: () -> Unit) {
     fn()
     TimeLogManager.logNano(name, d)
 }
+
+@Composable
+infix fun ProvidableCompositionLocal<TextStyle>.providesMerged(value: TextStyle) =
+    this provides this.current.merge(value)

@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.LocalHoverColor
 import szeweq.desktopose.hover.hover
@@ -52,7 +53,7 @@ fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
             Modifier.size(16.dp).align(Alignment.CenterStart).scrollAction(scope, lazyListState, -200f)
         )
         withProviders(
-            LocalTextStyle provides LocalTextStyle.current.merge(MaterialTheme.typography.caption),
+            LocalTextStyle providesMerged MaterialTheme.typography.caption,
             LocalHoverColor provides LocalTabHoverColor.current,
             LocalContentAlpha provides 1f
         ) {

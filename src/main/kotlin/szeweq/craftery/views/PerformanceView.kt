@@ -25,6 +25,7 @@ import szeweq.craftery.layout.*
 import szeweq.kt.KtUtil
 import szeweq.craftery.util.TimeLogManager
 import szeweq.craftery.util.ValueHistory
+import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.hover
 import kotlin.math.max
@@ -89,7 +90,7 @@ object PerformanceView : View("Performance") {
                 val state = rememberLazyListState()
                 key(TimeLogManager.lastLog.value) {
                     withProviders(
-                        LocalTextStyle provides TextStyle(fontSize = 12.sp)
+                        LocalTextStyle providesMerged TextStyle(fontSize = 12.sp)
                     ) {
                         LazyColumn(ModifierMaxSize.padding(horizontal = 12.dp), state = state) {
                             val avgs = TimeLogManager.averages()
