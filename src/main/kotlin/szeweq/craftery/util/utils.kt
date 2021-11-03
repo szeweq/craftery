@@ -1,6 +1,7 @@
 package szeweq.craftery.util
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocal
 import androidx.compose.runtime.ProvidableCompositionLocal
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.text.TextStyle
@@ -30,3 +31,7 @@ inline fun logTime(name: String, fn: () -> Unit) {
 @Composable
 infix fun ProvidableCompositionLocal<TextStyle>.providesMerged(value: TextStyle) =
     this provides this.current.merge(value)
+
+@Composable
+infix fun <T> ProvidableCompositionLocal<T>.providesFrom(other: CompositionLocal<T>) =
+    this provides other.current

@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import szeweq.craftery.util.providesFrom
 import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.LocalHoverColor
@@ -54,7 +55,7 @@ fun TabsView(modifier: Modifier = Modifier, views: SnapshotStateList<View>) {
         )
         withProviders(
             LocalTextStyle providesMerged MaterialTheme.typography.caption,
-            LocalHoverColor provides LocalTabHoverColor.current,
+            LocalHoverColor providesFrom LocalTabHoverColor,
             LocalContentAlpha provides 1f
         ) {
             LazyRow(
