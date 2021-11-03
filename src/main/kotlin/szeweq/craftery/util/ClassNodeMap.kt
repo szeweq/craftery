@@ -8,15 +8,15 @@ import kotlin.reflect.KProperty
 
 val ClassNodeMap.flowClasses get(): Flow<ClassNode> = classes.asFlow()
 
-fun <T> ClassNodeMap.getFlattenedClassValues(prop: KProperty<List<T>>) = flowClasses.transform {
-    val l = prop.getter.call(it)
+inline fun <T> ClassNodeMap.getFlattenedClassValues(crossinline getter: ClassNode.() -> List<T>) = flowClasses.transform {
+    val l = getter(it)
     for (x in l) {
         emit(Pair(it, x))
     }
 }
 
 val ClassNodeMap.allClassFields get(): Flow<Pair<ClassNode, FieldNode>> = getFlattenedClassValues(ClassNode::fields)
-val ClassNodeMap.allClassMethods get() = getFlattenedClassValues(ClassNode::methods)
+val ClassNodeMap.allClassMethods get(): Flow<Pair<ClassNode, MethodNode>> = getFlattenedClassValues(ClassNode::methods)
 
 fun <N : AbstractInsnNode> ClassNodeMap.instructionsFlow(fn: (AbstractInsnNode) -> N?) = allClassMethods.transform { (cl, m) ->
     for (node in m.instructions) {
