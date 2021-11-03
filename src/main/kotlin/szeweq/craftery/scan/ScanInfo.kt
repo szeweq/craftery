@@ -23,7 +23,7 @@ class ScanInfo {
             for (c in map.classes) {
                 val n = c.methods.find { m -> "getCapability" == m.name && TypeNames.GET_CAPABILITY == m.desc }
                 if (n != null) {
-                    it[c.name] = CapabilitiesInfo(c.name, n.instructions)
+                    it[c.name] = CapabilitiesInfo.from(c.name, n.instructions)
                 }
             }
         }
