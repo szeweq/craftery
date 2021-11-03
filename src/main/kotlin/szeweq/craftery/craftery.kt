@@ -20,6 +20,7 @@ import szeweq.craftery.views.*
 import szeweq.desktopose.core.*
 import szeweq.desktopose.hover.DesktopButton
 import szeweq.desktopose.hover.hover
+import java.awt.Dimension
 
 fun startApp() =
     singleWindowApplication(visible = true, title = Craftery.APP_TITLE, content = app)
@@ -28,6 +29,7 @@ fun startApp() =
  * Main composable function for an app. It saves bytecode size this way (Kotlin generates objects for functions).
  */
 private val app: @Composable FrameWindowScope.() -> Unit = {
+    window.minimumSize = Dimension(600, 400)
     AppTheme {
         Scaffold(
             topBar = { topBar() }
