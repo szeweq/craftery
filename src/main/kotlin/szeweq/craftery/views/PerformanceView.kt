@@ -103,7 +103,7 @@ object PerformanceView : View("Performance") {
                                 Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) {
                                     Text("Empty")
                                 }
-                            } else items(avgs, { it.first }) {
+                            } else items(avgs, { it.name }) {
                                 itemBox(it)
                             }
                         }
@@ -118,14 +118,14 @@ object PerformanceView : View("Performance") {
     }
 
     @Composable
-    private fun itemBox(item: Pair<String, Long>) {
+    private fun itemBox(item: TimeLogManager.ComputedAverageEntry) {
         Box(Modifier
             .hover(shape = MaterialTheme.shapes.medium)
             .padding(4.dp)
         ) {
             Row {
-                Text(item.first, Modifier.weight(1.0f))
-                Text(TimeLogManager.formatDuration(item.second))
+                Text(item.name, Modifier.weight(1.0f))
+                Text(TimeLogManager.formatDuration(item.avg))
             }
         }
     }

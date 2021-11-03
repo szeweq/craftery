@@ -14,6 +14,9 @@ public enum DataResourceType {
 	BLOCK_TAG("tags/blocks"),
 	FLUID_TAG("tags/fluids"),
 	ENTITY_TYPE_TAG("tags/entity_types"),
+	PARTICLE("particles"),
+	SHADER("shaders"),
+	STRUCTURE("structures"),
 	UNKNOWN("");
 
 	private final String dir;
@@ -26,16 +29,24 @@ public enum DataResourceType {
 		return dir.startsWith("tags/");
 	}
 
+	private static final DataResourceType[] ASSETS = {
+			BLOCK_STATE, ITEM_MODEL, BLOCK_MODEL, ITEM_TEXTURE, BLOCK_TEXTURE, TRANSLATION,
+			PARTICLE, SHADER
+	};
+	private static final DataResourceType[] DATA = {
+			RECIPE, LOOT_TABLE, ADVANCEMENT, ITEM_TAG, BLOCK_TAG, FLUID_TAG, ENTITY_TYPE_TAG,
+			STRUCTURE
+	};
 
 	public static DataResourceType detect(String mainDir, String path) {
 		return switch (mainDir) {
-			case "assets" -> dirMatch(path, BLOCK_STATE, ITEM_MODEL, BLOCK_MODEL, ITEM_TEXTURE, BLOCK_TEXTURE, TRANSLATION);
-			case "data" -> dirMatch(path, RECIPE, LOOT_TABLE, ADVANCEMENT, ITEM_TAG, BLOCK_TAG, FLUID_TAG, ENTITY_TYPE_TAG);
+			case "assets" -> dirMatch(path, ASSETS);
+			case "data" -> dirMatch(path, DATA);
 			default -> UNKNOWN;
 		};
 	}
 
-	private static DataResourceType dirMatch(String path, DataResourceType ...drts) {
+	private static DataResourceType dirMatch(String path, DataResourceType[] drts) {
 		for (DataResourceType drt : drts) {
 			final String dir = drt.dir;
 			if (path.startsWith(dir) && path.charAt(dir.length()) == '/') {

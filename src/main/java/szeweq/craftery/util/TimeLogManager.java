@@ -2,9 +2,8 @@ package szeweq.craftery.util;
 
 import androidx.compose.runtime.MutableState;
 import androidx.compose.runtime.SnapshotStateKt;
-import kotlin.Pair;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -26,13 +25,22 @@ public class TimeLogManager {
         return ms + " ms " + ns + " ns";
     }
 
-    @SuppressWarnings("unchecked")
-    public static Pair<String, Long>[] averages() {
-        return historyMap.entrySet()
-                .stream()
-                .map(e -> new Pair<>(e.getKey(), e.getValue().avg()))
-                .sorted((l, r) -> (int) (r.getSecond() - l.getSecond()))
-                .toArray(Pair[]::new);
+    public static ComputedAverageEntry[] averages() {
+        var result = new ComputedAverageEntry[historyMap.size()];
+        var i = 0;
+        for (var entry : historyMap.entrySet()) {
+            result[i] = new ComputedAverageEntry(entry.getKey(), entry.getValue().avg());
+            i++;
+        }
+        Arrays.sort(result);
+        return result;
     }
 
+
+    public record ComputedAverageEntry(String name, long avg) implements Comparable<ComputedAverageEntry> {
+        @Override
+        public int compareTo(ComputedAverageEntry o) {
+            return Long.compare(avg, o.avg);
+        }
+    }
 }
