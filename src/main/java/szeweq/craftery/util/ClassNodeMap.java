@@ -18,7 +18,7 @@ public class ClassNodeMap {
     }
 
     private static String fixedDesc(String desc) {
-        if (desc.length() > 0 && desc.charAt(0) == 'L') {
+        if (desc.length() > 1 && desc.charAt(0) == 'L') {
             return desc.substring(1, desc.length() - 1);
         }
         return desc;
