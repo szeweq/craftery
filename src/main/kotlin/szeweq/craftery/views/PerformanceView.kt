@@ -72,48 +72,46 @@ object PerformanceView : View("Performance") {
     }
 
     @Composable
-    override fun content() {
-        Column {
-            Card(Modifier.padding(12.dp).fillMaxWidth()) {
-                val mem by memoryFlow.collectAsState(longArrayOf() to longArrayOf())
-                if (mem.first.isEmpty() || mem.second.isEmpty()) {
-                    Text("Loading...")
-                    return@Card
-                }
-                val (used, total) = remember(mem) { mem.first.last() to mem.second.last() }
-                val txtUsed = remember(mem.first) { KtUtil.lengthInBytes(used) }
-                val txtTotal = remember(mem.second) { KtUtil.lengthInBytes(total) }
-                val cmax = remember(mem.second) { mem.second.maxOrNull()!! }
-                val csz = remember(mem.second) { mem.second.size }
-                val vused = remember(mem.first) { mem.first.map { it.toFloat() / cmax } }
-                Column(Modifier.padding(8.dp)) {
-                    Text("Memory: $txtUsed of $txtTotal")
-                    memoryGraph(csz, vused)
-                }
+    override fun content() = Column {
+        Card(Modifier.padding(12.dp).fillMaxWidth()) {
+            val mem by memoryFlow.collectAsState(longArrayOf() to longArrayOf())
+            if (mem.first.isEmpty() || mem.second.isEmpty()) {
+                Text("Loading...")
+                return@Card
             }
-            Box {
-                val state = rememberLazyListState()
-                key(TimeLogManager.lastLog.value) {
-                    withProviders(
-                        LocalTextStyle providesMerged TextStyle(fontSize = 12.sp)
-                    ) {
-                        LazyColumn(ModifierMaxSize.padding(horizontal = 12.dp), state = state) {
-                            val avgs = TimeLogManager.averages()
-                            if (avgs.isEmpty()) item {
-                                Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) {
-                                    Text("Empty")
-                                }
-                            } else items(avgs, { it.name }) {
-                                itemBox(it)
+            val (used, total) = remember(mem) { mem.first.last() to mem.second.last() }
+            val txtUsed = remember(mem.first) { KtUtil.lengthInBytes(used) }
+            val txtTotal = remember(mem.second) { KtUtil.lengthInBytes(total) }
+            val cmax = remember(mem.second) { mem.second.maxOrNull()!! }
+            val csz = remember(mem.second) { mem.second.size }
+            val vused = remember(mem.first) { mem.first.map { it.toFloat() / cmax } }
+            Column(Modifier.padding(8.dp)) {
+                Text("Memory: $txtUsed of $txtTotal")
+                memoryGraph(csz, vused)
+            }
+        }
+        Box {
+            val state = rememberLazyListState()
+            key(TimeLogManager.lastLog.value) {
+                withProviders(
+                    LocalTextStyle providesMerged TextStyle(fontSize = 12.sp)
+                ) {
+                    LazyColumn(ModifierMaxSize.padding(horizontal = 12.dp), state = state) {
+                        val avgs = TimeLogManager.averages()
+                        if (avgs.isEmpty()) item {
+                            Box(Modifier.fillMaxWidth().height(64.dp), contentAlignment = Alignment.Center) {
+                                Text("Empty")
                             }
+                        } else items(avgs, { it.name }) {
+                            itemBox(it)
                         }
                     }
                 }
-                VerticalScrollbar(
-                    rememberScrollbarAdapter(state),
-                    Modifier.align(Alignment.CenterEnd).fillMaxHeight()
-                )
             }
+            VerticalScrollbar(
+                rememberScrollbarAdapter(state),
+                Modifier.align(Alignment.CenterEnd).fillMaxHeight()
+            )
         }
     }
 

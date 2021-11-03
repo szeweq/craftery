@@ -69,47 +69,45 @@ class FileLookup(
 
     @OptIn(ExperimentalComposeUiApi::class)
     @Composable
-    override fun content() {
-        when (workState.value) {
-            0 -> CenteredColumn(ModifierMaxSize) {
-                TextH5("Select lookups to apply", Modifier.padding(8.dp))
-                Card(Modifier.fillMaxWidth(0.75f).padding(4.dp)) { Column {
-                    for (i in lookups.indices) {
-                        Row(Modifier.fillMaxWidth().hover(), verticalAlignment = Alignment.CenterVertically) {
-                            Checkbox(checks[i], { checks[i] = it }, Modifier.pointerHoverIcon(PointerIconDefaults.Hand))
-                            Column {
-                                val l = lookups[i]
-                                Text(l.title, Modifier.padding(vertical = 2.dp))
-                                l.explain?.let { Text(it, fontSize = 12.sp) }
-                            }
+    override fun content() = when (workState.value) {
+        0 -> CenteredColumn(ModifierMaxSize) {
+            TextH5("Select lookups to apply", Modifier.padding(8.dp))
+            Card(Modifier.fillMaxWidth(0.75f).padding(4.dp)) { Column {
+                for (i in lookups.indices) {
+                    Row(Modifier.fillMaxWidth().hover(), verticalAlignment = Alignment.CenterVertically) {
+                        Checkbox(checks[i], { checks[i] = it }, Modifier.pointerHoverIcon(PointerIconDefaults.Hand))
+                        Column {
+                            val l = lookups[i]
+                            Text(l.title, Modifier.padding(vertical = 2.dp))
+                            l.explain?.let { Text(it, fontSize = 12.sp) }
                         }
                     }
-                    val enabled = remember { derivedStateOf { for (b in checks) if (b) return@derivedStateOf true; false } }
-                    DesktopButton(
-                        workState.bind(1),
-                        Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
-                        enabled = enabled.value,
-                        content = UseScopeText("Continue")
-                    )
-                } }
-            }
-            1 -> {
-                LaunchedEffect(workState.value) { processLookups() }
-                CenteredColumn(ModifierMaxSize) {
-                    Text("Loading lookups...", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
-                    val mod = Modifier.fillMaxWidth(0.75f).padding(4.dp)
-                    if (downloadProgress.isActive)
-                        ProgressCard(downloadProgress, mod)
-                    ProgressCard(scanProgress, mod)
                 }
+                val enabled = remember { derivedStateOf { for (b in checks) if (b) return@derivedStateOf true; false } }
+                DesktopButton(
+                    workState.bind(1),
+                    Modifier.padding(vertical = 4.dp).align(Alignment.CenterHorizontally).fillMaxWidth(0.5f),
+                    enabled = enabled.value,
+                    content = UseScopeText("Continue")
+                )
+            } }
+        }
+        1 -> {
+            LaunchedEffect(workState.value) { processLookups() }
+            CenteredColumn(ModifierMaxSize) {
+                Text("Loading lookups...", Modifier.padding(8.dp), fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                val mod = Modifier.fillMaxWidth(0.75f).padding(4.dp)
+                if (downloadProgress.isActive)
+                    ProgressCard(downloadProgress, mod)
+                ProgressCard(scanProgress, mod)
             }
-            else -> Row {
-                sideList()
-                if (checks[index.value]) ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
-                     currentLookup.value.content()
+        }
+        else -> Row {
+            sideList()
+            if (checks[index.value]) ProvideTextStyle(TextStyle(fontSize = 12.sp)) {
+                 currentLookup.value.content()
 
-                } else Box(ModifierMaxSize) { Text("This lookup is disabled!", Modifier.align(Alignment.Center)) }
-            }
+            } else Box(ModifierMaxSize) { Text("This lookup is disabled!", Modifier.align(Alignment.Center)) }
         }
     }
 
