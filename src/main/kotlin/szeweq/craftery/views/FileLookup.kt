@@ -33,14 +33,12 @@ import szeweq.craftery.mcdata.Modpack
 import szeweq.craftery.net.Downloader
 import szeweq.craftery.scan.ScanInfo
 import szeweq.craftery.util.FileLoader
-import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.core.UseScopeText
 import szeweq.desktopose.core.bind
+import szeweq.desktopose.core.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.DesktopButton
-import szeweq.desktopose.hover.LocalHoverColor
 import szeweq.desktopose.hover.hover
-import szeweq.desktopose.hover.hoverState
 import szeweq.desktopose.progress.MessageProgressState
 import szeweq.desktopose.progress.ProgressCard
 import java.io.InputStream

@@ -28,8 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import szeweq.craftery.util.providesFrom
-import szeweq.craftery.util.providesMerged
+import szeweq.desktopose.core.providesFrom
+import szeweq.desktopose.core.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.LocalHoverColor
 import szeweq.desktopose.hover.hover

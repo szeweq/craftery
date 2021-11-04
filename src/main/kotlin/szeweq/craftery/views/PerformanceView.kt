@@ -25,7 +25,7 @@ import szeweq.craftery.layout.*
 import szeweq.kt.KtUtil
 import szeweq.craftery.util.TimeLogManager
 import szeweq.craftery.util.ValueHistory
-import szeweq.craftery.util.providesMerged
+import szeweq.desktopose.core.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.hover
 import kotlin.math.max

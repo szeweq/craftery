@@ -24,9 +24,9 @@ import kotlinx.coroutines.future.await
 import kotlinx.coroutines.launch
 import szeweq.craftery.cfapi.*
 import szeweq.craftery.layout.*
-import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.combobox.ComboBox
 import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.core.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.hover
 

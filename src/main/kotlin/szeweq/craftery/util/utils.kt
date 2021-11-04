@@ -28,13 +28,3 @@ inline fun logTime(name: String, fn: () -> Unit) {
     fn()
     TimeLogManager.logNano(name, d)
 }
-
-@Composable
-@ReadOnlyComposable
-infix fun ProvidableCompositionLocal<TextStyle>.providesMerged(value: TextStyle) =
-    this provides this.current.merge(value)
-
-@Composable
-@ReadOnlyComposable
-infix fun <T> ProvidableCompositionLocal<T>.providesFrom(other: CompositionLocal<T>) =
-    this provides other.current

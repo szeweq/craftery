@@ -15,8 +15,8 @@ import androidx.compose.ui.unit.sp
 import szeweq.craftery.cfapi.AddonSearch
 import szeweq.craftery.layout.*
 import szeweq.craftery.util.FileLoader
-import szeweq.craftery.util.providesMerged
 import szeweq.desktopose.core.UseScopeText
+import szeweq.desktopose.core.providesMerged
 import szeweq.desktopose.core.withProviders
 import szeweq.desktopose.hover.DesktopButton
 import szeweq.desktopose.hover.hover
