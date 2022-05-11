@@ -10,7 +10,7 @@ group = "szewek.craftery"
 
 val asmVersion = "9.2"
 val jacksonVersion = "2.13.0"
-val composeVersion = "1.0.0-beta5"
+val composeVersion = "1.2.0-alpha01-dev683"
 val desktoposeVersion = "0.3.0"
 
 repositories {
