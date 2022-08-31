@@ -50,7 +50,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.5.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.5.2")
     implementation("org.jetbrains.kotlin:kotlin-reflect:1.5.31")
-    implementation("com.electronwill.night-config:toml:3.6.4")
+    implementation("com.electronwill.night-config:toml:3.6.6")
     implementation("org.ow2.asm:asm:$asmVersion")
     implementation("org.ow2.asm:asm-tree:$asmVersion")
     implementation("org.ow2.asm:asm-analysis:$asmVersion")
